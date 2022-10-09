@@ -13,7 +13,7 @@ def decode(seq: str):
 
 def seq_to_int(seq: str) -> int:
     if seq[0] == 'A':
-            sign = 1
+        sign = 1
     else:
         sign = -1
     length = int(nt_dict[seq[1]] + nt_dict[seq[2]], 2)
