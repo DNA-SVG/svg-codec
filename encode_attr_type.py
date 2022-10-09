@@ -31,24 +31,26 @@ def int_to_seq(num: int) -> str:
     return sign + length + value
 
 def float_to_seq(num: float) -> str:
+    #获得字节信息
     bs = struct.pack('>f', num)
+
+    #字节转01串
     binary = ''
     for i in bs:
         tmp = bin(i).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
+
     return 'C' + bin_to_seq(binary)
 
 def str_to_seq(s: str) -> str:
-    new_s = s + '\0'
     binary = ''
-    for ch in new_s:
+    for ch in s:
         tmp = bin(ord(ch)).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
-    return 'G' + bin_to_seq(binary)
+    return 'G' + int_to_seq(len(s))[1:] + bin_to_seq(binary)
 
 if __name__ == '__main__':
     #测试用代码
-    a, b = 12345, -12345
-    c = 1.0
-    d = 'c'
-    print(int_to_seq(a), int_to_seq(b), float_to_seq(c), str_to_seq(d), sep=' ')
+    s = 'ajlkadafld'
+    n = len(s)
+    print(int_to_seq(n), str_to_seq(s))

@@ -13,39 +13,44 @@ def decode(seq: str):
 
 def seq_to_int(seq: str) -> int:
     if seq[0] == 'A':
-            sign = 1
+        sign = 1
     else:
         sign = -1
+
     length = int(nt_dict[seq[1]] + nt_dict[seq[2]], 2)
+
     binary = ''
-    for i in range(length):
-        binary += nt_dict[seq[i + 3]]
+    for i in range(3, length + 3):
+        binary += nt_dict[seq[i]]
+
     return sign * int(binary, 2)
 
 def seq_to_float(seq: str) -> float:
     ba = bytearray()
-    for i in range(4):
+
+    #逐字节读取
+    for i in range(1, 17, 4):
         byte = ''
-        for j in range(i*4, i*4 + 4):
-            byte += nt_dict[seq[j + 1]]
+        for j in range(i, i + 4):
+            byte += nt_dict[seq[j]]
         ba.append(int(byte, 2))
+
     return struct.unpack('>f', ba)[0]
 
 def seq_to_str(seq: str) -> str:
     ba = bytearray()
-    i = 1
-    while True:
+    l_length = int(nt_dict[seq[1]] + nt_dict[seq[2]], 2)
+
+    for i in range(l_length + 3, len(seq), 4):
         byte = ''
         for j in range(i, i + 4):
             byte += nt_dict[seq[j]]
-        if byte == '00000000':
-            break
         ba.append(int(byte, 2))
-        i += 4
+
     return ba.decode(encoding='ascii')
 
 if __name__ == '__main__':
     #测试用代码
     print(decode(encoder.int_to_seq(45)))
     print(decode(encoder.float_to_seq(1.0)))
-    print(decode(encoder.str_to_seq('acdf')))
+    print(decode(encoder.str_to_seq('aasdfasdh')))
