@@ -16,6 +16,8 @@ def bin_to_seq(binSeq: str) -> str:
     return ret
 
 def int_to_seq(num: int) -> str:
+    """传入一个有符号整数，需满足|x| <= 2^30 - 1"""
+    """以str形式返回编码dna序列"""
     binary = bin(num).replace('0b', '').replace('-', '')
     value = bin_to_seq(binary)
 
@@ -31,6 +33,8 @@ def int_to_seq(num: int) -> str:
     return sign + length + value
 
 def float_to_seq(num: float) -> str:
+    """传入float，对应c标准的float(8 bit)"""
+    """以str形式返回编码dna序列"""
     #获得字节信息
     bs = struct.pack('>f', num)
 
@@ -50,7 +54,7 @@ def str_to_seq(s: str) -> str:
     return 'G' + int_to_seq(len(s))[1:] + bin_to_seq(binary)
 
 if __name__ == '__main__':
-    #测试用代码
+    #测试用代码，本地随便改
     s = 'ajlkadafld'
     n = len(s)
     print(int_to_seq(n), str_to_seq(s))
