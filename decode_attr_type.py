@@ -4,6 +4,8 @@ import encode_attr_type as encoder
 nt_dict = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 
 def decode(seq: str):
+    """传入一段恰编码一个值的DNA片段(否则可能有问题）"""
+    """返回对应的值"""
     if seq[0] == 'A' or seq[0] == 'T':
         return seq_to_int(seq)
     elif seq[0] == 'C':
