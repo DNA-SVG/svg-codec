@@ -113,13 +113,35 @@ def func_None(seq):
 def func(x, seq):
     return decode_func_dict.get(x, func_None)(seq)
 
+def decode_address(seq: str):
+    '''传入以address开头的序列'''
+    '''返回[my_counter, first_child, bro, len(address)]'''
+    ret = []
+    start = 0
+    tot_length = 0
+    for _ in range(3):
+        int_length = int(decode_nt_dict[seq[start+1]] +
+                     decode_nt_dict[seq[start+2]], 2)
+        end = start + 3 + int_length
+        tot_length += 3 + int_length
+        cur_counter = decode_attr_type.decode(seq[start:end])
+        if cur_counter == -1:
+            ret.append(None)
+        else:
+            ret.append(cur_counter)
+        start = end
+
+    ret.append(tot_length)
+    return ret
 
 def DNAseq2tag(seq: str):
+    '''传入编码一个tag的序列'''
+    '''返回[tag, my_counter, first_child, bro, [attrs]]'''
     tag = decode_tag_dict.get(seq[0:2])
-    seq = seq[14:]
-    DNAseq = [tag] + func(tag, seq)
+    my_counter, first_child, bro, addr_length = decode_address(seq[2:])
+    seq = seq[2 + addr_length:]
+    DNAseq = [tag, my_counter, first_child, bro] + func(tag, seq)
     return DNAseq
-
 
 if __name__ == '__main__':
     # seq = 'AA'+'CTAACAGTAAAAAAAAACTAAACCAAAAAAAAAACTAAACAAAAAAAAAAA' +\
