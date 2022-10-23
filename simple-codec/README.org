@@ -1,0 +1,14 @@
+* Simple codec for DNA storage
+
+
+Encode file A.svg to DNA sequence and store the sequence to file B.seq:
+
+#+BEGIN_SRC bash
+  python3 simple.py encode A.svg B.seq
+#+END_SRC
+
+Decode DNA sequence in file B.seq to its original file (named as A.svg):
+
+#+BEGIN_SRC bash
+  python3 simple.py decode B.seq A.svg
+#+END_SRC
