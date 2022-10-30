@@ -53,6 +53,7 @@ def seq_to_str(seq: str) -> str:
 
 if __name__ == '__main__':
     #测试用代码
-    print(decode(encoder.int_to_seq(45)))
-    print(decode(encoder.float_to_seq(1.0)))
-    print(decode(encoder.str_to_seq('aasdfasdh')))
+    # print(decode(encoder.int_to_seq(2)))
+    # print(decode(encoder.float_to_seq(1.0)))
+    # print(decode(encoder.str_to_seq('aasdfasdh')))
+    print(decode('GAAAA'))
