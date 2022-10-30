@@ -49,7 +49,7 @@ def encode_file(infile, outfile):
     seq = encode(data)
     with open(outfile, "w") as f:
         f.write(seq)
-
+    
 
 def decode_file(infile, outfile):
     with open(infile, "r") as f:
@@ -62,7 +62,7 @@ def decode_file(infile, outfile):
 actions = {
     "encode": encode_file,
     "decode": decode_file
-};
+}
 
 def main():
     parser = argparse.ArgumentParser()

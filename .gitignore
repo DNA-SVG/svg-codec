@@ -127,3 +127,21 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+test/test_tree.py
+test/备份.py
+test/rec.py
+test/simplexml.py
+test/svg_DNA.py
+test/svg.py
+test/tempCodeRunnerFile.py
+test/test.py
+.gitignore
+building-construction-education-svgrepo-com.svg
+sample.xml
+test.svg
+.vscode/settings.json
+svg/test_output
+svg/test1.svg
+test1.svg
+simple-codec/tempCodeRunnerFile.py
+log/10.30.md
