@@ -30,10 +30,10 @@ def int_to_seq(num: int) -> str:
     if len(length) == 1:
         length = 'A' + length
         
-    return sign + length + value
+    return sign + length +value
 
 def float_to_seq(num: float) -> str:
-    """传入float，对应c标准的float(8 bit)"""
+    """传入float,对应c标准的float(8 bit)"""
     """以str形式返回编码dna序列"""
     #获得字节信息
     bs = struct.pack('>f', num)
@@ -48,6 +48,8 @@ def float_to_seq(num: float) -> str:
 
 def str_to_seq(s: str) -> str:
     binary = ''
+    if s==None:
+        return 'G'+int_to_seq(0)[1:]
     for ch in s:
         tmp = bin(ord(ch)).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
@@ -55,6 +57,8 @@ def str_to_seq(s: str) -> str:
 
 if __name__ == '__main__':
     #测试用代码，本地随便改
-    s = 'ajlkadafld'
+    s = ''
     n = len(s)
-    print(int_to_seq(n), str_to_seq(s))
+    # print(int_to_seq(2))
+    # print(float_to_seq(45.0))
+    print(str_to_seq('_x34_0-Id_Card'))

@@ -2,6 +2,7 @@
 # optional attibute: id class
 
 # 添加返回序列
+from base64 import encode
 import xml.etree.ElementTree as ET
 
 import encode_attr_type
@@ -16,6 +17,7 @@ tag_dict = {"circle": 'AA', "g": 'AT', "path": 'AC',
 
 
 def address2DNAseq(my_counter, first_child=None, bro=None):
+    # 返回my_counter, first_child, bro的DNAseq
     seq = ''
     # print(first_child,bro)
     seq += encode_attr_type.int_to_seq(my_counter)
@@ -31,7 +33,24 @@ def address2DNAseq(my_counter, first_child=None, bro=None):
     return seq
 
 
+def encode_idclass(id, the_class):
+    ret = ''
+    if id == None:
+        if the_class == None:
+            ret += 'A'
+        else:
+            ret += 'T'+encode_attr_type.str_to_seq(the_class)
+    else:
+        if the_class == None:
+            ret += 'C' + encode_attr_type.str_to_seq(id)
+            return ret
+        else:
+            ret += 'G'+encode_attr_type.str_to_seq(id) + \
+                encode_attr_type.str_to_seq(the_class)
+
+    return ret
 # (root.tag, root,my_counter,first_child, bro_counter)
+
 
 def get_cicle(node, my_counter, first_child=None, bro=None):
     cx = node.get('cx')
@@ -49,10 +68,7 @@ def get_cicle(node, my_counter, first_child=None, bro=None):
     seq = seq + encode_attr_type.float_to_seq(float(cx)) + encode_attr_type.float_to_seq(
         float(cy)) + encode_attr_type.float_to_seq(float(r))
     # id class
-    if(id != None):
-        seq = seq + encode_attr_type.str_to_seq(id)
-    if(the_class != None):
-        seq = seq + encode_attr_type.str_to_seq(the_class)
+    seq += encode_idclass(id, the_class)
     return seq
 
 
@@ -63,10 +79,7 @@ def get_g(node, my_counter=None, first_child=None, bro=None):
     seq = tag_dict['g']
 
     seq += address2DNAseq(my_counter, first_child, bro)
-    if(id != None):
-        seq = seq + encode_attr_type.str_to_seq(id)
-    if(the_class != None):
-        seq = seq+encode_attr_type.str_to_seq(the_class)
+    seq += encode_idclass(id, the_class)
 
     return seq
 
@@ -79,10 +92,7 @@ def get_path(node, my_counter, first_child=None, bro=None):
     seq = tag_dict['path']
     seq += address2DNAseq(my_counter, first_child, bro)
     seq = seq + encode_attr_type.str_to_seq(d)
-    if(id != None):
-        seq = seq + encode_attr_type.str_to_seq(id)
-    if(the_class != None):
-        seq = seq+encode_attr_type.str_to_seq(the_class)
+    seq += encode_idclass(id, the_class)
 
     return seq
 
@@ -95,11 +105,7 @@ def get_polygon(node, my_counter, first_child=None, bro=None):
     seq = tag_dict['polygon']
     seq += address2DNAseq(my_counter, first_child, bro)
     seq = seq + encode_attr_type.str_to_seq(points)
-    if(id != None):
-        seq = seq + encode_attr_type.str_to_seq(id)
-    if(the_class != None):
-        seq = seq+encode_attr_type.str_to_seq(the_class)
-
+    seq += encode_idclass(id, the_class)
     return seq
 
 
@@ -115,10 +121,7 @@ def get_rect(node, my_counter, first_child=None, bro=None):
     seq += address2DNAseq(my_counter, first_child, bro)
     seq = seq + encode_attr_type.float_to_seq(float(x)) + encode_attr_type.float_to_seq(float(y)) + encode_attr_type.float_to_seq(float(
         width)) + encode_attr_type.float_to_seq(float(height))
-    if(id != None):
-        seq = seq + encode_attr_type.str_to_seq(id)
-    if(the_class != None):
-        seq = seq+encode_attr_type.str_to_seq(the_class)
+    seq += encode_idclass(id, the_class)
 
     return seq
 
@@ -131,10 +134,7 @@ def get_style(node, my_counter, first_child=None, bro=None):
     seq = tag_dict['style']
     seq += address2DNAseq(my_counter, first_child, bro)
     seq = seq + encode_attr_type.str_to_seq(text)
-    if(id != None):
-        seq = seq + encode_attr_type.str_to_seq(id)
-    if(the_class != None):
-        seq = seq+encode_attr_type.str_to_seq(the_class)
+    seq += encode_idclass(id, the_class)
 
     return seq
 

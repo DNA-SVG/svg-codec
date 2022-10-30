@@ -6,31 +6,53 @@ decode_tag_dict = {'AA': "circle", 'AT': "g",  'AC': "path",
 
 # 获取标签
 
-# 目前存在的问题：id class 无法区别
+
 def decode_idclass(seq: str, start=0):
-    total_len = len(seq)
+    tottal_len = len(seq)
     ret = []
-    if start < total_len:
+    # print(start)
+    if start >= tottal_len:
+        return [None,None]
+    if seq[start] == 'A':
+        ret += [None, None]
+        return ret
+    if seq[start] == 'T':
+        start += 1
+        ret += [None]
         int_length = int(decode_nt_dict[seq[start+1]] +
                          decode_nt_dict[seq[start+2]], 2)
         int_end = start + 1 + 2 + int_length
         length = decode_attr_type.decode('A'+seq[start+1:int_end])
         end = start + 1 + 2 + int_length + length*4
-        # print(type(start),type(end))
         ret += [decode_attr_type.decode(seq[start:end])]
-        start = end
-    else:
         return ret
-
-    while start < total_len:
-        int_length = int(
-            decode_nt_dict[seq[start+1]] + decode_nt_dict[seq[start+2]], 2)
+    if seq[start] == 'C':
+        start += 1
+        int_length = int(decode_nt_dict[seq[start+1]] +
+                         decode_nt_dict[seq[start+2]], 2)
+        int_end = start + 1 + 2 + int_length
+        length = decode_attr_type.decode('A'+seq[start+1:int_end])
+        end = start + 1 + 2 + int_length + length*4
+        ret += [decode_attr_type.decode(seq[start:end])]
+        ret += [None]
+        return ret
+    if seq[start] == 'G':
+        start += 1
+        int_length = int(decode_nt_dict[seq[start+1]] +
+                         decode_nt_dict[seq[start+2]], 2)
         int_end = start + 1 + 2 + int_length
         length = decode_attr_type.decode('A'+seq[start+1:int_end])
         end = start + 1 + 2 + int_length + length*4
         ret += [decode_attr_type.decode(seq[start:end])]
         start = end
-    return ret
+
+        int_length = int(decode_nt_dict[seq[start+1]] +
+                         decode_nt_dict[seq[start+2]], 2)
+        int_end = start + 1 + 2 + int_length
+        length = decode_attr_type.decode('A'+seq[start+1:int_end])
+        end = start + 1 + 2 + int_length + length*4
+        ret += [decode_attr_type.decode(seq[start:end])]
+        return ret
 
 
 def decode_circle(seq: str):
@@ -79,6 +101,7 @@ def decode_polygon(seq: str, start=0):
 
 
 def decode_rect(seq: str, start=0):
+    ret = []
     for i in range(4):
         end = start+1+16
         ret += [decode_attr_type.decode(seq[start:end])]
@@ -113,6 +136,7 @@ def func_None(seq):
 def func(x, seq):
     return decode_func_dict.get(x, func_None)(seq)
 
+
 def decode_address(seq: str):
     '''传入以address开头的序列'''
     '''返回[my_counter, first_child, bro, len(address)]'''
@@ -121,7 +145,7 @@ def decode_address(seq: str):
     tot_length = 0
     for _ in range(3):
         int_length = int(decode_nt_dict[seq[start+1]] +
-                     decode_nt_dict[seq[start+2]], 2)
+                         decode_nt_dict[seq[start+2]], 2)
         end = start + 3 + int_length
         tot_length += 3 + int_length
         cur_counter = decode_attr_type.decode(seq[start:end])
@@ -134,6 +158,7 @@ def decode_address(seq: str):
     ret.append(tot_length)
     return ret
 
+
 def DNAseq2tag(seq: str):
     '''传入编码一个tag的序列'''
     '''返回[tag, my_counter, first_child, bro, [attrs]]'''
@@ -143,14 +168,14 @@ def DNAseq2tag(seq: str):
     DNAseq = [tag, my_counter, first_child, bro] + func(tag, seq)
     return DNAseq
 
+
 if __name__ == '__main__':
-    # seq = 'AA'+'CTAACAGTAAAAAAAAACTAAACCAAAAAAAAAACTAAACAAAAAAAAAAA' +\
-    #     'GATCTGAGTGAG'
-    # seq = 'AACTAACAAAAAAAAAAAACTAATGCGAGAGAGAGTCTAAACAGAGAGAGAGTGATGTGAGTGTAAGAA'
-    # seq='AACTAACAAAAAAAAAAAACTAATGCGAGAGAGAGTCTAATGCGAGAGAGAGTCTAAACAGAGAGAGAGT'+\
-    # 'GATGTGAGTGTAAGAA'
-    # seq='ATGATGTGAGTGTAAGAA'
-    # 加入编号后测试示例
-    seq='AAAATATATTTATTCTAACAAAAAAAAAAAACTAATGCGAGAGAGAGTCTAAACAGAGAGAGAGTGATGTGAGTGTAAGAA'
-    # print(decode_circle(seq))
-    print(DNAseq2tag(seq))
+
+   
+    # 编号长度不一定为12位！！！
+    # seq = ['ATAATTAATCTATT', 'ATAATCTATTAATGGACGCTTGGTGCAAGAGAGTATTGGAGAAACGTTACTTCTATTGGTAAGTCATTGACTCTA', 'AAAATGTATTAACTACTAACAAAAAAAAAAAACTAATGCGAGAGAGAGTCTAAACAGAGAGAGAGTTGATGTGAGTGTAAGAA', 'TAAACTATATTAACTTCTAAAGGAAAAAAAAAACTAACAGTAAAAAAAAACTAAACAGAGAGAGAGTCTAATAAGAGAGAGAGTTGATGTGAGTGTAAGAT', 'AGAACTTTATTAACTCGAGTCGAGAGAGACACGAAGAGACGCAGTTACAAAGATAGTCACGCAGTCACGAAGATAGTCACGCAGAGACAAAGTAAGTGACGCAGTAACGAAGATAGTCACGCAGAGACAATGATGTGAGTGTAAGAT', 'ACAACTCTATTAACTGGTACTGCTAGTAGATAGACACGCAGATACGAAGACAGCAACGCAGTTTACAAGTGACGCAGTGTCAGACGTAGAAACGCAGTCACGAAGAAACGTAGATACGCAGATACGAAGAAACGCAGTTACGTAGATACGCAGATACGAAGATACGCAGATTGTCAGCAACGCAGCATCAGAGAAACGAAGAAACGCAGTCACGAAGAAACGCAGTTACGAAGATACGCAGATACGAAGATACGCAGATACGAAGATACGCAGATTCCAAGTAACGCAGTATCAGAGAAACGCAGTCACGAAGAAACGAAGATACGCAGATACGTAGAAACGCAGTTACGAAGATACGCAGATACGTAGATACGCAGATTGTCACGTAGCAACGCAGCAACAAACAAACAAACAAACAAACAATAAGAGATAGAGACGCAGACACGAAGACAGCAACGCAGCTACGAAGATAGACACGCAGTGACGAAGACAGCAACGCAGTTACGAAGATAGACACGCAGATACGAAGACAGCAACGCAGTTTGCCACAATAGTAGATAGATACGAAGAGAGTGACGCAGAGTACAAGCAACGCAGCATGTCACGTAGTCACGCAGTCTACAAGATAGATTTTCAGAGAGTGACGCAGAGTGCCTGATGTGAGTGTAAGAG', 'TTAACTGTATTTATTGTAGGTTAACCACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACGCTGAGTGTAAGAATGCGTCTCTCCTTCGATCGAAGCCACAGTATCTATCTATTTATTTAATAGCTAGCGTGGTAACCACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACGCTGAGTGTAAGATTGCGTCTCTCCTTCGATCGAAGCCACAGTATAAGAGAGACAGTAAGAGAGTCAGCGTGGTAACCACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACGCTGAGTGTAAGACTGCGTCTCTCCTTCGATCGAAGCCACAGAGCATATATATAAGATTATAAGAGAGCGTGGTAACCACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACGCTGAGTGTAAGAGTGCGTCTCTCCTTCGATCGAAGCCACAGAGAGAGAGAGAATATAAGAAAGAAAGCGTGGTAACCACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACAAACGCTGAGTGTAAGTATGCGTCTCTCCTTCGATCGAAGCCTCGCTCGGTCGCTCTTAGCGTGAGTGTATGACTCGGTCCGTCTTAGCCACAGAGAGAGAGAGAATATAAGAAAGAAAGCGTGAGTGTATGACTCGGTCCGTCTTACGTTCGATCCTTCGCTCTTTCAGTCATTGAAAGCCTGACTCGGTGTTTCGCTCTAAGCGTGAGTGTATGACTCGGTCCGTCTTACGTTCGATCCTTCGCTCTTTCCCTCGGTCCTTCGCAGCCTGACTCGGTGTTTCGCTCTAAGCGTGAGTGTATGACTCGGTCCGTCTTACGTTCGTTCCTTGTATCTTTGACTCGATCCTTCGTTCCTTGTAAGCCAGATAGAAAGCGTGGTAACCACAAACAAACAAACAAACAAACAAACAAACAAA']
+    # print(DNAseq2tag(seq[1]))
+    a='ATAATTAATCTATTA'
+    print(DNAseq2tag(a))
+# element tree 构建xml
+# js write
