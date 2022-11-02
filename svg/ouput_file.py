@@ -26,7 +26,11 @@ def outputDNAseq(infile, outfile):
     contents = "\n".join(contents)
     save_to_file(outfile, contents)
 
-
+def output(DNAseq, outfile):
+    DNAseq = DNAseq.split('\n')
+    contents = decode_svg.generate_svg(DNAseq)
+    save_to_file(outfile, contents)
+    
 def outputSVG(infile, outfile):
     # 传入DNAseq的str文件 产生svg文件
 
