@@ -1,5 +1,6 @@
 import decode_attr_type as decoder
 import encode_attr_type as encoder
+import re
 NT_BITS = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 FLOAT_LENGTH = 16
 TYPECODE_LENGTH = 1
@@ -34,7 +35,7 @@ class SVGNumber(SVGType):
         else:
             seq = 'T' + encoder.int_to_seq(len(numbers))[1:]
         for number in numbers:
-            if number.replace('.', '').replace('px', '').isdigit():
+            if re.match(r'^[+-]?[0-9]*(\.)?[0-9]+(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
                 eval_number = eval(number)
@@ -90,7 +91,7 @@ class SVGString(SVGType):
         return (ret, end_idx)
         
 if __name__ == '__main__':
-    n = SVGNumber('38.7px 40.0 40 0px', type='encoder').translate()
+    n = SVGNumber('38.7px -40px 40 0px', type='encoder').translate()
     print(n)
     m, end = SVGNumber(n, type='decoder', start_idx=0).translate()
     print(m)
