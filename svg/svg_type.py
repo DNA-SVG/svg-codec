@@ -35,7 +35,7 @@ class SVGNumber(SVGType):
         else:
             seq = 'T' + encoder.int_to_seq(len(numbers))[1:]
         for number in numbers:
-            if re.match(r'^[+-]?[0-9]*(\.)?[0-9]+(px)?$', number) != None:
+            if re.match(r'^[+-]?[0-9]*(\.[0-9]+)?(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
                 eval_number = eval(number)
@@ -91,7 +91,7 @@ class SVGString(SVGType):
         return (ret, end_idx)
         
 if __name__ == '__main__':
-    n = SVGNumber('38.7px -40px 40 0px', type='encoder').translate()
+    n = SVGNumber('38.7px -40px 40.83284px 0px', type='encoder').translate()
     print(n)
     m, end = SVGNumber(n, type='decoder', start_idx=0).translate()
     print(m)
