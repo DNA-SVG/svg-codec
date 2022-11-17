@@ -56,4 +56,4 @@ if __name__ == '__main__':
     # print(decode(encoder.int_to_seq(2)))
     # print(decode(encoder.float_to_seq(1.0)))
     # print(decode(encoder.str_to_seq('aasdfasdh')))
-    print(decode('GAAAA'))
+    print(decode('GACTTTCCATCTTTCGATCGATCGG'))
