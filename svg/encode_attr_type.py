@@ -59,6 +59,6 @@ if __name__ == '__main__':
     #测试用代码，本地随便改
     s = ''
     n = len(s)
-    # print(int_to_seq(2))
+    print(int_to_seq(-1))
     # print(float_to_seq(45.0))
     print(str_to_seq('_x34_0-Id_Card'))

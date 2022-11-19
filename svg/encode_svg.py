@@ -1,36 +1,30 @@
 import encode_tag
 from concurrent.futures.process import BrokenProcessPool
 import xml.etree.ElementTree as ET
-# file = '../sample.xml'
-# file = '../building-construction-education-svgrepo-com.svg'
+from svg_code import *
 
+# def visit(root, bro_counter, first_child,my_counter):
+#     # if len(root) >= 1:
+#     #     first_child = my_counter + 1
+#     # else:
+#     #     first_child = None
+#     return encode_tag.func(root.tag, root, my_counter, first_child, bro_counter)
 
-def visit(root, bro_counter, first_child,my_counter):
-    # if len(root) >= 1:
-    #     first_child = my_counter + 1
-    # else:
-    #     first_child = None
-    return encode_tag.func(root.tag, root, my_counter, first_child, bro_counter)
 
 
 counter = 1
 # 深度遍历
 
 
-def dfs(root, bro_counter=None,child_counter=None, my_counter=None):
+def dfs(root, bro_counter=-1,child_counter=-1, my_counter=-1):
     global counter
     DNA_seq = []
-    # a = visit(root, bro_counter, my_counter)
-    # print(root.tag,my_counter,bro_counter)
- 
-    # if a != None:
-    #     DNA_seq += [a]
-
-
+   
     if len(root) == 0:
         # print('结束')
-        # print(root.tag,my_counter,bro_counter,None)
-        a = visit(root, bro_counter, None,my_counter)
+        # print(root.tag,my_counter,bro_counter,child_counter)
+        # a = visit(root, bro_counter, None,my_counter)
+        a = encode_tag(root, my_counter, -1, bro_counter)
         if a != None:
             DNA_seq += [a]
             
@@ -42,24 +36,24 @@ def dfs(root, bro_counter=None,child_counter=None, my_counter=None):
         counter += length
         
        
-        a = visit(root, bro_counter, child_counter,my_counter)
+        a = encode_tag(root, my_counter, child_counter, bro_counter)
         # print(root.tag,my_counter,bro_counter,child_counter)
         if a != None:
             DNA_seq += [a]
             
         for i in range(length-1):
             DNA_seq += dfs(root[i], counters[i+1], child_counter,counters[i])
-        DNA_seq += dfs(root[length-1], None,child_counter, counters[length-1])
+        DNA_seq += dfs(root[length-1], -1,child_counter, counters[length-1])
         
 
     return DNA_seq
 
 
 if __name__ == '__main__':
-    file = '../test1.svg'
+    file = '../river.svg'
     tree = ET.parse(file)
     root = tree.getroot()
 
-    a = dfs(root, None,1, 0)
+    a = dfs(root, -1,1, 0)
     print(a)
 # print("\n".join(a))

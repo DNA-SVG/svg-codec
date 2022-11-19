@@ -1,5 +1,5 @@
-import encode_svg
-import decode_svg
+import encode_svg as encode
+import decode_svg as decode
 import xml.etree.ElementTree as ET
 import argparse
 
@@ -8,7 +8,7 @@ def encode_to_DNA(file):
     # 返回以seq列表
     tree = ET.parse(file)
     root = tree.getroot()
-    DNAseq = encode_svg.dfs(root, None, 0)
+    DNAseq = encode.dfs(root, -1,1, 0)
     # b = "\n".join(a)
     return DNAseq
 
@@ -19,24 +19,37 @@ def save_to_file(file_name, contents):
     fh.close()
 # save_to_file('test_output',b)
 
-
+def xmlstr_OutputDNAseq(xmlstr,outfile):
+    # 传入str形式的xml文件 输出decode的DNA
+    root = ET.fromstring(xmlstr)
+    DNAseq = encode.dfs(root, None, 0)
+    DNAseq = "\n".join(DNAseq)
+    # save_to_file(outfile, DNAseq)
+    
+    
 def outputDNAseq(infile, outfile):
     # 传入需要encode的文件，输出decode的DNA
-    contents = encode_to_DNA(infile)
-    contents = "\n".join(contents)
-    save_to_file(outfile, contents)
+    DNAseq = encode_to_DNA(infile) # 得到DNAseq各tag的list
+    DNAseq = "\n".join(DNAseq)
+    save_to_file(outfile, DNAseq)
 
+def outputSVGstr(DNAseq):
+    # 传入DNAseq的str 返回svg的字符串
+    DNAseq = DNAseq.split('\n')
+    contents = decode.generate_svg(DNAseq)
+    return contents
 
 def outputSVG(infile, outfile):
-    # 传入DNAseq的str文件 产生svg文件
-
+    # 传入DNAseq的txt文件 产生svg文件
+    # 改为返回str
     with open(infile, 'r') as f:
         seq = f.read()
 
     DNAseq = seq.split('\n')
     # print(DNAseq, len(DNAseq))
-    contents = decode_svg.generate_svg(DNAseq)
+    contents = decode.generate_svg(DNAseq)
     save_to_file(outfile, contents)
+    
 
 
 actions = {
@@ -58,18 +71,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    # outputSVG("./svg/test_seq.txt", '1.svg')
+    # file = 'C:\\Users\\ZZ\\Desktop\\DNA\\river.svg'
 
-
-# if __name__ == '__main__':
-    # file = '../test1.svg'
-
-    # file = '../building-construction-education-svgrepo-com.svg'
+    file = '../building-construction-education-svgrepo-com.svg'
     # 不能重复，会影响编号
     # a = encode_to_DNA(file)
     # print(a)
-    # outputDNAseq(file, 'test_seq.txt')
-    # outputSVG('ret.svg', a)
+    # b = '\n'.join(a)
+    outputDNAseq(file, 'After_test2.txt')
+    # c = outputSVGstr(b)
     # b=decode_svg.generate_svg(a)
-    # save_to_file('test1.svg',b)
+    
+
+    # main()
+    outputSVG("After_test2.txt", '4.svg')
+
+
