@@ -64,10 +64,9 @@ class SVGNumber(SVGType):
                     sub_seq[1:1 + TYPECODE_LENGTH + FLOAT_LENGTH])
             else:
                 int_length = int(NT_BITS[sub_seq[2]] + NT_BITS[sub_seq[3]], 2)
-                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-                ret = decoder.seq_to_int(
-                    sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
-            return (ret, end_idx)
+                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH 
+                ret = decoder.seq_to_int(sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
+            return (str(ret), end_idx)
         elif sub_seq[0] == 'T':
             tot_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
             tot = decoder.seq_to_int(
@@ -130,7 +129,10 @@ class SVGCoordinate(SVGType):
         return (init_decode, end_idx)
 
 if __name__ == '__main__':
-    n = SVGNumber('38.7px -40px 40 0px', type='encoder').translate()
+    n = SVGCoordinate('0,1', type='encoder').translate()
+    m = SVGCoordinate(n, type='decoder').translate()[0]
+    print(m)
+    n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').translate()
     print(n)
     m, end = SVGNumber(n, type='decoder', start_idx=0).translate()
     print(m)
