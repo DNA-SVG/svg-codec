@@ -49,7 +49,7 @@ def seq_to_str(seq: str) -> str:
             byte += nt_dict[seq[j]]
         ba.append(int(byte, 2))
 
-    return ba.decode(encoding='ascii')
+    return ba.decode(encoding='utf-8')
 
 if __name__ == '__main__':
     #测试用代码

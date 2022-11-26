@@ -3,7 +3,8 @@ from svg_type import SVGNumber, SVGString
 from svg_tag import *
 
 ATTR_KEY = {'width': 'AA', 'height': 'AT', 'viewBox': 'AC',
-            'style': 'AG', 'id': 'TA', 'class': 'TT'}
+            'style': 'AG', 'id': 'TA', 'class': 'TT',
+            'rx': 'TC', 'ry': 'TG'}
 KEY_ATTR = {v: k for k, v in ATTR_KEY.items()}
 ATTR_TYPE = {'width': 'number', 'height': 'number',
              'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str', 
@@ -25,7 +26,7 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
         if attr_name in cur_tag.get_required():
             continue
         if attr_name not in cur_tag.get_optional():
-            print('error: attribute {} not supported'.format(attr_name))
+            print('error: attribute {} not supported in {}'.format(attr_name, cur_tag.__name__))
             continue 
         total += 1
         key = ATTR_KEY[attr_name]

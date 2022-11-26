@@ -50,8 +50,9 @@ def str_to_seq(s: str) -> str:
     binary = ''
     if s==None:
         return 'G'+int_to_seq(0)[1:]
+    s = s.encode("utf-8")
     for ch in s:
-        tmp = bin(ord(ch)).replace('0b', '')
+        tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
     return 'G' + int_to_seq(len(s))[1:] + bin_to_seq(binary)
 

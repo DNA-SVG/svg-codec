@@ -30,7 +30,7 @@ class polygon(Tag):
 
 class rect(Tag):
     required_attrs = ['height', 'width', 'x', 'y']
-    optional_attrs = set()
+    optional_attrs = set(['rx', 'ry'])
 
 class  style(Tag):
     required_attrs = ['text']
