@@ -108,7 +108,7 @@ def main():
 if __name__ == "__main__":
     # file = 'C:\\Users\\ZZ\\Desktop\\DNA\\river.svg'
 
-    file = '../svg-codec/building-construction-education-svgrepo-com.svg'
+    file = '../building-construction-education-svgrepo-com.svg'
     # 不能重复，会影响编号
     # a = encode_to_DNA(file)
     # print(a)
