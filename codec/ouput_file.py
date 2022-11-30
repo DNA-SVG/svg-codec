@@ -19,13 +19,6 @@ def save_to_file(file_name, contents):
     fh.close()
 # save_to_file('test_output',b)
 
-def xmlstr_OutputDNAseq(xmlstr,outfile):
-    # 传入str形式的xml文件 输出decode的DNA
-    root = ET.fromstring(xmlstr)
-    DNAseq = encode.dfs(root, None, 0)
-    DNAseq = "\n".join(DNAseq)
-    # save_to_file(outfile, DNAseq)
-    
     
 def outputDNAseq(infile, outfile):
     # 传入需要encode的文件，输出decode的DNA
@@ -33,11 +26,6 @@ def outputDNAseq(infile, outfile):
     DNAseq = "\n".join(DNAseq)
     save_to_file(outfile, DNAseq)
 
-def outputSVGstr(DNAseq):
-    # 传入DNAseq的str 返回svg的字符串
-    DNAseq = DNAseq.split('\n')
-    contents = decode.generate_svg(DNAseq)
-    return contents
 
 def outputSVG(infile, outfile):
     # 传入DNAseq的txt文件 产生svg文件
@@ -51,6 +39,19 @@ def outputSVG(infile, outfile):
     save_to_file(outfile, contents)
     
 
+def xmlstr_OutputDNAseq(xmlstr):
+    # 传入str形式的xml文件 输出decode的DNAseq
+    root = ET.fromstring(xmlstr)
+    DNAseq = encode.dfs(root, None, 0)
+    DNAseq = "\n".join(DNAseq)
+    # save_to_file(outfile, DNAseq)
+
+def outputSVGstr(DNAseq):
+    # 传入DNAseq的str 返回svg的字符串
+    DNAseq = DNAseq.split('\n')
+    contents = decode.generate_svg(DNAseq)
+    return contents
+  
 
 actions = {
     "encode": outputDNAseq,

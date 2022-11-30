@@ -11,6 +11,8 @@ ATTR_TYPE = {'width': 'number', 'height': 'number',
              'cx': 'number','cy': 'number', 'r': 'number',
              'x': 'number','y':'number','d':'str','points':'str',
              'text':'str','ry':'number','rx':'number'}
+
+ATTR_CODE = {'number': SVGNumber, 'str': SVGString}
 KEY_LENGTH = 2
 
 STD = '{http://www.w3.org/2000/svg}'
@@ -32,10 +34,11 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
         key = ATTR_KEY[attr_name]
         type = ATTR_TYPE[attr_name]
         seq += key
-        if type == 'number':
-            seq += SVGNumber(attr_value, type='encoder').translate()
-        elif type == 'str':
-            seq += SVGString(attr_value, type='encoder').translate()
+        # if type == 'number':
+        #     seq += SVGNumber(attr_value, type='encoder').translate()
+        # elif type == 'str':
+        #     seq += SVGString(attr_value, type='encoder').translate()
+        seq += ATTR_CODE[type](attr_value, type='encoder').translate()
 
     return SVGNumber(str(total), type='encoder').translate()[2:] + seq
 
@@ -61,12 +64,14 @@ def decode_require(seq: str,cur_tag:Tag):
     ret_list = []
     idx = 0
     for attr_name in cur_tag.get_required():
-        if ATTR_TYPE[attr_name] == 'number':
-            attr_val, end_idx = SVGNumber(
-                seq, type='decoder', start_idx=idx).translate()
-        elif ATTR_TYPE[attr_name] == 'str':
-            attr_val, end_idx = SVGString(
-                seq, type='decoder', start_idx=idx).translate()
+        # if ATTR_TYPE[attr_name] == 'number':
+        #     attr_val, end_idx = SVGNumber(
+        #         seq, type='decoder', start_idx=idx).translate()
+        # elif ATTR_TYPE[attr_name] == 'str':
+        #     attr_val, end_idx = SVGString(
+        #         seq, type='decoder', start_idx=idx).translate()
+        type = ATTR_TYPE[attr_name]
+        attr_val, end_idx = ATTR_CODE[type](seq, type='decoder', start_idx=idx).translate()
         ret_list.append([attr_name, attr_val])
         idx = end_idx
 
@@ -98,12 +103,13 @@ def decode_optional(seq: str):
         idx += KEY_LENGTH
         attr_name = KEY_ATTR[key]
         type = ATTR_TYPE[attr_name]
-        if type == 'number':
-            attr_value, end_idx = SVGNumber(
-                seq, type='decoder', start_idx=idx).translate()
-        else:
-            attr_value, end_idx = SVGString(
-                seq, type='decoder', start_idx=idx).translate()
+        # if type == 'number':
+        #     attr_value, end_idx = SVGNumber(
+        #         seq, type='decoder', start_idx=idx).translate()
+        # else:
+        #     attr_value, end_idx = SVGString(
+        #         seq, type='decoder', start_idx=idx).translate()
+        attr_value, end_idx = ATTR_CODE[type](seq, type='decoder', start_idx=idx).translate()
         ret_list.append([attr_name, attr_value])
         idx = end_idx
     return ret_list
