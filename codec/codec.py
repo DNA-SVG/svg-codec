@@ -42,7 +42,7 @@ def outputSVG(infile, outfile):
 def svg_to_dna(xmlstr):
     # 传入str形式的xml文件 输出decode的DNAseq
     root = ET.fromstring(xmlstr)
-    DNAseq = encode.dfs(root, None, 0)
+    DNAseq = encode.dfs(root, -1, 1, 0)
     DNAseq = "\n".join(DNAseq)
     return DNAseq
 
