@@ -1,6 +1,6 @@
 from concurrent.futures.process import BrokenProcessPool
 import xml.etree.ElementTree as ET
-from codec.svg_code import *
+from .svg_code import *
 
 counter = 1
 # 深度遍历

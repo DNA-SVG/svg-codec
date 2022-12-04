@@ -1,5 +1,5 @@
-import codec.encode_svg as encode
-import codec.decode_svg as decode
+from . import encode_svg as encode
+from . import decode_svg as decode
 import xml.etree.ElementTree as ET
 import argparse
 

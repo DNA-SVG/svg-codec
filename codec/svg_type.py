@@ -1,5 +1,5 @@
-import codec.decode_attr_type as decoder
-import codec.encode_attr_type as encoder
+from . import decode_attr_type as decoder
+from . import encode_attr_type as encoder
 import re
 NT_BITS = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 FLOAT_LENGTH = 16

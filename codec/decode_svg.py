@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from codec.svg_code import *
+from .svg_code import *
 
 
 def get_allDNA(Tag_DNAseqlist):
