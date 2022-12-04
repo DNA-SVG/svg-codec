@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
-from svg_type import SVGNumber, SVGString
-from svg_tag import *
+from codec.svg_type import SVGNumber, SVGString
+from codec.svg_tag import *
 
 ATTR_KEY = {'width': 'AA', 'height': 'AT', 'viewBox': 'AC',
             'style': 'AG', 'id': 'TA', 'class': 'TT',

@@ -1,5 +1,4 @@
 import struct
-import encode_attr_type as encoder
 
 nt_dict = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 
