@@ -19,13 +19,44 @@ def save_to_file(file_name, contents):
     fh.close()
 # save_to_file('test_output',b)
 
-    
+CONST_SEQ_MAX_LEN = 300
+CONST_SEQ_MIN_LEN = 150
+
+def regulate_normal_strands(seqs):
+    '''
+    对于长度正常的序列，为每个 seq 前面加个 A
+    '''
+    return ['A' + seq for seq in seqs]
+
 def outputDNAseq(infile, outfile):
     # 传入需要encode的文件，输出decode的DNA
     DNAseq = encode_to_DNA(infile) # 得到DNAseq各tag的list
+
+    normal_seq = [len(seq) >= CONST_SEQ_MIN_LEN and len(seq) <= CONST_SEQ_MAX_LEN
+                  for seq in DNAseq]
+    short_seq = [len(seq) < CONST_SEQ_MIN_LEN for seq for DNAseq]
+    long_seq = [len(seq) > CONST_SEQ_MAX_LEN for seq for DNAseq]
+
+    DNAseq = regulate_normal_strands(normal_seq) + \
+        split_long_strands(long_seq) + \
+        combine_short_strands(short_seq)
+
     DNAseq = "\n".join(DNAseq)
     save_to_file(outfile, DNAseq)
 
+def decode_short_long_strands(seqs):
+    decoded_seqs = []
+    for seq in seqs:
+        if seq[0] == 'A':
+            # handle normal strands
+            decode_seq.append(seq[1:])
+        elif seq[0] == 'T':
+            pass # TODO: handle long strands
+        elif seq[0] == 'C':
+            pass # TODO: handle short strands
+        else:
+            raise Error("Unexpected short-long encoding!")
+    return decoded_seqs
 
 def outputSVG(infile, outfile):
     # 传入DNAseq的txt文件 产生svg文件
@@ -35,6 +66,9 @@ def outputSVG(infile, outfile):
 
     DNAseq = seq.split('\n')
     # print(DNAseq, len(DNAseq))
+
+    DNAseq = decode_short_long_strands(DNAseq)
+
     contents = decode.generate_svg(DNAseq)
     save_to_file(outfile, contents)
     
