@@ -98,7 +98,7 @@ def decode_optional(seq: str):
     total, idx = SVGNumber('AA'+seq, type='decoder').translate()
     ret_list = []
     idx -= 2
-    for i in range(total):
+    for _ in range(int(total)):
         key = seq[idx:idx + 2]
         idx += KEY_LENGTH
         attr_name = KEY_ATTR[key]

@@ -1,6 +1,8 @@
 from . import decode_attr_type as decoder
 from . import encode_attr_type as encoder
 import re
+from typing import Tuple
+
 NT_BITS = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 FLOAT_LENGTH = 16
 TYPECODE_LENGTH = 1
@@ -17,7 +19,7 @@ class SVGType:
     def encode(self) -> str:
         pass
 
-    def decode(self):
+    def decode(self) -> Tuple[str, int]:
         pass
 
     def translate(self):
@@ -55,7 +57,7 @@ class SVGNumber(SVGType):
                 print('error: value type not supported')
         return seq
 
-    def decode(self):
+    def decode(self) -> Tuple[str, int]:
         sub_seq = self.given_str[self.start_idx:]
         if sub_seq[0] == 'A':
             if sub_seq[1] == 'C':
@@ -64,10 +66,9 @@ class SVGNumber(SVGType):
                     sub_seq[1:1 + TYPECODE_LENGTH + FLOAT_LENGTH])
             else:
                 int_length = int(NT_BITS[sub_seq[2]] + NT_BITS[sub_seq[3]], 2)
-                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-                ret = decoder.seq_to_int(
-                    sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
-            return (ret, end_idx)
+                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH 
+                ret = decoder.seq_to_int(sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
+            return (str(ret), end_idx)
         elif sub_seq[0] == 'T':
             tot_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
             tot = decoder.seq_to_int(
@@ -99,7 +100,7 @@ class SVGString(SVGType):
         value = self.given_str
         return encoder.str_to_seq(value)
 
-    def decode(self):
+    def decode(self) -> Tuple[str, int]:
         sub_seq = self.given_str[self.start_idx:]
         size_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
         str_length = 4 * \
@@ -116,7 +117,7 @@ class SVGCoordinate(SVGType):
     def encode(self) -> str:
         value = self.given_str.replace(',', ' ')
         return SVGNumber(value, type='encoder').translate()
-    def decode(self):
+    def decode(self) -> Tuple[str, int]:
         init_decode, end_idx = SVGNumber(self.given_str, type='decoder', start_idx=self.start_idx).translate()
         start, end = 0, len(init_decode)
         while start < end:
@@ -130,7 +131,10 @@ class SVGCoordinate(SVGType):
         return (init_decode, end_idx)
 
 if __name__ == '__main__':
-    n = SVGNumber('38.7px -40px 40 0px', type='encoder').translate()
+    n = SVGCoordinate('0,1', type='encoder').translate()
+    m = SVGCoordinate(n, type='decoder').translate()[0]
+    print(m)
+    n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').translate()
     print(n)
     m, end = SVGNumber(n, type='decoder', start_idx=0).translate()
     print(m)
