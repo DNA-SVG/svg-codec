@@ -1,5 +1,6 @@
 from . import encode_svg as encode
 from . import decode_svg as decode
+from .segment import optimize, restore
 import xml.etree.ElementTree as ET
 import argparse
 
@@ -77,15 +78,16 @@ def svg_to_dna(xmlstr):
     # 传入str形式的xml文件 输出decode的DNAseq
     root = ET.fromstring(xmlstr)
     DNAseq = encode.dfs(root, -1, 1, 0)
-    DNAseq = "\n".join(DNAseq)
-    return DNAseq
+    DNAseq = optimize(DNAseq)
+    return '\n'.join(DNAseq)
 
 def dna_to_svg(DNAseq):
     # 传入DNAseq的str 返回svg的字符串
     DNAseq = DNAseq.split('\n')
-    contents = decode.generate_svg(DNAseq)
-    return contents
-  
+    DNAseq = restore(DNAseq)
+    svg_str = decode.generate_svg(DNAseq)
+    return svg_str
+
 
 actions = {
     "encode": outputDNAseq,
