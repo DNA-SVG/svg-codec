@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from .svg_type import SVGNumber, SVGString, SVGCoordinate
 from .svg_type import SVGNumber, SVGString, SVGCoordinate, SVGEnum
 from .svg_tag import *
 
