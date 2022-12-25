@@ -22,7 +22,7 @@ class g(Tag):
 
 class path(Tag):
     required_attrs = ['d']
-    optional_attrs = set()
+    optional_attrs = {'p-id','fill'}
 
 
 class polygon(Tag):
@@ -32,12 +32,12 @@ class polygon(Tag):
 
 class rect(Tag):
     required_attrs = ['height', 'width', 'x', 'y']
-    optional_attrs = set(['rx', 'ry'])
+    optional_attrs = {'rx','ry','transform'}
 
 
 class style(Tag):
     required_attrs = ['text']
-    optional_attrs = set()
+    optional_attrs = {'type'}
 
 
 class ellipse(Tag):
@@ -68,8 +68,29 @@ class linearGradient(Tag):
 
 class stop(Tag):
     required_attrs = ['offset']
-    optional_attrs = ['stop-color','stop-opacity']
+    optional_attrs = {'stop-color','stop-opacity'}
+  
     
-    
+class feoffset(Tag):
+    required_attrs = ['in','dx','dy']
+    optional_attrs = {'result'}
+
+
+class feColorMatrix(Tag):
+    required_attrs = ['in','values']     
+    optional_attrs = {'type','result'}
+
+
+class feComposite(Tag):
+    required_attrs = ['in','in2','operator']
+    optional_attrs = {'k1','k2','k3','k4','result'}
+
+class feMerge(Tag):
+    required_attrs = []
+    optional_attrs = set()
+
+class feMergeNode(Tag):
+    required_attrs = ['in']
+    optional_attrs = set()
 class svg(Tag):
-    optional_attrs = {'width', 'height', 'viewBox', 'id', 'class', 'style'}
+    optional_attrs = {'width', 'height', 'viewBox', 'id', 'class', 'style','version','p-id','t'}

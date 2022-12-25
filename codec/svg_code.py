@@ -1,25 +1,8 @@
 import xml.etree.ElementTree as ET
-from svg_type import SVGNumber, SVGString
+from svg_type import *
 from svg_tag import *
+from code_args import *
 
-ATTR_KEY = {'width': 'AA', 'height': 'AT', 'viewBox': 'AC',
-            'style': 'AG', 'id': 'TA', 'class': 'TT',
-            'rx': 'TC', 'ry': 'TG'}
-KEY_ATTR = {v: k for k, v in ATTR_KEY.items()}
-ATTR_TYPE = {'width': 'number', 'height': 'number',
-             'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str', 
-             'cx': 'number','cy': 'number', 'r': 'number',
-             'x': 'number','y':'number','d':'str','points':'str',
-             'text':'str','ry':'number','rx':'number'}
-
-ATTR_CODE = {'number': SVGNumber, 'str': SVGString}
-KEY_LENGTH = 2
-
-STD = '{http://www.w3.org/2000/svg}'
-
-TAG_NT = {"circle": 'AA', "g": 'AT', "path": 'AC',
-            "polygon": 'AG', "rect": 'TA', "style": 'TT', "ellipse": 'TC',"defs":'TG',"svg": 'GG'}
-NT_TAG = {v: k for k, v in TAG_NT.items()}
 
 def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
     seq = ''
@@ -50,11 +33,13 @@ def encode_require(node: ET.Element,cur_tag:Tag) -> str:
             attr_val = node.text
         else:
             attr_val = node.get(attr_name)
-
-        if ATTR_TYPE[attr_name] == 'number':
-            seq += SVGNumber(attr_val, type='encoder').translate()
-        elif ATTR_TYPE[attr_name] == 'str':
-            seq += SVGString(attr_val, type='encoder').translate()
+            
+        type = ATTR_TYPE[attr_name]
+        # if ATTR_TYPE[attr_name] == 'number':
+        #     seq += SVGNumber(attr_val, type='encoder').translate()
+        # elif ATTR_TYPE[attr_name] == 'str':
+        #     seq += SVGString(attr_val, type='encoder').translate()
+        seq += ATTR_CODE[type](attr_val, type='encoder').translate()
     return seq
 
 
@@ -140,6 +125,10 @@ def decode_tag(seq: str):
     ret_list += address_list + require_lsit + optional_list
     return ret_list
 if __name__ == '__main__':
+    # testenum = SVGEnum('SourceGraphic',IN,type = 'encoder').translate()
+    # print(testenum)
+    # testenum = SVGEnum(testenum,IN,type = 'decoder').translate()
+    # print(testenum)
     root = ET.fromstring('<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;"/>')
     s = encode_optional(root, svg)
     print(s)

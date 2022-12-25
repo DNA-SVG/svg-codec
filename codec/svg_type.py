@@ -111,6 +111,20 @@ class SVGString(SVGType):
         return (ret, end_idx)
 
 
+class SVGEnum(SVGType):
+    def __init__(self, given_str: str, ATTR_DICTlist, type='encoder', start_idx=0) -> None:
+        super().__init__(given_str, type, start_idx)
+        self.ATTR_DICTlist = ATTR_DICTlist
+
+    def encode(self) -> str:
+        attr_val = self.given_str
+        seq = self.ATTR_DICTlist[0][attr_val]
+        return seq
+
+    def decode(self):
+        seq = self.ATTR_DICTlist[1][self.given_str]
+        return seq, 2
+
 
 if __name__ == '__main__':
     n = SVGNumber('38.7px -40px 40 0px', type='encoder').translate()
@@ -121,3 +135,8 @@ if __name__ == '__main__':
     print(s)
     ss, end1 = SVGString(s, type='decoder', start_idx=0).translate()
     print(ss)
+
+    # testenum = SVGEnum('SourceGraphic',IN,type = 'encoder').translate()
+    # print(testenum)
+    # testenum = SVGEnum(testenum,IN,type = 'decoder').translate()
+    # print(testenum)

@@ -40,14 +40,14 @@ def outputSVG(infile, outfile):
     
 
 def xmlstr_OutputDNAseq(xmlstr):
-    # 传入str形式的xml文件 输出decode的DNAseq
+    """传入str形式的xml文件 输出decode的DNAseq"""
     root = ET.fromstring(xmlstr)
     DNAseq = encode.dfs(root, None, 0)
     DNAseq = "\n".join(DNAseq)
     # save_to_file(outfile, DNAseq)
 
 def outputSVGstr(DNAseq):
-    # 传入DNAseq的str 返回svg的字符串
+    """传入DNAseq的str 返回svg的str"""
     DNAseq = DNAseq.split('\n')
     contents = decode.generate_svg(DNAseq)
     return contents
@@ -79,12 +79,12 @@ if __name__ == "__main__":
     # a = encode_to_DNA(file)
     # print(a)
     # b = '\n'.join(a)
-    outputDNAseq(file, 'After_test2.txt')
+    # outputDNAseq(file, 'After_test2.txt')
     # c = outputSVGstr(b)
     # b=decode_svg.generate_svg(a)
     
 
-    # main()
-    outputSVG("After_test2.txt", '4.svg')
+    main()
+    # outputSVG("After_test2.txt", '4.svg')
 
 
