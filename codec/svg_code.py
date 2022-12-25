@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from .svg_type import SVGNumber, SVGString
+from .svg_type import SVGNumber, SVGString, SVGCoordinate
 from .svg_tag import *
 
 ATTR_KEY = {'width': 'AA', 'height': 'AT', 'viewBox': 'AC',
@@ -9,10 +9,10 @@ KEY_ATTR = {v: k for k, v in ATTR_KEY.items()}
 ATTR_TYPE = {'width': 'number', 'height': 'number',
              'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str', 
              'cx': 'number','cy': 'number', 'r': 'number',
-             'x': 'number','y':'number','d':'str','points':'str',
+             'x': 'number','y':'number','d':'str','points':'coordinate',
              'text':'str','ry':'number','rx':'number'}
 
-ATTR_CODE = {'number': SVGNumber, 'str': SVGString}
+ATTR_CODE = {'number': SVGNumber, 'str': SVGString, 'coordinate': SVGCoordinate}
 KEY_LENGTH = 2
 
 STD = '{http://www.w3.org/2000/svg}'
@@ -51,10 +51,12 @@ def encode_require(node: ET.Element,cur_tag:Tag) -> str:
         else:
             attr_val = node.get(attr_name)
 
-        if ATTR_TYPE[attr_name] == 'number':
-            seq += SVGNumber(attr_val, type='encoder').translate()
-        elif ATTR_TYPE[attr_name] == 'str':
-            seq += SVGString(attr_val, type='encoder').translate()
+        # if ATTR_TYPE[attr_name] == 'number':
+        #     seq += SVGNumber(attr_val, type='encoder').translate()
+        # elif ATTR_TYPE[attr_name] == 'str':
+        #     seq += SVGString(attr_val, type='encoder').translate()
+        type = ATTR_TYPE[attr_name]
+        seq += ATTR_CODE[type](attr_val, type='encoder').translate()
     return seq
 
 
