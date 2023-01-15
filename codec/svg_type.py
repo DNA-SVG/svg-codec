@@ -39,7 +39,7 @@ class SVGNumber(SVGType):
 
     def encode(self) -> str:
         value = self.given_str
-        numbers = value.split(' ')
+        numbers = value.strip().split(' ')
         if len(numbers) == 1:
             seq = 'A'
         else:
