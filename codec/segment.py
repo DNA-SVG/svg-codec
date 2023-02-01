@@ -13,7 +13,8 @@ def split_long_strands(strands: List[str]) -> List[str]:
     ret_strands = []
     for strand in strands:
         tail = len(strand) % CONST_SEQ_MAX_LEN
-        addr = strand[CONST_TAG_SEQ_LEN:svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[1] + CONST_TAG_SEQ_LEN]
+        addr = SVGNumber(str(svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[0][0]), type='encoder').translate()
+        # addr = strand[CONST_TAG_SEQ_LEN:svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[1] + CONST_TAG_SEQ_LEN]
         l = len(strand)
         cnt = 0
         for i in range(0, l - tail - CONST_SEQ_MAX_LEN, CONST_SEQ_MAX_LEN):
@@ -67,16 +68,15 @@ def restore_long_strands(strands: List[str]) -> List[str]:
     '''传入带'T'标记的长链列表'''
     '''返回长链合并后的链列表'''
     ret_strands = []
-    addr_substr = {}
+    addr_substrs = {}
     for strand in strands:
-        id_start_idx = svg_code.decode_address(strand[1:])[1] + 1
-        addr = strand[1:id_start_idx]
+        addr, id_start_idx = SVGNumber(strand, type='decoder', start_idx=1).translate()
         id, content_start_idx = SVGNumber(strand, type='decoder', start_idx=id_start_idx).translate()
-        if addr not in addr_substr:
-            addr_substr[addr] = []
-        addr_substr[addr].append((int(id), strand[content_start_idx:]))
+        if addr not in addr_substrs:
+            addr_substrs[addr] = []
+        addr_substrs[addr].append((int(id), strand[content_start_idx:]))
     
-    for addr, substr_list in addr_substr.items():
+    for addr, substr_list in addr_substrs.items():
         substr_list.sort(key=lambda t:t[0])
         ret_strands.append(''.join(t[1] for t in substr_list))
 
