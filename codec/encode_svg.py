@@ -4,7 +4,10 @@ from .svg_code import *
 
 counter = 1
 # 深度遍历
-
+def init_counter():
+    global counter 
+    counter = 1
+    
 
 def dfs(root, bro_counter=-1, child_counter=-1, my_counter=-1):
     global counter

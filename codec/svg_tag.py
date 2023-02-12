@@ -56,8 +56,8 @@ class title(Tag):
 
 
 class filter(Tag):
-    required_attrs = ['filterRes', 'filterUnits']
-    optional_attrs = set()
+    required_attrs = []
+    optional_attrs = {'filterRes','filterUnits'}
 
 
 class linearGradient(Tag):
@@ -68,7 +68,36 @@ class linearGradient(Tag):
 
 class stop(Tag):
     required_attrs = ['offset']
-    optional_attrs = ['stop-color','stop-opacity']
+    optional_attrs = {'stop-color', 'stop-opacity'}
+    
+    
+class feOffset(Tag):
+    required_attrs = ['in','dx','dy']  
+    optional_attrs = {'result'}
+    
+    
+class feComposite(Tag):
+    required_attrs = ['in', 'in2', 'operator']
+    optional_attrs = {'k1', 'k2', 'k3' ,'k4' , 'result'}
+
+
+class feColorMatrix(Tag):
+    required_attrs = ['in', 'values']
+    optional_attrs = {'type' , 'result'}
+
+
+class feMerge(Tag):
+    required_attrs = []
+    optional_attrs = set()
+    
+    
+class feMergeNode(Tag):
+    required_attrs = ['in']
+    optional_attrs = set()
+   
+class feGaussianBlur(Tag):
+    required_attrs = ['in','stdDeviation']   
+    optional_attrs = {'edgeNode','result'}
     
     
 class svg(Tag):

@@ -66,8 +66,9 @@ class SVGNumber(SVGType):
                     sub_seq[1:1 + TYPECODE_LENGTH + FLOAT_LENGTH])
             else:
                 int_length = int(NT_BITS[sub_seq[2]] + NT_BITS[sub_seq[3]], 2)
-                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH 
-                ret = decoder.seq_to_int(sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
+                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
+                ret = decoder.seq_to_int(
+                    sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
             return (str(ret), end_idx)
         elif sub_seq[0] == 'T':
             tot_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
@@ -110,15 +111,19 @@ class SVGString(SVGType):
         ret = decoder.seq_to_str(sub_seq[:tot_length])
         end_idx = self.start_idx + tot_length
         return (ret, end_idx)
-        
+
+
 class SVGCoordinate(SVGType):
     def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
         super().__init__(given_str, type, start_idx)
+
     def encode(self) -> str:
         value = self.given_str.replace(',', ' ')
         return SVGNumber(value, type='encoder').translate()
+
     def decode(self) -> Tuple[str, int]:
-        init_decode, end_idx = SVGNumber(self.given_str, type='decoder', start_idx=self.start_idx).translate()
+        init_decode, end_idx = SVGNumber(
+            self.given_str, type='decoder', start_idx=self.start_idx).translate()
         start, end = 0, len(init_decode)
         while start < end:
             start = init_decode.find(' ', start, end)
@@ -129,6 +134,39 @@ class SVGCoordinate(SVGType):
                 break
             start += 1
         return (init_decode, end_idx)
+
+
+class SVGEnum(SVGType):
+    encode_dict = {}
+    encode_dict['filterUnits'] = {'userSpaceOnUse ': 'A', 'objectBoundingBox': 'T'}
+    encode_dict['primitiveUnits'] = {
+        'userSpaceOnUse': 'A', 'objectBoundingBox': 'T'}
+    encode_dict['gradientUnits'] = {'userSpaceOnUse': 'A', 'objectBoundingBox': 'T'}
+    encode_dict['spreadMethod'] = {'pad': 'A', 'reflect': 'T', 'repeat': 'C'}
+    encode_dict['in'] = {'SourceGraphic': 'AA', 'SourceAlpha': 'AT', 'BackgroundImage': 'AC',
+                    'BackgroundAlpha': 'AG', 'FillPaint': 'TA', 'StrokePaint': 'TT', '<filter-primitive-reference>': 'TC'}
+    encode_dict['in2'] = {'SourceGraphic': 'AA', 'SourceAlpha': 'AT', 'BackgroundImage': 'AC',
+                     'BackgroundAlpha': 'AG', 'FillPaint': 'TA', 'StrokePaint': 'TT', '<filter-primitive-reference>': 'TC'}
+    encode_dict['operator'] = {'over': 'AA', 'in': 'AT', 'out': 'AC',
+                          'atop': 'AG', 'xor': 'TA', 'lighter': 'TT', 'arithmetic': 'TC'}
+    decode_dict = {}
+    for t in encode_dict:
+        decode_dict[t] = {v: k for k, v in encode_dict[t].items()}
+
+    def __init__(self, attr_name, given_str: str, type='encoder', start_idx=0) -> None:
+        self.attr_name = attr_name
+        super().__init__(given_str, type, start_idx)
+
+    def encode(self) -> str:
+        seq = ''
+        seq += self.encode_dict[self.attr_name][self.given_str]
+        return seq 
+    
+    def decode(self) -> str:
+        val = self.decode_dict[self.attr_name][self.given_str]
+        end_idx = self.start_idx + len(self.given_str)
+        return val, end_idx
+
 
 if __name__ == '__main__':
     n = SVGCoordinate('0,1', type='encoder').translate()
