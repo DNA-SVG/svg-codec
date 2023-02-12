@@ -128,6 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 svg
+svg
 test/test_tree.py
 test/备份.py
 test/rec.py
@@ -183,3 +184,4 @@ river.txt
 邹智弘 中期检查.xls
 log/2022-11-26-20-07-18.png
 svg/in_svg/watermelon.svg
+.gitignore
