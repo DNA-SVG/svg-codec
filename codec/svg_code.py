@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
+
 from .svg_type import SVGNumber, SVGString, SVGCoordinate, SVGEnum
+
 from .svg_tag import *
 
 
@@ -12,6 +14,7 @@ ATTR_KEY = {'width': 'AAA', 'height': 'AAT', 'viewBox': 'AAC',
             'k2': 'TGA', 'k3': 'TGT', 'k4': 'TGC', 'values': 'TGG', 'type': 'CAA','stdDeviation':'CAT','edgeNode':'CAC'}
 
 KEY_ATTR = {v: k for k, v in ATTR_KEY.items()}
+
 
 ATTR_TYPE = {'width': 'number', 'height': 'number',
              'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str',
@@ -28,6 +31,7 @@ ATTR_TYPE = {'width': 'number', 'height': 'number',
 ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
              'enum': SVGEnum, 'coordinate': SVGCoordinate}
 KEY_LENGTH = 3  # TODO:没确认
+
 
 STD = '{http://www.w3.org/2000/svg}'
 
@@ -73,11 +77,13 @@ def encode_require(node: ET.Element, cur_tag: Tag) -> str:
         else:
             attr_val = node.get(attr_name)
 
+
         type = ATTR_TYPE[attr_name]
         if type == 'enum':
             seq += SVGEnum(attr_name, attr_val, type='encoder').translate()
         else:
             seq += ATTR_CODE[type](attr_val, type='encoder').translate()
+
 
     return seq
 
