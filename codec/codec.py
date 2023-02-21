@@ -7,6 +7,7 @@ import argparse
 def svg_to_dna(xml_str: str, optimize_option: bool=True) -> str:
     # 传入str形式的xml文件 输出decode的DNAseq
     root = ET.fromstring(xml_str)
+    encode.init_counter()
     DNAseq = encode.dfs(root, -1, 1, 0)
     if optimize_option:
         DNAseq = optimize(DNAseq)
@@ -23,7 +24,7 @@ def dna_to_svg(seq_str: str, optimize_option: bool=True) -> str:
 
 def outputDNAseq(infile, outfile):
     # 传入需要encode的文件，输出decode的DNA
-    with open(infile, 'r') as f:
+    with open(infile, 'r',encoding='UTF-8') as f:
         dna = svg_to_dna(f.read())
     with open(outfile, 'w') as f:
         f.write(dna)

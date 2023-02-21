@@ -6,7 +6,7 @@ CONST_LONG_IDN = 'T'
 CONST_SHORT_IDN = 'C'
 CONST_SEQ_MIN_LEN = 150
 CONST_SEQ_MAX_LEN = 2 * CONST_SEQ_MIN_LEN
-CONST_TAG_SEQ_LEN = 2
+CONST_TAG_SEQ_LEN = 3
 
 def split_long_strands(strands: List[str]) -> List[str]:
     '''传入长链列表, 将每条长链拆分并打标记'''
