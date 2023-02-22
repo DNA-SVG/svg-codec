@@ -6,6 +6,7 @@ import sys
 
 CONST_PRIMER_LEN = 6
 CONST_SEQ_MAX_LEN = 200
+CONST_ECC_SEQ_LEN = 4*6
 
 NT_BITS = {
     "A": "00",
@@ -23,14 +24,13 @@ def split(long_seq, max_len):
     Split a long seq into multiple ones within the max_len
     """
     data_len = max_len - CONST_PRIMER_LEN
-    long_seq
     def num2nt(num):
         ret = ""
         while num > 0:
             ret += 'ATCG'[num % 4]
             num //= 4
         return (ret + "A" * CONST_PRIMER_LEN)[:CONST_PRIMER_LEN]
-    return [(num2nt(i//data_len) + long_seq[i:i+data_len])
+    return [(num2nt(i//data_len) + long_seq[i:i+data_len] + 'A'*CONST_ECC_SEQ_LEN)
             for i in range(0, len(long_seq), data_len) ]
 
 def combine(data):
@@ -43,7 +43,7 @@ def combine(data):
     kv = {}
     for s in data.split('\n'):
         num = nt2num(s[:CONST_PRIMER_LEN])
-        kv[num] = s[CONST_PRIMER_LEN:]
+        kv[num] = s[CONST_PRIMER_LEN:-CONST_ECC_SEQ_LEN]
     combined = ""
     i = 0
     while i in kv.keys():

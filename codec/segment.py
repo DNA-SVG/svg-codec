@@ -4,7 +4,7 @@ from .svg_type import SVGNumber
 CONST_NORMAL_IDN = 'A'
 CONST_LONG_IDN = 'T'
 CONST_SHORT_IDN = 'C'
-CONST_SEQ_MIN_LEN = 150
+CONST_SEQ_MIN_LEN = 100
 CONST_SEQ_MAX_LEN = 2 * CONST_SEQ_MIN_LEN
 CONST_TAG_SEQ_LEN = 3
 
@@ -13,7 +13,8 @@ def split_long_strands(strands: List[str]) -> List[str]:
     ret_strands = []
     for strand in strands:
         tail = len(strand) % CONST_SEQ_MAX_LEN
-        addr = strand[CONST_TAG_SEQ_LEN:svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[1] + CONST_TAG_SEQ_LEN]
+        addr = SVGNumber(str(svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[0][0]), type='encoder').translate()
+        # addr = strand[CONST_TAG_SEQ_LEN:svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[1] + CONST_TAG_SEQ_LEN]
         l = len(strand)
         cnt = 0
         for i in range(0, l - tail - CONST_SEQ_MAX_LEN, CONST_SEQ_MAX_LEN):
@@ -67,16 +68,15 @@ def restore_long_strands(strands: List[str]) -> List[str]:
     '''传入带'T'标记的长链列表'''
     '''返回长链合并后的链列表'''
     ret_strands = []
-    addr_substr = {}
+    addr_substrs = {}
     for strand in strands:
-        id_start_idx = svg_code.decode_address(strand[1:])[1] + 1
-        addr = strand[1:id_start_idx]
+        addr, id_start_idx = SVGNumber(strand, type='decoder', start_idx=1).translate()
         id, content_start_idx = SVGNumber(strand, type='decoder', start_idx=id_start_idx).translate()
-        if addr not in addr_substr:
-            addr_substr[addr] = []
-        addr_substr[addr].append((int(id), strand[content_start_idx:]))
+        if addr not in addr_substrs:
+            addr_substrs[addr] = []
+        addr_substrs[addr].append((int(id), strand[content_start_idx:]))
     
-    for addr, substr_list in addr_substr.items():
+    for addr, substr_list in addr_substrs.items():
         substr_list.sort(key=lambda t:t[0])
         ret_strands.append(''.join(t[1] for t in substr_list))
 
@@ -102,7 +102,7 @@ def regulate_normal_strands(strands: List[str]) -> List[str]:
 def restore_normal_strands(strands: List[str]) -> List[str]:
     return [strand[1:] for strand in strands]
 
-def optimize(strands: List[str]) -> List[str]:
+def optimize_seq_len(strands: List[str]) -> List[str]:
     long_strands = [strand for strand in strands if len(strand) > CONST_SEQ_MAX_LEN]
     short_strands = [strand for strand in strands if len(strand) < CONST_SEQ_MIN_LEN]
     normal_strands = [strand for strand in strands if CONST_SEQ_MIN_LEN <= len(strand) <= CONST_SEQ_MAX_LEN]
@@ -111,7 +111,7 @@ def optimize(strands: List[str]) -> List[str]:
             split_long_strands(long_strands) + \
             merge_short_strands(short_strands)
 
-def restore(strands: List[str]) -> List[str]:
+def restore_seq_len(strands: List[str]) -> List[str]:
     long_strands = [strand for strand in strands if strand[0] == CONST_LONG_IDN]
     short_strands = [strand for strand in strands if strand[0] == CONST_SHORT_IDN]
     normal_strands = [strand for strand in strands if strand[0] == CONST_NORMAL_IDN]
@@ -129,9 +129,9 @@ def test(filename):
     with open(filename, 'r') as f:
         root = ET.fromstring(f.read())
         initial_encoding = encode.dfs(root, -1, 1, 0)
-        optimized_encoding = optimize(initial_encoding)
+        optimized_encoding = optimize_seq_len(initial_encoding)
         
-        restored = restore(optimized_encoding)
+        restored = restore_seq_len(optimized_encoding)
         print(set(restored) == set(initial_encoding))
 
         print(decode.generate_svg(initial_encoding) == decode.generate_svg(restored))
