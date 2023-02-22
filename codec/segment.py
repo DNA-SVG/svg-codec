@@ -102,7 +102,7 @@ def regulate_normal_strands(strands: List[str]) -> List[str]:
 def restore_normal_strands(strands: List[str]) -> List[str]:
     return [strand[1:] for strand in strands]
 
-def optimize(strands: List[str]) -> List[str]:
+def optimize_seq_len(strands: List[str]) -> List[str]:
     long_strands = [strand for strand in strands if len(strand) > CONST_SEQ_MAX_LEN]
     short_strands = [strand for strand in strands if len(strand) < CONST_SEQ_MIN_LEN]
     normal_strands = [strand for strand in strands if CONST_SEQ_MIN_LEN <= len(strand) <= CONST_SEQ_MAX_LEN]
@@ -111,7 +111,7 @@ def optimize(strands: List[str]) -> List[str]:
             split_long_strands(long_strands) + \
             merge_short_strands(short_strands)
 
-def restore(strands: List[str]) -> List[str]:
+def restore_seq_len(strands: List[str]) -> List[str]:
     long_strands = [strand for strand in strands if strand[0] == CONST_LONG_IDN]
     short_strands = [strand for strand in strands if strand[0] == CONST_SHORT_IDN]
     normal_strands = [strand for strand in strands if strand[0] == CONST_NORMAL_IDN]
@@ -129,9 +129,9 @@ def test(filename):
     with open(filename, 'r') as f:
         root = ET.fromstring(f.read())
         initial_encoding = encode.dfs(root, -1, 1, 0)
-        optimized_encoding = optimize(initial_encoding)
+        optimized_encoding = optimize_seq_len(initial_encoding)
         
-        restored = restore(optimized_encoding)
+        restored = restore_seq_len(optimized_encoding)
         print(set(restored) == set(initial_encoding))
 
         print(decode.generate_svg(initial_encoding) == decode.generate_svg(restored))

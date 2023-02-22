@@ -38,7 +38,7 @@ def add_ecc(strands: List[str]) -> List[str]:
         ret_strands.append(strand)
     return ret_strands
 
-def error_check(strands: List[str]) -> List[str]:
+def check_restore(strands: List[str]) -> List[str]:
     ret_strands = []
     for strand in strands:
         ba = seq_to_ba(strand)
