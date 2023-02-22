@@ -4,7 +4,7 @@ from .svg_type import SVGNumber
 import re
 NT_BITS = {'A':'00', 'T':'01', 'C':'10', 'G':'11'}
 BITS_NT = {v:k for k, v in NT_BITS.items()}
-CONST_ECC_LEN = 4
+CONST_ECC_LEN = 6
 rsc = RSCodec(CONST_ECC_LEN)
 
 def seq_to_ba(strand: str) -> bytearray:
