@@ -1,0 +1,23 @@
+<svg xml:space="preserve" style="enable-background:new 0 0 1024 1024;" viewBox="0 0 1024 1024" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" id="图层_1" version="1.1">
+<style type="text/css">
+	.st0{fill:#FF9A8D;stroke:#26282B;stroke-width:13.7726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st1{fill:#FF6864;stroke:#26282B;stroke-width:13.7726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st2{fill:#FF5F5F;stroke:#26282B;stroke-width:13.7726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st3{fill:#FFCC7B;stroke:#26282B;stroke-width:13.7726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st4{fill:#FFDE83;stroke:#26282B;stroke-width:13.7726;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<g>
+	<path d="M341,376.34v545.95h0.03c0.64,16.49,76.93,52.49,170.97,52.49s170.33-36,170.97-52.49
+		l0.03-72.96V376.34H341z" class="st0" id="XMLID_9_"></path>
+	<path d="M683,372.29c0,15.19-40.62,50.17-171,50.17c-131.08,0-171-34.98-171-50.17c0-15.19,39.05-43.1,171-43.1
+		C649.29,329.19,683,357.1,683,372.29z" class="st1"></path>
+	<g>
+		<line y2="367.92" x2="512" y1="280.46" x1="512" class="st2"></line>
+		<g>
+			<path d="M578,203.3c0,58.44-38.38,82.35-66,82.35c-31.9,0-66-24.97-66-82.35c0-65.29,66-154.08,66-154.08
+				S578,138.01,578,203.3z" class="st3"></path>
+			<ellipse ry="57.14" rx="31.9" cy="220.94" cx="512" class="st4"></ellipse>
+		</g>
+	</g>
+</g>
+</svg>
