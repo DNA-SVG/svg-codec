@@ -5,28 +5,38 @@ from .svg_type import SVGNumber, SVGString, SVGCoordinate, SVGEnum
 from .svg_tag import *
 
 
-ATTR_KEY = {'width': 'AAA', 'height': 'AAT', 'viewBox': 'AAC',
-            'style': 'AAG', 'id': 'ATA', 'class': 'ATT',
-            'rx': 'ATC', 'ry': 'ATG', 'filterRes': 'ACA', 'filterUnits': 'ACT', 'x1': 'ACC', 'x2': 'ACG',
-            'y1': 'AGA', 'y2': 'AGT', 'gradientUnits': 'AGC', 'gradientTransform': 'AGG', 'spreadMethod': 'TAA',
-            'xlink:href': 'TAT', 'offset': 'TAC', 'stop-color': 'TAG', 'stop-opacity': 'TTA',
-            'in': 'TTT', 'dx': 'TTC', 'dy': 'TTG', 'result': 'TCA', 'in2': 'TCT', 'operator': 'TCC', 'k1': 'TCG',
-            'k2': 'TGA', 'k3': 'TGT', 'k4': 'TGC', 'values': 'TGG', 'type': 'CAA','stdDeviation':'CAT','edgeNode':'CAC'}
+ATTR_KEY = {
+    'width': 'AAA', 'height': 'AAT', 'viewBox': 'AAC',
+    'style': 'AAG', 'id': 'ATA', 'class': 'ATT',
+    'rx': 'ATC', 'ry': 'ATG', 'filterRes': 'ACA', 'filterUnits': 'ACT', 
+    'x1': 'ACC', 'x2': 'ACG', 'y1': 'AGA', 'y2': 'AGT', 'gradientUnits': 'AGC', 
+    'gradientTransform': 'AGG', 'spreadMethod': 'TAA',
+    'xlink:href': 'TAT', 'offset': 'TAC', 'stop-color': 'TAG', 'stop-opacity': 'TTA',
+    'in': 'TTT', 'dx': 'TTC', 'dy': 'TTG', 'result': 'TCA', 'in2': 'TCT', 
+    'operator': 'TCC', 'k1': 'TCG',
+    'k2': 'TGA', 'k3': 'TGT', 'k4': 'TGC', 'values': 'TGG', 'type': 'CAA', 
+    'stdDeviation':'CAT','edgeNode':'CAC', 'fill':'CAG', 'fr':'CTA', 'fx':'CTC', 
+    'fy':'CTG','href':'CCA','version':'CCT','y':'CCC','x':'CCG', 'xml:space':'CGA'
+}
 
 KEY_ATTR = {v: k for k, v in ATTR_KEY.items()}
 
 
-ATTR_TYPE = {'width': 'number', 'height': 'number',
-             'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str',
-             'cx': 'number', 'cy': 'number', 'r': 'number',
-             'x': 'number', 'y': 'number', 'd': 'str', 'points': 'str',
-             'text': 'str', 'ry': 'number', 'rx': 'number',
-             'filterRes': 'number', 'filterUnits': 'enum', 'x1': 'number', 'x2': 'number',
-             'y1': 'number', 'y2': 'number', 'gradientUnits': 'enum', 'gradientTransform': 'str',
-             'spreadMethod': 'enum', 'xlink:href': 'str', 'offset': 'number',
-             'stop-color': 'str', 'stop-opacity': 'number', 'in': 'str', 'dx': 'number', 'dy': 'number','result':'str',
-             'in2': 'str', 'operator': 'enum', 'k1': 'number', 'k2': 'number', 'k3': 'number',
-             'k4': 'number', 'values': 'number', 'type': 'str','stdDeviation':'number','edgeNode':'str'}
+ATTR_TYPE = {
+    'width': 'number', 'height': 'number',
+    'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str',
+    'cx': 'number', 'cy': 'number', 'r': 'number',
+    'x': 'number', 'y': 'number', 'd': 'str', 'points': 'str',
+    'text': 'str', 'ry': 'number', 'rx': 'number',
+    'filterRes': 'number', 'filterUnits': 'enum', 'x1': 'number', 'x2': 'number',
+    'y1': 'number', 'y2': 'number', 'gradientUnits': 'enum', 'gradientTransform': 'str',
+    'spreadMethod': 'enum', 'xlink:href': 'str', 'offset': 'number',
+    'stop-color': 'str', 'stop-opacity': 'number', 'in': 'str', 
+    'dx': 'number', 'dy': 'number','result':'str',
+    'in2': 'str', 'operator': 'enum', 'k1': 'number', 'k2': 'number', 'k3': 'number',
+    'k4': 'number', 'values': 'number', 'type': 'str','stdDeviation':'number','edgeNode':'str',
+    'fill':'str', 'fr':'number', 'fx':'number', 'fy':'number','href':'str','version':'str','xml:space':'str'
+}
 
 ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
              'enum': SVGEnum, 'coordinate': SVGCoordinate}
@@ -36,11 +46,13 @@ KEY_LENGTH = 3  # TODO:没确认
 STD = '{http://www.w3.org/2000/svg}'
 
 TAG_lENGTH = 3
-TAG_NT = {"circle": 'AAA', "g": 'AAT', "path": 'AAC',
-          "polygon": 'AAG', "rect": 'ATA', "style": 'ATT', "ellipse": 'ATC', "defs": 'ATG', "svg": 'ACA', 
-          'title': 'ACT', 'filter': 'ACC', 'linearGradient': 'ACG', 'stop': 'AGA',
-          'feOffset': 'AGT', 'feComposite': 'AGC', 'feColorMatrix': 'AGG', 'feMerge': 'TAA', 'feMergeNode': 'TAT',
-          'feGaussianBlur':'TAC'}
+TAG_NT = {
+    "circle": 'AAA', "g": 'AAT', "path": 'AAC',
+    "polygon": 'AAG', "rect": 'ATA', "style": 'ATT', "ellipse": 'ATC', "defs": 'ATG', "svg": 'ACA', 
+    'title': 'ACT', 'filter': 'ACC', 'linearGradient': 'ACG', 'stop': 'AGA',
+    'feOffset': 'AGT', 'feComposite': 'AGC', 'feColorMatrix': 'AGG', 'feMerge': 'TAA', 'feMergeNode': 'TAT',
+    'feGaussianBlur':'TAC', 'line':'TAG', 'radialGradient':'TTA'
+}
 NT_TAG = {v: k for k, v in TAG_NT.items()}
 
 

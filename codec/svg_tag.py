@@ -1,6 +1,6 @@
 class Tag:
     required_attrs = []
-    optional_attrs = {'id', 'class', 'style'}
+    optional_attrs = {'id', 'class', 'style', 'fill', 'transform'}
 
     @classmethod
     def get_required(cls):
@@ -101,4 +101,12 @@ class feGaussianBlur(Tag):
     
     
 class svg(Tag):
-    optional_attrs = {'width', 'height', 'viewBox', 'id', 'class', 'style'}
+    optional_attrs = {'width', 'height', 'viewBox', 'id', 'class', 'style','x','y','version','xml:space'}
+
+class line(Tag):
+    required_attrs = ['x1','x2','y1','y2']
+    optional_attrs = set()
+
+class radialGradient(Tag):
+    required_attrs = []
+    optional_attrs = {'cx', 'cy', 'fr', 'fx', 'fy', 'gradientUnits', 'gradientTransform', 'href', 'r', 'spreadMethod'}
