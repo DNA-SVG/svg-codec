@@ -125,6 +125,10 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# pytest
+test_*
+!test_*.py
+
 # Pyre type checker
 .pyre/
 svg
