@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import pytest, ruff
 
 from .encode_attr_type import float_to_seq, int_to_seq, str_to_seq
 from .decode_attr_type import decode as decoder
@@ -34,14 +35,19 @@ class TestType:
         print(ss)
 
 
-class TestSegment:
+class TestDfs:
+    @pytest.mark.run(order=2)
     def test_dfs(self):
-        file = './test-images/river.svg'
-        tree = ET.parse(file)
-        root = tree.getroot()
-        a = encode.dfs(root, -1, 1, 0)
-        print(a)
+        filename = './test-images/river.svg'
+        with open(filename, 'r') as f:
+            tree = ET.parse(f)
+            dfsroot = tree.getroot()
+            a = encode.dfs(dfsroot, -1, 1, 0)
+            print(a)
 
+
+class TestSegment:
+    @pytest.mark.run(order=1)
     def test_segment(self):
         filename = './test-images/river.svg'
         with open(filename, 'r') as f:

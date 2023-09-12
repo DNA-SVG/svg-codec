@@ -41,21 +41,3 @@ def outputSVG(infile, outfile):
         svg = dna_to_svg(f.read())
     with open(outfile, 'w', encoding='utf-8') as f:
         f.write(svg)
-
-actions = {
-    "encode": outputDNAseq,
-    "decode": outputSVG
-}
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("action", help="action to do:encode or decode?")
-    parser.add_argument("infile", help="the input filename")
-    parser.add_argument("outfile", help="the output filename")
-    args = parser.parse_args()
-    if args.action not in actions:
-        parser.print_help()
-    else:
-        actions[args.action](args.infile, args.outfile)
-

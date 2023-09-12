@@ -94,24 +94,3 @@ def decode_file(infile, outfile):
     data = decode(seq)
     with open(outfile, "wb") as f:
         f.write(data)
-
-
-actions = {
-    "encode": encode_file,
-    "decode": decode_file
-}
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("action", help="action to do")
-    parser.add_argument("infile", help="the input filename")
-    parser.add_argument("outfile", help="the output filename")
-    args = parser.parse_args()
-    if args.action not in actions:
-        parser.print_help()
-    else:
-        actions[args.action](args.infile, args.outfile)
-
-if __name__ == "__main__":
-    main()
-
