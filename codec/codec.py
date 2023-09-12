@@ -59,21 +59,3 @@ def main():
     else:
         actions[args.action](args.infile, args.outfile)
 
-
-if __name__ == "__main__":
-    # file = 'C:\\Users\\ZZ\\Desktop\\DNA\\river.svg'
-
-    file = '../building-construction-education-svgrepo-com.svg'
-    # 不能重复，会影响编号
-    # a = encode_to_DNA(file)
-    # print(a)
-    # b = '\n'.join(a)
-    outputDNAseq(file, 'After_test2.txt')
-    # c = outputSVGstr(b)
-    # b=decode_svg.generate_svg(a)
-    
-
-    # main()
-    outputSVG("After_test2.txt", '4.svg')
-
-

@@ -119,20 +119,4 @@ def restore_seq_len(strands: List[str]) -> List[str]:
     return  restore_normal_strands(normal_strands) + \
             restore_long_strands(long_strands) + \
             restore_short_strands(short_strands)
-           
-
-def test(filename):
-    from . import encode_svg as encode
-    from . import decode_svg as decode
-    import xml.etree.ElementTree as ET
-
-    with open(filename, 'r') as f:
-        root = ET.fromstring(f.read())
-        initial_encoding = encode.dfs(root, -1, 1, 0)
-        optimized_encoding = optimize_seq_len(initial_encoding)
-        
-        restored = restore_seq_len(optimized_encoding)
-        print(set(restored) == set(initial_encoding))
-
-        print(decode.generate_svg(initial_encoding) == decode.generate_svg(restored))
-        
+                   

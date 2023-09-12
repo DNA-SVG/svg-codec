@@ -166,17 +166,3 @@ class SVGEnum(SVGType):
         val = self.decode_dict[self.attr_name][self.given_str]
         end_idx = self.start_idx + len(self.given_str)
         return val, end_idx
-
-
-if __name__ == '__main__':
-    n = SVGCoordinate('0,1', type='encoder').translate()
-    m = SVGCoordinate(n, type='decoder').translate()[0]
-    print(m)
-    n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').translate()
-    print(n)
-    m, end = SVGNumber(n, type='decoder', start_idx=0).translate()
-    print(m)
-    s = SVGString('hello', type='encoder').translate()
-    print(s)
-    ss, end1 = SVGString(s, type='decoder', start_idx=0).translate()
-    print(ss)

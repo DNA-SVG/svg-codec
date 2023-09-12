@@ -33,11 +33,3 @@ def dfs(root, bro_counter=-1, child_counter=-1, my_counter=-1):
 
     return DNA_seq
 
-
-if __name__ == '__main__':
-    file = '../river.svg'
-    tree = ET.parse(file)
-    root = tree.getroot()
-
-    a = dfs(root, -1, 1, 0)
-    print(a)
