@@ -183,38 +183,3 @@ def decode_tag(seq: str):
     optional_list = decode_optional(seq[start:])
     ret_list += address_list + require_lsit + optional_list
     return ret_list
-
-
-if __name__ == '__main__':
-    root = ET.fromstring(
-        '<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;"/>')
-    s = encode_optional(root, svg)
-    print(s)
-    ss = decode_optional(s)
-    # for t in ss:
-    #     print('{0}="{1}"'.format(t[0], t[1]))
-
-    # a = 'AATTAATCTATT'
-
-    # 测试address
-    # b = SVGNumber('1 2 3', type = 'encoder').translate()
-    # # b = SVGNumber(b, type='decoder').translate()
-    # print(b)
-    # a = encode_address(0,1,-1)
-    # decode_address(a)
-
-    # 测试require
-    root = ET.fromstring(
-        '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" id="1"/>')
-    op = encode_optional(root, svg)
-    deop = decode_optional(op)
-    # s = encode_require(root,circle)
-    # print(s)
-    # sl = 'GG' +encode_address(0,1,-1)
-    # Tag_ = encode_tag(root,0,1,-1)
-    # print(Tag_)
-    # seq ='GGTATGAATAAATTTATTATCACTACTAAATAAATAATCTAAAAAATCTAAAAATAGACTACCGTGGGTTGATAACTTGGAGAT'
-
-    # print(decode_tag(''))
-    # ss = decode_tag('GGTATGTATTAATTATCACTACTAAATAAATAATCTAAAAAATCTAAAAATAGACTACCGTGGGTTGATAACTTGGAGAT')
-    # print(ss)

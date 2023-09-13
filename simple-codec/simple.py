@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
-import argparse
 import re
-import sys
 
 CONST_PRIMER_LEN = 6
 CONST_SEQ_MAX_LEN = 200
