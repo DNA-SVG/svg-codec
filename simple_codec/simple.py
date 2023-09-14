@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import re
+from codec.error_correction import add_ecc, check_restore
+from codec.segment import optimize_seq_len, restore_seq_len
 
 CONST_PRIMER_LEN = 6
 CONST_SEQ_MAX_LEN = 200
@@ -81,14 +83,19 @@ def encode_file(infile, outfile):
     with open(infile, "rb") as f:
         data = f.read()
     seq = encode(data)
-    seq = "\n".join(split(seq, CONST_SEQ_MAX_LEN))
+    seq = split(seq, CONST_SEQ_MAX_LEN)
+    seq = add_ecc(seq)
+    seq = '\n'.join(seq)
+    
     with open(outfile, "w") as f:
         f.write(seq)
 
 def decode_file(infile, outfile):
     with open(infile, "r") as f:
         seq = f.read()
-    seq = combine(seq)
-    data = decode(seq)
+    seq_list = seq.split('\n')
+    seq_list = check_restore(seq_list)
+    seq_str = combine(seq_list)
+    data = decode(seq_str)
     with open(outfile, "wb") as f:
         f.write(data)

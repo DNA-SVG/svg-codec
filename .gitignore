@@ -143,7 +143,6 @@ test/test.py
 .gitignore
 sample.xml
 test.svg
-.vscode/settings.json
 svg/test_output
 svg/test1.svg
 test1.svg
