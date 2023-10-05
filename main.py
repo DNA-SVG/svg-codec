@@ -26,6 +26,6 @@ if __name__ == "__main__":
         exit
     
     if args.simple:
-        actions[args.action](args.infile, args.outfile)
-    else:
         actions_simple[args.action](args.infile, args.outfile)
+    else:
+        actions[args.action](args.infile, args.outfile)

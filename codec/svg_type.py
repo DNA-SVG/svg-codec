@@ -2,6 +2,8 @@ from . import decode_attr_type as decoder
 from . import encode_attr_type as encoder
 import re
 from typing import Tuple
+from .path_d import parser as pathdencoder
+from .path_d import decoder as pathdecoder
 
 NT_BITS = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 FLOAT_LENGTH = 16
@@ -166,3 +168,16 @@ class SVGEnum(SVGType):
         val = self.decode_dict[self.attr_name][self.given_str]
         end_idx = self.start_idx + len(self.given_str)
         return val, end_idx
+    
+
+class SVGPathD(SVGType):
+    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
+        super().__init__(given_str, type, start_idx)
+
+    def encode(self) -> str:
+        value = self.given_str
+        return pathdencoder(value)
+    
+    def decode(self) -> Tuple[str, int]:
+        ret, total_nts = pathdecoder(self.given_str)
+        return (ret, self.start_idx + total_nts)

@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-from .svg_type import SVGNumber, SVGString, SVGCoordinate, SVGEnum
+from .svg_type import SVGNumber, SVGString, SVGCoordinate, SVGEnum, SVGPathD
 
 from .svg_tag import *
 
@@ -26,7 +26,7 @@ ATTR_TYPE = {
     'width': 'number', 'height': 'number',
     'viewBox': 'number', 'style': 'str', 'id': 'str', 'class': 'str',
     'cx': 'number', 'cy': 'number', 'r': 'number',
-    'x': 'number', 'y': 'number', 'd': 'str', 'points': 'str',
+    'x': 'number', 'y': 'number', 'd': 'pathd', 'points': 'str',
     'text': 'str', 'ry': 'number', 'rx': 'number',
     'filterRes': 'number', 'filterUnits': 'enum', 'x1': 'number', 'x2': 'number',
     'y1': 'number', 'y2': 'number', 'gradientUnits': 'enum', 'gradientTransform': 'str',
@@ -39,7 +39,7 @@ ATTR_TYPE = {
 }
 
 ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
-             'enum': SVGEnum, 'coordinate': SVGCoordinate}
+             'enum': SVGEnum, 'coordinate': SVGCoordinate, 'pathd': SVGPathD}
 KEY_LENGTH = 3  # TODO:没确认
 
 
