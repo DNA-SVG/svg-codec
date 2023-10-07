@@ -5,6 +5,7 @@ from .encode_attr_type import float_to_seq, int_to_seq, str_to_seq
 from .decode_attr_type import decode as decoder
 from .svg_type import SVGCoordinate, SVGNumber, SVGString
 from .svg_tag import svg
+from .path_d import ParserPathD
 from .svg_code import decode_optional, encode_optional
 from .segment import optimize_seq_len, restore_seq_len
 from .encode_svg import Encoder
@@ -35,6 +36,16 @@ class TestType:
         print(s)
         ss, _ = SVGString(s, type='decoder', start_idx=0).translate()
         print(ss)
+
+
+class TestPathD:
+    def test_patd_d(self):
+        parser = ParserPathD()
+        string = 'M39.7,27.6c0-4.3-3.5-7.7-7.7-7.7s-7.7,3.5-7.7,7.7c0,2.4,1.1,4.5,2.8,5.9c-4.2,1.2-7.3,5-7.3,9.5c0,0.6,0.5,1.1,1.1,1.1H43c0.6,0,1.1-0.5,1.1-1.1c0-4.5-3.1-8.3-7.3-9.5C38.6,32.1,39.7,30,39.7,27.6z M26.5,27.6c0-3,2.5-5.5,5.5-5.5s5.5,2.5,5.5,5.5S35,33.1,32,33.1S26.5,30.6,26.5,27.6z M34.2,35.3c3.9,0,7.1,2.9,7.7,6.6H22.1c0.5-3.7,3.8-6.6,7.7-6.6H34.2z'
+        codec = parser.encoder(string)
+        print(len(codec), 'nts,','{:.2f}'.format(len(string) * 8 / len(codec)), 'bits/nt')
+        ret, _ = parser.decoder(codec)
+        print(ret)
 
 
 class TestOptional:
