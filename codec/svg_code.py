@@ -37,6 +37,7 @@ ATTR_TYPE = {
     'k4': 'number', 'values': 'number', 'type': 'str','stdDeviation':'number','edgeNode':'str',
     'fill':'str', 'fr':'number', 'fx':'number', 'fy':'number','href':'str','version':'str','xml:space':'str'
 }
+#test with/without pathd: 'd': 'str'/'pathd'
 
 ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
              'enum': SVGEnum, 'coordinate': SVGCoordinate, 'pathd': SVGPathD}

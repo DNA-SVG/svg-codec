@@ -115,14 +115,15 @@ class ParserPathD:
         number_str += self.__nt_to_bits(ntstr, len_total * 2)
         ntstr = ntstr[len_total * 2:]
         num = int(number_str, 2)
-        if not sign:
-            num = -num
-        
+
         ret = str(num)
         if len_total == len_below1:
             ret = '0.' + ret
         elif len_below1 > 0:
             ret = ret[:-len_below1] + '.' + ret[-len_below1:]
+        if not sign:
+            ret = '-' + ret
+        
         return ret, 4 + 2 * len_total
 
 
@@ -138,9 +139,9 @@ class ParserPathD:
         if params == 0:
             return code_tag, 0
         
-        # offset: if a command followed by 2 sets of params, then offset = 1
+        # offset: if a command followed by N sets of params, then offset = N - 1
         offset = len(number_list) // params - 1
-        while len(number_list) > 0:
+        for k in range(0, offset + 1):
             ret += code_tag
             for i in range(0, params):
                 ret += self.__encode_object(number_list[i])
