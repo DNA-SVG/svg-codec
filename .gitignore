@@ -163,3 +163,4 @@ cython_debug/
 test_*
 !test_*.py
 test.svg
+out.txt

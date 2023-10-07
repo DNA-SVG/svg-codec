@@ -171,6 +171,7 @@ class ParserPathD:
 
 
     def encoder(self, string):
+        string = re.sub(' ',',',string)
         tag_list = re.findall(r"[a-zA-Z]", string)
         data_list = re.findall(r"[^a-zA-Z\s]+", string)
         leng = len(tag_list)
