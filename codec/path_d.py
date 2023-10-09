@@ -105,7 +105,7 @@ class ParserPathD:
         # ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
         orders = self.__nt_to_bits(ntstr, 4)
         if orders[0] == '1':
-            return decode_float(ntstr[:17]), 17
+            return str(decode_float(ntstr[:17])), 17
         ntstr = ntstr[4:]
         sign = (orders[1] == '1')
         len_total = int(orders[2:5], 2)
