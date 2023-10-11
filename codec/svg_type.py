@@ -44,16 +44,12 @@ class SVGNumber(SVGType):
         if len(numbers) == 1:
             seq = 'A'
         else:
-            seq = 'T' + encoder.int_to_seq(len(numbers))[1:]
+            seq = 'T' + encoder.number_to_seq(len(numbers), True)
         for number in numbers:
             if re.match(r'^[+-]?[0-9]*(\.)?[0-9]+(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
-                eval_number = eval(number)
-                if type(eval_number) == int:
-                    seq += encoder.int_to_seq(eval_number)
-                else:
-                    seq += encoder.float_to_seq(eval_number)
+                seq += encoder.number_to_seq(number)
             else:
                 print('error: value type not supported')
         return seq
@@ -61,35 +57,44 @@ class SVGNumber(SVGType):
     def decode(self) -> Tuple[str, int]:
         sub_seq = self.given_str[self.start_idx:]
         if sub_seq[0] == 'A':
-            if sub_seq[1] == 'C':
-                end_idx = self.start_idx + 1 + TYPECODE_LENGTH + FLOAT_LENGTH
-                ret = decoder.seq_to_float(
-                    sub_seq[1:1 + TYPECODE_LENGTH + FLOAT_LENGTH])
-            else:
-                int_length = int(NT_BITS[sub_seq[2]] + NT_BITS[sub_seq[3]], 2)
-                end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-                ret = decoder.seq_to_int(
-                    sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
-            return (str(ret), end_idx)
+            ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1)
+            # if sub_seq[1] == 'C':
+            #     end_idx = self.start_idx + 1 + TYPECODE_LENGTH + FLOAT_LENGTH
+            #     ret = decoder.seq_to_float(
+            #         sub_seq[1:1 + TYPECODE_LENGTH + FLOAT_LENGTH])
+            # else:
+            #     int_length = int(NT_BITS[sub_seq[2]] + NT_BITS[sub_seq[3]], 2)
+            #     end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
+            #     ret = decoder.seq_to_int(
+            #         sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
+            # return (str(ret), end_idx)
+            return ret, end_idx
         elif sub_seq[0] == 'T':
-            tot_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
-            tot = decoder.seq_to_int(
-                'A' + sub_seq[1:tot_int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
             ret = []
-            idx = tot_int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-            for _ in range(tot):
-                if sub_seq[idx] == 'C':
-                    ret.append(decoder.seq_to_float(
-                        sub_seq[idx:idx + TYPECODE_LENGTH + FLOAT_LENGTH]))
-                    idx += TYPECODE_LENGTH + FLOAT_LENGTH
-                else:
-                    int_length = int(
-                        NT_BITS[sub_seq[idx + 1]] + NT_BITS[sub_seq[idx + 2]], 2)
-                    ret.append(decoder.decode(
-                        sub_seq[idx:idx + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH]))
-                    idx += int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-            end_idx = self.start_idx + idx
-            return (' '.join(str(i) for i in ret), end_idx)
+            index = self.start_idx
+            number_length, index = decoder.decode(sub_seq[1:], index + 1, True)
+            for _ in range(0, number_length):
+                number, index = decoder.decode(self.given_str[index:], index)
+                ret.append(number)
+            # tot_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
+            # tot = decoder.seq_to_int(
+            #     'A' + sub_seq[1:tot_int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
+            # ret = []
+            # idx = tot_int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
+            # for _ in range(tot):
+            #     if sub_seq[idx] == 'C':
+            #         ret.append(decoder.seq_to_float(
+            #             sub_seq[idx:idx + TYPECODE_LENGTH + FLOAT_LENGTH]))
+            #         idx += TYPECODE_LENGTH + FLOAT_LENGTH
+            #     else:
+            #         int_length = int(
+            #             NT_BITS[sub_seq[idx + 1]] + NT_BITS[sub_seq[idx + 2]], 2)
+            #         ret.append(decoder.decode(
+            #             sub_seq[idx:idx + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH]))
+            #         idx += int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
+            # end_idx = self.start_idx + idx
+            # return (' '.join(str(i) for i in ret), end_idx)
+            return (' '.join(ret), index)
         else:
             print('error: invalid sequence')
 

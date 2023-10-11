@@ -15,23 +15,6 @@ def bin_to_seq(binSeq: str) -> str:
 
     return ret
 
-def int_to_seq(num: int) -> str:
-    """传入一个有符号整数，需满足|x| <= 2^30 - 1"""
-    """以str形式返回编码dna序列"""
-    binary = bin(num).replace('0b', '').replace('-', '')
-    value = bin_to_seq(binary)
-
-    if num >= 0:
-        sign = 'A'
-    else:
-        sign = 'T'
-
-    length = bin_to_seq(bin(len(value)).replace('0b', ''))
-    if len(length) == 1:
-        length = 'A' + length
-        
-    return sign + length +value
-
 def float_to_seq(num: float) -> str:
     """传入float,对应c标准的float(8 bit)"""
     """以str形式返回编码dna序列"""
@@ -48,10 +31,76 @@ def float_to_seq(num: float) -> str:
 
 def str_to_seq(s: str) -> str:
     binary = ''
-    if s==None:
-        return 'G'+int_to_seq(0)[1:]
-    s = s.encode("utf-8")
-    for ch in s:
+    if s == None:
+        return 'G' + number_to_seq(0, True)
+    byte = s.encode("utf-8")
+    for ch in byte:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
-    return 'G' + int_to_seq(len(s))[1:] + bin_to_seq(binary)
+    return 'G' + number_to_seq(str(len(s) * 4), True) + bin_to_seq(binary)
+
+def get_shrink_offset(str):
+    offset = -1
+    while str[offset] == '0':
+        offset -= 1
+    offset += 1
+    if offset < 0:
+        return str[:offset], -offset
+    else:
+        return str, 0
+    
+def number_split(number_str, is_pos_int):
+    if is_pos_int:
+        return format(int(number_str), 'b'), '000'
+    len_below1 = ''
+    decs = str.split(number_str, '.')
+    if len(decs) > 1:
+        len_below1 = format(len(decs[1]),'03b')
+    else:
+        len_below1 = '000'
+    return format(int(''.join(decs), 10), 'b'), len_below1
+
+def number_to_seq(number_str: str, is_pos_int=False):
+    ''' components:
+    Float(123456789): 'C'(10) + float_to_seq
+    Number(1234567.8): '0' + sign(1) + total(3) + below1(3) + binary(max 32)
+    Size_t(<8 bytes, positive int or 0): '0' + total(3) + binary(max 32)
+
+    ∵123.4567 = 1234567 * 0.1^4
+    ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
+    '''
+    length = len(number_str)
+    if '-' in number_str:
+        length -= 1
+    if '.' in number_str:
+        num, offset = get_shrink_offset(number_str)
+        length -= (offset + 1)
+    if length > 8:
+        return float_to_seq(num)
+    
+    sign = '1'
+    if number_str[0] == '-':
+        sign = '0'
+        number_str = number_str[1:]
+    number_str, len_below1 = number_split(number_str, is_pos_int)
+    # clear 0s at the beginning
+    offset = 0
+    numberstrlen = len(number_str)
+    while number_str[offset] == '0' and offset < numberstrlen - 1:
+        offset += 1
+    number_str = number_str[offset:]
+
+    # refill 0s for hexa digits
+    delta_zero = 4 - ((numberstrlen - offset) % 4)
+    number_str = '0' * delta_zero + number_str
+
+    # Hexa digits
+    len_total = format(len(number_str) // 4 - 1, '03b')
+    if is_pos_int:
+        ret = '0' + len_total + number_str
+    else:
+        ret = '0' + sign + len_total + len_below1 + number_str    
+    return bin_to_seq(ret)
+
+if __name__ == '__main__':
+    print(str_to_seq('_x34_0-Id_Card'))
