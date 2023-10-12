@@ -35,11 +35,14 @@ class SVGType:
 # 单个数字：'A'+数字对应编码
 # 多个数字：'T'+数字个数(size_t)+数字1+数字2+...
 class SVGNumber(SVGType):
-    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
+    def __init__(self, given_str: str, type='encoder', start_idx=0, is_pos_int=False) -> None:
+        self.is_pos_int = is_pos_int
         super().__init__(given_str, type, start_idx)
 
     def encode(self) -> str:
         value = self.given_str
+        if type(value) != str:
+            value = str(value)
         numbers = value.strip().split(' ')
         if len(numbers) == 1:
             seq = 'A'
@@ -49,7 +52,7 @@ class SVGNumber(SVGType):
             if re.match(r'^[+-]?[0-9]*(\.)?[0-9]+(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
-                seq += encoder.number_to_seq(number)
+                seq += encoder.number_to_seq(number, self.is_pos_int)
             else:
                 print('error: value type not supported')
         return seq
@@ -57,15 +60,16 @@ class SVGNumber(SVGType):
     def decode(self) -> Tuple[str, int]:
         sub_seq = self.given_str[self.start_idx:]
         if sub_seq[0] == 'A':
-            ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1)
+            ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1, self.is_pos_int)
             return ret, end_idx
         elif sub_seq[0] == 'T':
             ret = []
-            number_length, self.start_idx = decoder.decode(sub_seq[1:], self.start_idx + 1, True)
+            index = self.start_idx
+            number_length, index = decoder.decode(sub_seq[1:], index + 1, True)
             for _ in range(0, number_length):
-                number, self.start_idx = decoder.decode(self.given_str[self.start_idx:], self.start_idx)
+                number, index = decoder.decode(self.given_str[index:], index)
                 ret.append(number)
-            return (' '.join(ret), self.start_idx)
+            return (' '.join(ret), index)
         else:
             print('error: invalid sequence')
 
