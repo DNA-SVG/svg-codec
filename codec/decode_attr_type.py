@@ -9,8 +9,7 @@ def seq_to_bin(str, x):
     return ret  
 
 def decode(seq, start_idx = -1, is_pos_int = False):
-    """传入一段恰编码一个值的DNA片段(否则可能有问题）"""
-    """返回对应的值"""
+    '''传入一段DNA片段返回对应的值'''
     if seq[0] == 'G':
         return seq_to_str(seq, start_idx)
     elif seq[0] == 'C':

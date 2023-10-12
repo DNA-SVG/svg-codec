@@ -60,7 +60,7 @@ def number_split(number_str, is_pos_int):
         len_below1 = '000'
     return format(int(''.join(decs), 10), 'b'), len_below1
 
-def number_to_seq(number_str: str, is_pos_int=False):
+def number_to_seq(number_str, is_pos_int=False):
     ''' components:
     Float(123456789): 'C'(10) + float_to_seq
     Number(1234567.8): '0' + sign(1) + total(3) + below1(3) + binary(max 32)
@@ -69,6 +69,8 @@ def number_to_seq(number_str: str, is_pos_int=False):
     ∵123.4567 = 1234567 * 0.1^4
     ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
     '''
+    if type(number_str) != str:
+        number_str = str(number_str)
     length = len(number_str)
     if '-' in number_str:
         length -= 1

@@ -58,43 +58,14 @@ class SVGNumber(SVGType):
         sub_seq = self.given_str[self.start_idx:]
         if sub_seq[0] == 'A':
             ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1)
-            # if sub_seq[1] == 'C':
-            #     end_idx = self.start_idx + 1 + TYPECODE_LENGTH + FLOAT_LENGTH
-            #     ret = decoder.seq_to_float(
-            #         sub_seq[1:1 + TYPECODE_LENGTH + FLOAT_LENGTH])
-            # else:
-            #     int_length = int(NT_BITS[sub_seq[2]] + NT_BITS[sub_seq[3]], 2)
-            #     end_idx = self.start_idx + 1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-            #     ret = decoder.seq_to_int(
-            #         sub_seq[1:1 + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
-            # return (str(ret), end_idx)
             return ret, end_idx
         elif sub_seq[0] == 'T':
             ret = []
-            index = self.start_idx
-            number_length, index = decoder.decode(sub_seq[1:], index + 1, True)
+            number_length, self.start_idx = decoder.decode(sub_seq[1:], self.start_idx + 1, True)
             for _ in range(0, number_length):
-                number, index = decoder.decode(self.given_str[index:], index)
+                number, self.start_idx = decoder.decode(self.given_str[self.start_idx:], self.start_idx)
                 ret.append(number)
-            # tot_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
-            # tot = decoder.seq_to_int(
-            #     'A' + sub_seq[1:tot_int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH])
-            # ret = []
-            # idx = tot_int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-            # for _ in range(tot):
-            #     if sub_seq[idx] == 'C':
-            #         ret.append(decoder.seq_to_float(
-            #             sub_seq[idx:idx + TYPECODE_LENGTH + FLOAT_LENGTH]))
-            #         idx += TYPECODE_LENGTH + FLOAT_LENGTH
-            #     else:
-            #         int_length = int(
-            #             NT_BITS[sub_seq[idx + 1]] + NT_BITS[sub_seq[idx + 2]], 2)
-            #         ret.append(decoder.decode(
-            #             sub_seq[idx:idx + int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH]))
-            #         idx += int_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-            # end_idx = self.start_idx + idx
-            # return (' '.join(str(i) for i in ret), end_idx)
-            return (' '.join(ret), index)
+            return (' '.join(ret), self.start_idx)
         else:
             print('error: invalid sequence')
 
@@ -109,14 +80,7 @@ class SVGString(SVGType):
 
     def decode(self) -> Tuple[str, int]:
         sub_seq = self.given_str[self.start_idx:]
-        size_int_length = int(NT_BITS[sub_seq[1]] + NT_BITS[sub_seq[2]], 2)
-        str_length = 4 * \
-            decoder.seq_to_int(
-                'A' + sub_seq[1:TYPECODE_LENGTH + INT_SIZE_LENGTH + size_int_length])
-        tot_length = size_int_length + str_length + TYPECODE_LENGTH + INT_SIZE_LENGTH
-        ret = decoder.seq_to_str(sub_seq[:tot_length])
-        end_idx = self.start_idx + tot_length
-        return (ret, end_idx)
+        return decoder.decode(sub_seq, self.start_idx)
 
 
 class SVGCoordinate(SVGType):
