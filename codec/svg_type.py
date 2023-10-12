@@ -52,7 +52,7 @@ class SVGNumber(SVGType):
             if re.match(r'^[+-]?[0-9]*(\.)?[0-9]+(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
-                seq += encoder.number_to_seq(number, self.is_pos_int)
+                seq += encoder.number_to_seq(number, is_pos_int=self.is_pos_int)
             else:
                 print('error: value type not supported')
         return seq

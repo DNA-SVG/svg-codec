@@ -16,7 +16,6 @@ from .codec import Codec
 class TestAttr:
     def test_decode_attr(self):
         print(decoder('GATAGCATTGGTGCAAGAGAGTATTGGAGAAACGTTACTTCTATTGGTAAGTCATTGACTCTA'))
-        # print(decoder('GACTTTCCATCTTTCGATCGATCGG'))
 
     def test_encode_attr(self):
         print(number_to_seq('-1'))
@@ -28,7 +27,7 @@ class TestAttr:
 class TestType:
     def test_type(self):
         n = SVGCoordinate('0,1', type='encoder').translate()
-        m = SVGCoordinate(n, type='decoder').translate()[0]
+        m, _ = SVGCoordinate(n, type='decoder').translate()
         print(m)
         n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').translate()
         print(n)

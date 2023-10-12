@@ -82,7 +82,7 @@ def seq_to_str(seq, start_idx = -1):
     if start_idx == -1:
         return ret
     else:
-        return ret, start_idx + 1 + start_tag + strlen
+        return ret, start_idx + start_tag + strlen
 
 if __name__ == '__main__':
     print(seq_to_str('GATAGCATTGGTGCAAGAGAGTATTGGAGAAACGTTACTTCTATTGGTAAGTCATTGACTCTA'))

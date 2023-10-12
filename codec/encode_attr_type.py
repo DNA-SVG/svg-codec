@@ -37,7 +37,7 @@ def str_to_seq(s: str) -> str:
     for ch in byte:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
-    return 'G' + number_to_seq(str(len(s) * 4), True) + bin_to_seq(binary)
+    return 'G' + number_to_seq(str(len(byte) * 4), True) + bin_to_seq(binary)
 
 def get_shrink_offset(str):
     offset = -1
