@@ -14,14 +14,17 @@ from .codec import Codec
 
 
 class TestAttr:
-    def test_decode_attr(self):
-        print(decoder('GATAGCATTGGTGCAAGAGAGTATTGGAGAAACGTTACTTCTATTGGTAAGTCATTGACTCTA'))
-
     def test_encode_attr(self):
-        print(number_to_seq('-1'))
-        print(number_to_seq('45.0'))
-        print(number_to_seq('10', True))
+        print(number_to_seq(-1))
+        print(number_to_seq(45.0))
+        print(number_to_seq(10, True))
         print(str_to_seq('_x34_0-Id_Card'))
+
+    def test_decode_attr(self):
+        assert(decoder(number_to_seq(-1)) == '-1')
+        assert(decoder(number_to_seq(45.0)) == '45')
+        assert(decoder(number_to_seq(10, True), is_pos_int = True) == 10)
+        assert(decoder(str_to_seq('_x34_0-Id_Card')) == '_x34_0-Id_Card')
     
 
 class TestType:
@@ -75,6 +78,7 @@ class TestSegment:
         enc = Encoder()
         dec = Decoder()
         initial_encoding = enc.encode_file(filename)
+        print(initial_encoding)
         optimized_encoding = optimize_seq_len(initial_encoding)
         restored = restore_seq_len(optimized_encoding)
         assert(set(restored) == set(initial_encoding))

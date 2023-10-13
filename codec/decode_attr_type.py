@@ -10,13 +10,18 @@ def seq_to_bin(str, x):
 
 def decode(seq, start_idx = -1, is_pos_int = False):
     '''传入一段DNA片段返回对应的值'''
-    if seq[0] == 'G':
-        return seq_to_str(seq, start_idx)
-    elif seq[0] == 'C':
-        return seq_to_float(seq[1:], start_idx)
-    else:
+    if is_pos_int:
         return seq_to_number(seq, is_pos_int, start_idx)
-    
+    match seq[0]:
+        case 'A' | 'T':
+            return seq_to_number(seq, is_pos_int, start_idx)
+        case 'G':
+            return seq_to_str(seq, start_idx)
+        case 'C':
+            return seq_to_float(seq[1:], start_idx)
+        case _:
+            return '', start_idx
+        
 def seq_to_float(seq, start_idx = -1):
     ba = bytearray()
 
@@ -72,7 +77,7 @@ def seq_to_number(seq, is_pos_int = False, start_idx = -1):
 def seq_to_str(seq, start_idx = -1):
     ba = bytearray()
     strlen, start_tag = seq_to_number(seq[1:], True, 1)
-
+    strlen *= 4
     for i in range(start_tag, start_tag + strlen, 4):
         byte = ''
         for j in range(i, i + 4):

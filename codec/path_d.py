@@ -1,26 +1,10 @@
 import re
-from .encode_attr_type import number_to_seq
-from .decode_attr_type import decode
+from .encode_attr_type import number_to_seq, bin_to_seq
+from .decode_attr_type import decode, seq_to_bin
 class ParserPathD:
     nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
     param_table = {'z': 0, 'Z': 0, 'h': 1, 'H': 1, 'v': 1, 'V': 1, 'm': 2, 'M': 2, 'l': 2, 'L': 2, 't': 2, 'T': 2, 's': 4, 'S': 4, 'q': 4, 'Q': 4, 'c': 6, 'C': 6, 'a': 7, 'A': 7}
     dict_nt = {v:k for k, v in nt_dict.items()}
-
-    def __bits_to_nt(self, str):
-        length = len(str)
-        if length % 2 == 1:
-            str += '0'
-        ret = ''
-        for i in range(0, length, 2):
-            ret += self.nt_dict[str[i:i+2]]
-        return ret
-
-
-    def __nt_to_bits(self, str, x):
-        ret = ''
-        for i in range(0, x):
-            ret += self.dict_nt[str[i]]
-        return ret
 
 
     def __encode_tag(self, tag):
@@ -35,11 +19,11 @@ class ParserPathD:
 
         orddiff = ord(tag) - ord('a')
         ret += format(orddiff,'05b')
-        return self.__bits_to_nt(ret)
+        return bin_to_seq(ret)
 
 
     def __decode_tag(self, str):
-        str = self.__nt_to_bits(str, 3)
+        str = seq_to_bin(str, 3)
         upper = int(str[0])
         str = str[1:]
         offset = int(str, 2)
@@ -75,7 +59,7 @@ class ParserPathD:
     def __encoder_length(self, length):
         # number of commands in a path.d
         ret = format(length,'08b')
-        return self.__bits_to_nt(ret)
+        return bin_to_seq(ret)
 
 
     def __decoder_single(self, ntstr):
@@ -118,7 +102,7 @@ class ParserPathD:
 
     def decoder(self, string):
         # get number of commands
-        leng = int(self.__nt_to_bits(string, 4), 2)
+        leng = int(seq_to_bin(string, 4), 2)
         string = string[4:]
 
         ret = ''

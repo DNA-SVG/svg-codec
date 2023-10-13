@@ -29,19 +29,11 @@ def float_to_seq(num: float) -> str:
 
     return 'C' + bin_to_seq(binary)
 
-def str_to_seq(s: str) -> str:
-    binary = ''
-    if s == None:
-        return 'G' + number_to_seq(0, True)
-    byte = s.encode("utf-8")
-    for ch in byte:
-        tmp = bin(ch).replace('0b', '')
-        binary += '0' * (8 - len(tmp)) + tmp
-    return 'G' + number_to_seq(str(len(byte) * 4), True) + bin_to_seq(binary)
-
 def get_shrink_offset(str):
     offset = -1
     while str[offset] == '0':
+        offset -= 1
+    if str[offset] == '.':
         offset -= 1
     offset += 1
     if offset < 0:
@@ -75,10 +67,10 @@ def number_to_seq(number_str, is_pos_int=False):
     if '-' in number_str:
         length -= 1
     if '.' in number_str:
-        num, offset = get_shrink_offset(number_str)
+        number_str, offset = get_shrink_offset(number_str)
         length -= (offset + 1)
     if length > 8:
-        return float_to_seq(num)
+        return float_to_seq(number_str)
     
     sign = '1'
     if number_str[0] == '-':
@@ -91,9 +83,13 @@ def number_to_seq(number_str, is_pos_int=False):
     while number_str[offset] == '0' and offset < numberstrlen - 1:
         offset += 1
     number_str = number_str[offset:]
+    numberstrlen -= offset
 
     # refill 0s for hexa digits
-    delta_zero = 4 - ((numberstrlen - offset) % 4)
+    if numberstrlen % 4 == 0:
+        delta_zero = 0
+    else:
+        delta_zero = 4 - numberstrlen % 4
     number_str = '0' * delta_zero + number_str
 
     # Hexa digits
@@ -103,6 +99,16 @@ def number_to_seq(number_str, is_pos_int=False):
     else:
         ret = '0' + sign + len_total + len_below1 + number_str    
     return bin_to_seq(ret)
+
+def str_to_seq(s: str) -> str:
+    binary = ''
+    if s == None:
+        return 'G' + number_to_seq(0, True)
+    byte = s.encode("utf-8")
+    for ch in byte:
+        tmp = bin(ch).replace('0b', '')
+        binary += '0' * (8 - len(tmp)) + tmp
+    return 'G' + number_to_seq(len(byte), True) + bin_to_seq(binary)
 
 if __name__ == '__main__':
     print(str_to_seq('_x34_0-Id_Card'))
