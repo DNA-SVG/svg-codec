@@ -2,7 +2,7 @@ import struct
 
 nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
 
-def bin_to_seq(binSeq: str) -> str:
+def bin_to_seq(binSeq):
     n = len(binSeq)
     if n % 2 == 1:
         binSeq = '0' + binSeq
@@ -15,7 +15,7 @@ def bin_to_seq(binSeq: str) -> str:
 
     return ret
 
-def float_to_seq(num: float) -> str:
+def float_to_seq(num):
     """传入float,对应c标准的float(8 bit)"""
     """以str形式返回编码dna序列"""
     #获得字节信息
@@ -102,7 +102,7 @@ def number_to_seq(number_str, is_size=False):
         ret = '0' + sign + len_total + len_below1 + number_str    
     return bin_to_seq(ret)
 
-def str_to_seq(s: str) -> str:
+def str_to_seq(s):
     binary = ''
     if s == None:
         return 'G' + number_to_seq(0, True)
@@ -111,6 +111,3 @@ def str_to_seq(s: str) -> str:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
     return 'G' + number_to_seq(len(byte), True) + bin_to_seq(binary)
-
-if __name__ == '__main__':
-    print(str_to_seq('_x34_0-Id_Card'))

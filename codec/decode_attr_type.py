@@ -11,18 +11,18 @@ def seq_to_bin(str, x):
 def decode(seq, start_idx = -1, is_size = False):
     '''传入一段DNA片段返回对应的值'''
     if is_size:
-        return seq_to_number(seq, is_size, start_idx)
+        return __seq_to_number(seq, is_size, start_idx)
     match seq[0]:
         case 'A' | 'T':
-            return seq_to_number(seq, start_idx = start_idx)
+            return __seq_to_number(seq, start_idx = start_idx)
         case 'G':
-            return seq_to_str(seq, start_idx)
+            return __seq_to_str(seq, start_idx)
         case 'C':
-            return seq_to_float(seq[1:], start_idx)
+            return __seq_to_float(seq[1:], start_idx)
         case _:
             return '', start_idx
         
-def seq_to_float(seq, start_idx = -1):
+def __seq_to_float(seq, start_idx = -1):
     ba = bytearray()
 
     #逐字节读取
@@ -38,7 +38,7 @@ def seq_to_float(seq, start_idx = -1):
     else:
         return ret, start_idx + 17
 
-def seq_to_number(seq, is_size = False, start_idx = -1):
+def __seq_to_number(seq, is_size = False, start_idx = -1):
     '''orders: 0 = use this codec(1 bit)
     sign: 1 = +, 0 = -
     ∵123.4567 = 1234567 * 0.1^4
@@ -79,9 +79,9 @@ def seq_to_number(seq, is_size = False, start_idx = -1):
         return ret, start_idx + 4 + 2 * len_total
 
 
-def seq_to_str(seq, start_idx = -1):
+def __seq_to_str(seq, start_idx = -1):
     ba = bytearray()
-    strlen, start_tag = seq_to_number(seq[1:], True, 1)
+    strlen, start_tag = __seq_to_number(seq[1:], True, 1)
     strlen *= 4
     for i in range(start_tag, start_tag + strlen, 4):
         byte = ''
@@ -93,6 +93,3 @@ def seq_to_str(seq, start_idx = -1):
         return ret
     else:
         return ret, start_idx + start_tag + strlen
-
-if __name__ == '__main__':
-    print(seq_to_str('GATAGCATTGGTGCAAGAGAGTATTGGAGAAACGTTACTTCTATTGGTAAGTCATTGACTCTA'))

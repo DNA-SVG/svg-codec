@@ -6,7 +6,6 @@ class ParserPathD:
     param_table = {'z': 0, 'Z': 0, 'h': 1, 'H': 1, 'v': 1, 'V': 1, 'm': 2, 'M': 2, 'l': 2, 'L': 2, 't': 2, 'T': 2, 's': 4, 'S': 4, 'q': 4, 'Q': 4, 'c': 6, 'C': 6, 'a': 7, 'A': 7}
     dict_nt = {v:k for k, v in nt_dict.items()}
 
-
     def __encode_tag(self, tag):
         # 1 bit is a or A
         # 5 bit is a or z
@@ -16,23 +15,19 @@ class ParserPathD:
             tag = tag.lower()
         else:
             ret = '0'
-
         orddiff = ord(tag) - ord('a')
         ret += format(orddiff,'05b')
         return bin_to_seq(ret)
-
 
     def __decode_tag(self, str):
         str = seq_to_bin(str, 3)
         upper = int(str[0])
         str = str[1:]
         offset = int(str, 2)
-
         ret = chr(offset + ord('a'))
         if upper != 0:
             ret = ret.upper()
         return ret
-
 
     def __encoder_single(self, data):
         code_tag = self.__encode_tag(data[0])
@@ -40,12 +35,10 @@ class ParserPathD:
         number_list = []
         for first, second, third in number_tuple:
             number_list.append(first + second + third)
-
         ret = ''
         params = self.param_table[data[0]]
         if params == 0:
-            return code_tag, 0
-        
+            return code_tag, 0 
         # offset: if a command followed by N sets of params, then offset = N - 1
         offset = len(number_list) // params - 1
         for _ in range(0, offset + 1):
@@ -55,12 +48,10 @@ class ParserPathD:
             number_list = number_list[params:]
         return ret, offset
 
-
     def __encoder_length(self, length):
         # number of commands in a path.d
         ret = format(length,'08b')
         return bin_to_seq(ret)
-
 
     def __decoder_single(self, ntstr):
         ret = self.__decode_tag(ntstr[0:3])
@@ -75,7 +66,6 @@ class ParserPathD:
             total_nts += data_nts
         ret += ','.join(datas)
         return ret, total_nts
-
 
     def encoder(self, string):
         string = re.sub(' ',',',string)
@@ -99,12 +89,10 @@ class ParserPathD:
             leng += offset_tag
         return self.__encoder_length(leng) + ret
 
-
-    def decoder(self, string):
+    def decoder(self, string, start_idx = -1):
         # get number of commands
         leng = int(seq_to_bin(string, 4), 2)
         string = string[4:]
-
         ret = ''
         total_nts = 4
         for _ in range(0, leng):
@@ -112,4 +100,7 @@ class ParserPathD:
             ret += decodec
             string = string[nts:]
             total_nts += nts
-        return ret, total_nts
+        if start_idx == -1:
+            return ret, total_nts
+        else:
+            return ret, start_idx + total_nts

@@ -56,11 +56,11 @@ class TestOptional:
         '<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;"/>')
         s = encode_optional(root, svg)
         print(s)
-        ss = decode_optional(s)
+        _ = decode_optional(s)
         root = ET.fromstring(
         '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" id="1"/>')
         op = encode_optional(root, svg)
-        deop = decode_optional(op)
+        _ = decode_optional(op)
 
 
 class TestSegment:
@@ -88,6 +88,6 @@ class TestSegment:
 class TestCodec:
     def test_codec(self):
         codec = Codec()
-        file = './test-images/building-construction-education-svgrepo-com.svg'
+        file = './test-images/building.svg'
         codec.outputDNAseq(file, 'test_codec.txt')
         codec.outputSVG("test_codec.txt", 'test_result.svg')

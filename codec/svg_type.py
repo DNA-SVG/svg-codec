@@ -5,9 +5,6 @@ from typing import Tuple
 from .path_d import ParserPathD as dparser
 
 NT_BITS = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
-FLOAT_LENGTH = 16
-TYPECODE_LENGTH = 1
-INT_SIZE_LENGTH = 2
 # 2020/11/8 封装SVGNumber类和SVGString类
 
 
@@ -39,7 +36,7 @@ class SVGNumber(SVGType):
         self.is_size = is_size
         super().__init__(given_str, type, start_idx)
 
-    def encode(self) -> str:
+    def encode(self):
         value = self.given_str
         if type(value) != str:
             value = str(value)
@@ -58,7 +55,7 @@ class SVGNumber(SVGType):
                 print('error: value type not supported')
         return seq
 
-    def decode(self) -> Tuple[str, int]:
+    def decode(self):
         sub_seq = self.given_str[self.start_idx:]
         if sub_seq[0] == 'A':
             ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1, self.is_size)
@@ -79,11 +76,11 @@ class SVGString(SVGType):
     def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
         super().__init__(given_str, type, start_idx)
 
-    def encode(self) -> str:
+    def encode(self):
         value = self.given_str
         return encoder.str_to_seq(value)
 
-    def decode(self) -> Tuple[str, int]:
+    def decode(self):
         sub_seq = self.given_str[self.start_idx:]
         return decoder.decode(sub_seq, self.start_idx)
 
@@ -92,11 +89,11 @@ class SVGCoordinate(SVGType):
     def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
         super().__init__(given_str, type, start_idx)
 
-    def encode(self) -> str:
+    def encode(self):
         value = self.given_str.replace(',', ' ')
         return SVGNumber(value, type='encoder').translate()
 
-    def decode(self) -> Tuple[str, int]:
+    def decode(self):
         init_decode, end_idx = SVGNumber(
             self.given_str, type='decoder', start_idx=self.start_idx).translate()
         start, end = 0, len(init_decode)
@@ -132,12 +129,12 @@ class SVGEnum(SVGType):
         self.attr_name = attr_name
         super().__init__(given_str, type, start_idx)
 
-    def encode(self) -> str:
+    def encode(self):
         seq = ''
         seq += self.encode_dict[self.attr_name][self.given_str]
         return seq 
     
-    def decode(self) -> str:
+    def decode(self):
         val = self.decode_dict[self.attr_name][self.given_str]
         end_idx = self.start_idx + len(self.given_str)
         return val, end_idx
@@ -148,10 +145,8 @@ class SVGPathD(SVGType):
     def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
         super().__init__(given_str, type, start_idx)
 
-    def encode(self) -> str:
-        value = self.given_str
-        return self.parser.encoder(value)
+    def encode(self):
+        return self.parser.encoder(self.given_str)
     
-    def decode(self) -> Tuple[str, int]:
-        ret, total_nts = self.parser.decoder(self.given_str)
-        return (ret, self.start_idx + total_nts)
+    def decode(self):
+        return self.parser.decoder(self.given_str, self.start_idx)
