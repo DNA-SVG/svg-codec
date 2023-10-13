@@ -77,7 +77,7 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
         else:
             seq += ATTR_CODE[type](attr_value, type='encoder').translate()
 
-    return SVGNumber(total, type='encoder', is_pos_int=True).translate() + seq
+    return SVGNumber(total, type='encoder', is_size=True).translate()[1:] + seq
 
 # TODO: get 返回none情况
 
@@ -125,19 +125,20 @@ def encode_address(my_counter, first_child=-1, bro=-1):
     seq = ''
     # '0 1 2'
     address_str = str(my_counter) + ' '+str(first_child) + ' '+str(bro)
-    seq += SVGNumber(address_str, type='encoder').translate()
+    seq += SVGNumber(address_str, type='encoder', is_size = True).translate()
     return seq
 
 
 def decode_address(seq: str):
     '''传入以address开头的序列'''
     '''返回[my_counter, first_child, bro],end_idx'''
-    address_seq, end_idx = SVGNumber(seq, type='decoder').translate()
+    address_seq, end_idx = SVGNumber(seq, type='decoder', is_size = True).translate()
     return address_seq.split(' '), end_idx
 
 
 def decode_optional(seq: str):
-    total, idx = SVGNumber(seq, type='decoder', is_pos_int=True).translate()
+    total, idx = SVGNumber('A' + seq, type='decoder', is_size=True).translate()
+    idx -= 1
     ret_list = []
     for _ in range(int(total)):
         key = seq[idx:idx + KEY_LENGTH]
@@ -162,9 +163,9 @@ def encode_tag(node: ET.Element, my_counter, first_child=-1, bro=-1) -> str:
         tag_name = tag_name[len(STD):]
     tag_class = globals()[tag_name]
     seq = TAG_NT[tag_name]
-    seq += encode_address(my_counter, first_child, bro) + \
-        encode_require(node, tag_class) + \
-        encode_optional(node, tag_class)
+    seq += encode_address(my_counter, first_child, bro)
+    seq += encode_require(node, tag_class)
+    seq += encode_optional(node, tag_class)
     return seq
 
 

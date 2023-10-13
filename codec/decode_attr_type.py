@@ -8,13 +8,13 @@ def seq_to_bin(str, x):
         ret += dict_nt[str[i]]
     return ret  
 
-def decode(seq, start_idx = -1, is_pos_int = False):
+def decode(seq, start_idx = -1, is_size = False):
     '''传入一段DNA片段返回对应的值'''
-    if is_pos_int:
-        return seq_to_number(seq, is_pos_int, start_idx)
+    if is_size:
+        return seq_to_number(seq, is_size, start_idx)
     match seq[0]:
         case 'A' | 'T':
-            return seq_to_number(seq, is_pos_int, start_idx)
+            return seq_to_number(seq, start_idx = start_idx)
         case 'G':
             return seq_to_str(seq, start_idx)
         case 'C':
@@ -38,25 +38,30 @@ def seq_to_float(seq, start_idx = -1):
     else:
         return ret, start_idx + 17
 
-def seq_to_number(seq, is_pos_int = False, start_idx = -1):
+def seq_to_number(seq, is_size = False, start_idx = -1):
     '''orders: 0 = use this codec(1 bit)
     sign: 1 = +, 0 = -
     ∵123.4567 = 1234567 * 0.1^4
     ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
     '''
-    if is_pos_int:
+    if is_size and seq[0] == 'G':
+        if start_idx == -1:
+            return -1
+        else:
+            return -1, start_idx + 1
+    if is_size:
         orders = seq_to_bin(seq, 2)
-        len_total = int(orders[1:4], 2) + 1
+        len_total = int(orders[1:4], 2)
         seq = seq[2:]
     else:
         orders = seq_to_bin(seq, 4)
         seq = seq[4:]
         sign = (orders[1] == '1')
-        len_total = int(orders[2:5], 2) + 1
+        len_total = int(orders[2:5], 2)
         len_below1 = int(orders[5:8], 2)  
     number_str = seq_to_bin(seq, len_total * 2)
     num = int(number_str, 2)
-    if is_pos_int:
+    if is_size:
         if start_idx == -1:
             return num
         else:

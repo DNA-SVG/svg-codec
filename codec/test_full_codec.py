@@ -23,7 +23,7 @@ class TestAttr:
     def test_decode_attr(self):
         assert(decoder(number_to_seq(-1)) == '-1')
         assert(decoder(number_to_seq(45.0)) == '45')
-        assert(decoder(number_to_seq(10, True), is_pos_int = True) == 10)
+        assert(decoder(number_to_seq(10, True), is_size = True) == 10)
         assert(decoder(str_to_seq('_x34_0-Id_Card')) == '_x34_0-Id_Card')
     
 

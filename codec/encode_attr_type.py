@@ -41,8 +41,8 @@ def get_shrink_offset(str):
     else:
         return str, 0
     
-def number_split(number_str, is_pos_int):
-    if is_pos_int:
+def number_split(number_str, is_size):
+    if is_size:
         return format(int(number_str), 'b'), '000'
     len_below1 = ''
     decs = str.split(number_str, '.')
@@ -52,7 +52,7 @@ def number_split(number_str, is_pos_int):
         len_below1 = '000'
     return format(int(''.join(decs), 10), 'b'), len_below1
 
-def number_to_seq(number_str, is_pos_int=False):
+def number_to_seq(number_str, is_size=False):
     ''' components:
     Float(123456789): 'C'(10) + float_to_seq
     Number(1234567.8): '0' + sign(1) + total(3) + below1(3) + binary(max 32)
@@ -63,20 +63,22 @@ def number_to_seq(number_str, is_pos_int=False):
     '''
     if type(number_str) != str:
         number_str = str(number_str)
+    if is_size and number_str == '-1':
+        return 'G'
     length = len(number_str)
     if '-' in number_str:
         length -= 1
     if '.' in number_str:
         number_str, offset = get_shrink_offset(number_str)
         length -= (offset + 1)
-    if length > 8:
+    if length >= 8:
         return float_to_seq(number_str)
     
     sign = '1'
     if number_str[0] == '-':
         sign = '0'
         number_str = number_str[1:]
-    number_str, len_below1 = number_split(number_str, is_pos_int)
+    number_str, len_below1 = number_split(number_str, is_size)
     # clear 0s at the beginning
     offset = 0
     numberstrlen = len(number_str)
@@ -93,8 +95,8 @@ def number_to_seq(number_str, is_pos_int=False):
     number_str = '0' * delta_zero + number_str
 
     # Hexa digits
-    len_total = format(len(number_str) // 4 - 1, '03b')
-    if is_pos_int:
+    len_total = format(len(number_str) // 4, '03b')
+    if is_size:
         ret = '0' + len_total + number_str
     else:
         ret = '0' + sign + len_total + len_below1 + number_str    
