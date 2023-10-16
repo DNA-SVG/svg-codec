@@ -29,7 +29,21 @@ def float_to_seq(num):
 
     return 'C' + bin_to_seq(binary)
 
-def get_shrink_offset(str):
+def __split_int_str(number_str):
+    number = number_str
+    if type(number_str) != str:
+        number_str = str(number_str)
+    elif '.' in number_str:
+        number = float(number_str)
+    else:
+        number = int(number_str, 10)
+    return number, number_str
+
+def __size_to_seq(number):
+    binary = '1' + format(126 - number, '07b')
+    return bin_to_seq(binary)
+
+def __get_shrink_offset(str):
     offset = -1
     while str[offset] == '0':
         offset -= 1
@@ -41,7 +55,7 @@ def get_shrink_offset(str):
     else:
         return str, 0
     
-def number_split(number_str, is_size):
+def __number_split(number_str, is_size):
     if is_size:
         return format(int(number_str), 'b'), '000'
     len_below1 = ''
@@ -61,15 +75,14 @@ def number_to_seq(number_str, is_size=False):
     ∵123.4567 = 1234567 * 0.1^4
     ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
     '''
-    if type(number_str) != str:
-        number_str = str(number_str)
-    if is_size and number_str == '-1':
-        return 'G'
+    number, number_str = __split_int_str(number_str)
+    if is_size and number <= 126 and number >= -1:
+        return __size_to_seq(number)
     length = len(number_str)
     if '-' in number_str:
         length -= 1
     if '.' in number_str:
-        number_str, offset = get_shrink_offset(number_str)
+        number_str, offset = __get_shrink_offset(number_str)
         length -= (offset + 1)
     if length >= 8:
         return float_to_seq(number_str)
@@ -78,7 +91,7 @@ def number_to_seq(number_str, is_size=False):
     if number_str[0] == '-':
         sign = '0'
         number_str = number_str[1:]
-    number_str, len_below1 = number_split(number_str, is_size)
+    number_str, len_below1 = __number_split(number_str, is_size)
     # clear 0s at the beginning
     offset = 0
     numberstrlen = len(number_str)

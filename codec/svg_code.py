@@ -77,7 +77,7 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
         else:
             seq += ATTR_CODE[type](attr_value, type='encoder').translate()
 
-    return SVGNumber(total, type='encoder', is_size=True).translate()[1:] + seq
+    return SVGNumber(total, type='encoder', is_size=True).translate() + seq
 
 # TODO: get 返回none情况
 
@@ -137,8 +137,7 @@ def decode_address(seq: str):
 
 
 def decode_optional(seq: str):
-    total, idx = SVGNumber('A' + seq, type='decoder', is_size=True).translate()
-    idx -= 1
+    total, idx = SVGNumber(seq, type='decoder', is_size=True).translate()
     ret_list = []
     for _ in range(int(total)):
         key = seq[idx:idx + KEY_LENGTH]

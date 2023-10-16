@@ -14,7 +14,7 @@ def decode(seq, start_idx = -1, is_size = False):
         return __seq_to_number(seq, is_size, start_idx)
     match seq[0]:
         case 'A' | 'T':
-            return __seq_to_number(seq, start_idx = start_idx)
+            return __seq_to_number(seq, is_size, start_idx)
         case 'G':
             return __seq_to_str(seq, start_idx)
         case 'C':
@@ -38,17 +38,22 @@ def __seq_to_float(seq, start_idx = -1):
     else:
         return ret, start_idx + 17
 
+def __seq_to_size(seq, start_idx = -1):
+    ret = 126 - int(seq_to_bin(seq, 4)[1:] , 2)
+    if start_idx == -1:
+        return ret
+    else:
+        return ret, start_idx + 4
+    
+
 def __seq_to_number(seq, is_size = False, start_idx = -1):
     '''orders: 0 = use this codec(1 bit)
     sign: 1 = +, 0 = -
     ∵123.4567 = 1234567 * 0.1^4
     ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
     '''
-    if is_size and seq[0] == 'G':
-        if start_idx == -1:
-            return -1
-        else:
-            return -1, start_idx + 1
+    if is_size and (seq[0] == 'G' or seq[0] == 'C'):
+        return __seq_to_size(seq, start_idx)
     if is_size:
         orders = seq_to_bin(seq, 2)
         len_total = int(orders[1:4], 2)
