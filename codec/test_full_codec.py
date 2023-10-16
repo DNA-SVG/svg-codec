@@ -21,10 +21,10 @@ class TestAttr:
         print(str_to_seq('_x34_0-Id_Card'))
 
     def test_decode_attr(self):
-        assert(decoder(number_to_seq(-1)) == '-1')
-        assert(decoder(number_to_seq(45.0)) == '45')
-        assert(decoder(number_to_seq(10, True), is_size = True) == 10)
-        assert(decoder(str_to_seq('_x34_0-Id_Card')) == '_x34_0-Id_Card')
+        assert(decoder(number_to_seq(-1))[0] == '-1')
+        assert(decoder(number_to_seq(45.0))[0] == '45')
+        assert(decoder(number_to_seq(10, True), is_size = True)[0] == 10)
+        assert(decoder(str_to_seq('_x34_0-Id_Card'))[0] == '_x34_0-Id_Card')
     
 
 class TestType:

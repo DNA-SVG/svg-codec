@@ -100,7 +100,4 @@ class ParserPathD:
             ret += decodec
             string = string[nts:]
             total_nts += nts
-        if start_idx == -1:
-            return ret, total_nts
-        else:
-            return ret, start_idx + total_nts
+        return ret, start_idx + total_nts

@@ -77,12 +77,10 @@ class SVGString(SVGType):
         super().__init__(given_str, type, start_idx)
 
     def encode(self):
-        value = self.given_str
-        return encoder.str_to_seq(value)
+        return encoder.str_to_seq(self.given_str)
 
     def decode(self):
-        sub_seq = self.given_str[self.start_idx:]
-        return decoder.decode(sub_seq, self.start_idx)
+        return decoder.decode(self.given_str[self.start_idx:], self.start_idx)
 
 
 class SVGCoordinate(SVGType):
@@ -94,8 +92,7 @@ class SVGCoordinate(SVGType):
         return SVGNumber(value, type='encoder').translate()
 
     def decode(self):
-        init_decode, end_idx = SVGNumber(
-            self.given_str, type='decoder', start_idx=self.start_idx).translate()
+        init_decode, end_idx = SVGNumber(self.given_str, type='decoder', start_idx=self.start_idx).translate()
         start, end = 0, len(init_decode)
         while start < end:
             start = init_decode.find(' ', start, end)

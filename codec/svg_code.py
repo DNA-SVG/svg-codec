@@ -110,8 +110,7 @@ def decode_require(seq: str, cur_tag: Tag):
 
         type = ATTR_TYPE[attr_name]
         if type == 'enum':
-            attr_val, end_idx = SVGNumber(
-                attr_name, seq, type='decoder', start_idx=idx).translate()
+            attr_val, end_idx = SVGNumber(attr_name, seq, type='decoder', start_idx=idx).translate()
         else:
             attr_val, end_idx = ATTR_CODE[type](seq, type='decoder', start_idx=idx).translate()
         ret_list.append([attr_name, attr_val])

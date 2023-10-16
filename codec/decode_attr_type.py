@@ -33,17 +33,11 @@ def __seq_to_float(seq, start_idx = -1):
         ba.append(int(byte, 2))
     ret = struct.unpack('>f', ba)[0]
     ret = str(ret)
-    if start_idx == -1:
-        return ret
-    else:
-        return ret, start_idx + 17
+    return ret, start_idx + 17
 
 def __seq_to_size(seq, start_idx = -1):
     ret = 126 - int(seq_to_bin(seq, 4)[1:] , 2)
-    if start_idx == -1:
-        return ret
-    else:
-        return ret, start_idx + 4
+    return ret, start_idx + 4
     
 
 def __seq_to_number(seq, is_size = False, start_idx = -1):
@@ -67,10 +61,7 @@ def __seq_to_number(seq, is_size = False, start_idx = -1):
     number_str = seq_to_bin(seq, len_total * 2)
     num = int(number_str, 2)
     if is_size:
-        if start_idx == -1:
-            return num
-        else:
-            return num, start_idx + 2 + 2 * len_total
+        return num, start_idx + 2 + 2 * len_total
     ret = str(num)
     if len_total == len_below1:
         ret = '0.' + ret
@@ -78,10 +69,7 @@ def __seq_to_number(seq, is_size = False, start_idx = -1):
         ret = ret[:-len_below1] + '.' + ret[-len_below1:]
     if not sign:
         ret = '-' + ret
-    if start_idx == -1:
-        return ret
-    else:
-        return ret, start_idx + 4 + 2 * len_total
+    return ret, start_idx + 4 + 2 * len_total
 
 
 def __seq_to_str(seq, start_idx = -1):
@@ -94,7 +82,4 @@ def __seq_to_str(seq, start_idx = -1):
             byte += dict_nt[seq[j]]
         ba.append(int(byte, 2))
     ret = ba.decode(encoding='utf-8')
-    if start_idx == -1:
-        return ret
-    else:
-        return ret, start_idx + start_tag + strlen
+    return ret, start_idx + start_tag + strlen
