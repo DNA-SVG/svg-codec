@@ -110,7 +110,7 @@ def decode_require(seq: str, cur_tag: Tag):
 
         type = ATTR_TYPE[attr_name]
         if type == 'enum':
-            attr_val, end_idx = SVGNumber(attr_name, seq, type='decoder', start_idx=idx).translate()
+            attr_val, end_idx = SVGEnum(attr_name, seq, type='decoder', start_idx=idx).translate()
         else:
             attr_val, end_idx = ATTR_CODE[type](seq, type='decoder', start_idx=idx).translate()
         ret_list.append([attr_name, attr_val])
@@ -138,14 +138,14 @@ def decode_address(seq: str):
 def decode_optional(seq: str):
     total, idx = SVGNumber(seq, type='decoder', is_size=True).translate()
     ret_list = []
-    for _ in range(int(total)):
+    for _ in range(total):
         key = seq[idx:idx + KEY_LENGTH]
         idx += KEY_LENGTH
         attr_name = KEY_ATTR[key]
         type = ATTR_TYPE[attr_name]
 
         if type == 'enum':
-            attr_value, end_idx = SVGNumber(
+            attr_value, end_idx = SVGEnum(
                 attr_name, seq, type='decoder', start_idx=idx).translate()
         else:
             attr_value, end_idx = ATTR_CODE[type](
