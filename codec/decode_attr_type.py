@@ -50,13 +50,13 @@ def __seq_to_number(seq, is_size = False, start_idx = -1):
         return __seq_to_size(seq, start_idx)
     if is_size:
         orders = seq_to_bin(seq, 2)
-        len_total = int(orders[1:4], 2)
+        len_total = int(orders[1:4], 2) + 1
         seq = seq[2:]
     else:
         orders = seq_to_bin(seq, 4)
         seq = seq[4:]
         sign = (orders[1] == '1')
-        len_total = int(orders[2:5], 2)
+        len_total = int(orders[2:5], 2) + 1
         len_below1 = int(orders[5:8], 2)  
     number_str = seq_to_bin(seq, len_total * 2)
     num = int(number_str, 2)

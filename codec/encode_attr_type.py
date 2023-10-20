@@ -84,7 +84,7 @@ def number_to_seq(number_str, is_size=False):
     if '.' in number_str:
         number_str, offset = __get_shrink_offset(number_str)
         length -= (offset + 1)
-    if length >= 8:
+    if length > 8:
         return float_to_seq(number_str)
     
     sign = '1'
@@ -108,7 +108,7 @@ def number_to_seq(number_str, is_size=False):
     number_str = '0' * delta_zero + number_str
 
     # Hexa digits
-    len_total = format(len(number_str) // 4, '03b')
+    len_total = format(len(number_str) // 4 - 1, '03b')
     if is_size:
         ret = '0' + len_total + number_str
     else:
