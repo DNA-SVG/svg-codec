@@ -3,10 +3,7 @@ from . import encode_attr_type as encoder
 import re
 from typing import Tuple
 from .path_d import ParserPathD as dparser
-
-NT_BITS = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
-# 2020/11/8 封装SVGNumber类和SVGString类
-
+from .svg_enum import EnumDict
 
 class SVGType:
     def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
@@ -106,35 +103,16 @@ class SVGCoordinate(SVGType):
 
 
 class SVGEnum(SVGType):
-    encode_dict = {}
-    encode_dict['filterUnits'] = {'userSpaceOnUse ': 'A', 'objectBoundingBox': 'T'}
-    encode_dict['primitiveUnits'] = {
-        'userSpaceOnUse': 'A', 'objectBoundingBox': 'T'}
-    encode_dict['gradientUnits'] = {'userSpaceOnUse': 'A', 'objectBoundingBox': 'T'}
-    encode_dict['spreadMethod'] = {'pad': 'A', 'reflect': 'T', 'repeat': 'C'}
-    encode_dict['in'] = {'SourceGraphic': 'AA', 'SourceAlpha': 'AT', 'BackgroundImage': 'AC',
-                    'BackgroundAlpha': 'AG', 'FillPaint': 'TA', 'StrokePaint': 'TT', '<filter-primitive-reference>': 'TC'}
-    encode_dict['in2'] = {'SourceGraphic': 'AA', 'SourceAlpha': 'AT', 'BackgroundImage': 'AC',
-                     'BackgroundAlpha': 'AG', 'FillPaint': 'TA', 'StrokePaint': 'TT', '<filter-primitive-reference>': 'TC'}
-    encode_dict['operator'] = {'over': 'AA', 'in': 'AT', 'out': 'AC',
-                          'atop': 'AG', 'xor': 'TA', 'lighter': 'TT', 'arithmetic': 'TC'}
-    decode_dict = {}
-    for t in encode_dict:
-        decode_dict[t] = {v: k for k, v in encode_dict[t].items()}
-
-    def __init__(self, attr_name, given_str: str, type='encoder', start_idx=0) -> None:
+    dict = EnumDict()
+    def __init__(self, attr_name, given_str, type='encoder', start_idx=0) -> None:
         self.attr_name = attr_name
         super().__init__(given_str, type, start_idx)
 
     def encode(self):
-        seq = ''
-        seq += self.encode_dict[self.attr_name][self.given_str]
-        return seq 
+        return self.dict.get_encode_dict(self.attr_name, self.given_str)
     
-    def decode(self):
-        val = self.decode_dict[self.attr_name][self.given_str]
-        end_idx = self.start_idx + len(self.given_str)
-        return val, end_idx
+    def decode(self): 
+        return self.dict.get_decode_dict(self.attr_name, self.given_str, self.start_idx)
     
 
 class SVGPathD(SVGType):

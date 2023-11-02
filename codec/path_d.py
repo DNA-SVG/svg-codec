@@ -48,11 +48,6 @@ class ParserPathD:
             number_list = number_list[params:]
         return ret, offset
 
-    def __encoder_length(self, length):
-        # number of commands in a path.d
-        ret = format(length,'08b')
-        return bin_to_seq(ret)
-
     def __decoder_single(self, ntstr):
         ret = self.__decode_tag(ntstr[0:3])
         ntstr = ntstr[3:]
@@ -87,17 +82,16 @@ class ParserPathD:
             codec, offset_tag = self.__encoder_single(data)
             ret += codec
             leng += offset_tag
-        return self.__encoder_length(leng) + ret
+        return number_to_seq(leng, True) + ret
 
-    def decoder(self, string, start_idx = -1):
+    def decoder(self, string, start_idx = 0):
         # get number of commands
-        leng = int(seq_to_bin(string, 4), 2)
-        string = string[4:]
+        leng, idx = decode(string, start_idx, is_size=True)
+        string = string[idx:]
         ret = ''
-        total_nts = 4
         for _ in range(0, leng):
             decodec, nts = self.__decoder_single(string)
             ret += decodec
             string = string[nts:]
-            total_nts += nts
-        return ret, start_idx + total_nts
+            idx += nts
+        return ret, idx

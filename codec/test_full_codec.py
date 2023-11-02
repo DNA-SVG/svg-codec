@@ -4,14 +4,14 @@ import pytest, ruff
 from .encode_attr_type import str_to_seq, number_to_seq
 from .decode_attr_type import decode as decoder
 from .svg_type import SVGCoordinate, SVGNumber, SVGString
-from .svg_tag import svg
 from .path_d import ParserPathD
-from .svg_code import decode_optional, encode_optional
+from .svg_code import decode_tag, encode_tag
 from .segment import optimize_seq_len, restore_seq_len
 from .encode_svg import Encoder
 from .decode_svg import Decoder
 from .codec import Codec
 
+filename = './test-images/amazon-pay.svg'
 
 class TestAttr:
     def test_encode_attr(self):
@@ -43,29 +43,29 @@ class TestType:
 
     def test_path_d(self):
         parser = ParserPathD()
-        string = 'M39.7,27.6c0-4.3-3.5-7.7-7.7-7.7s-7.7,3.5-7.7,7.7c0,2.4,1.1,4.5,2.8,5.9c-4.2,1.2-7.3,5-7.3,9.5c0,0.6,0.5,1.1,1.1,1.1H43c0.6,0,1.1-0.5,1.1-1.1c0-4.5-3.1-8.3-7.3-9.5C38.6,32.1,39.7,30,39.7,27.6z M26.5,27.6c0-3,2.5-5.5,5.5-5.5s5.5,2.5,5.5,5.5S35,33.1,32,33.1S26.5,30.6,26.5,27.6z M34.2,35.3c3.9,0,7.1,2.9,7.7,6.6H22.1c0.5-3.7,3.8-6.6,7.7-6.6H34.2z'
+        string = "M22.1363 17.0054V16.2814C22.134 16.2318 22.1524 16.1836 22.187 16.1487C22.2216 16.1137 22.269 16.0954 22.3176 16.0982H25.5083C25.5568 16.0965 25.6039 16.1151 25.6386 16.1497C25.6733 16.1843 25.6927 16.2319 25.6922 16.2814V16.9046C25.6922 17.0089 25.6063 17.1456 25.4524 17.3612L23.7991 19.7682C24.4126 19.7533 25.0614 19.8471 25.6191 20.167C25.7221 20.223 25.7878 20.3311 25.791 20.4501V21.2285C25.791 21.3354 25.6767 21.459 25.5556 21.395C24.4972 20.8401 23.2408 20.8424 22.1844 21.4011C22.0735 21.4616 21.9575 21.3398 21.9575 21.2328V20.4922C21.9474 20.3176 21.9887 20.1439 22.0761 19.9934L23.9916 17.1886H22.321C22.2724 17.1905 22.2251 17.172 22.1901 17.1374C22.1552 17.1027 22.1358 17.055 22.1363 17.0054Z"
         codec = parser.encoder(string)
         print(len(codec), 'nts,','{:.2f}'.format(len(string) * 8 / len(codec)), 'bits/nt')
         ret, _ = parser.decoder(codec)
         print(ret)
 
 
-class TestOptional:
-    def test_optional(self):
+class TestTag:
+    def test_tag(self):
         root = ET.fromstring(
-        '<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;"/>')
-        s = encode_optional(root, svg)
+        '<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;" stroke="red"/>')
+        s = encode_tag(root, 0)
         print(s)
-        _ = decode_optional(s)
-        root = ET.fromstring(
-        '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" id="1"/>')
-        op = encode_optional(root, svg)
-        _ = decode_optional(op)
+        _ = decode_tag(s)
+        root = ET.fromstring('<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_503_3869" result="shape"/>')
+        op = encode_tag(root, 0)
+        print(op)
+        _ = decode_tag(op)
 
 
 class TestSegment:
     def test_dfs(self):
-        filename = './test-images/river.svg'
+
         with open(filename, 'r') as f:
             enc = Encoder()
             tree = ET.parse(f)
@@ -74,20 +74,20 @@ class TestSegment:
             print(a)
 
     def test_segment(self):
-        filename = './test-images/river.svg'
         enc = Encoder()
         dec = Decoder()
         initial_encoding = enc.encode_file(filename)
         print(initial_encoding)
+        initial_decode = dec.generate_svg(initial_encoding)
         optimized_encoding = optimize_seq_len(initial_encoding)
         restored = restore_seq_len(optimized_encoding)
+        restore_decode = dec.generate_svg(restored)
         assert(set(restored) == set(initial_encoding))
-        assert(dec.generate_svg(initial_encoding) == dec.generate_svg(restored))
+        assert(initial_decode == restore_decode)
 
 
 class TestCodec:
     def test_codec(self):
         codec = Codec()
-        file = './test-images/building.svg'
-        codec.outputDNAseq(file, 'test_codec.txt')
+        codec.outputDNAseq(filename, 'test_codec.txt')
         codec.outputSVG("test_codec.txt", 'test_result.svg')
