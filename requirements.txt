@@ -3,3 +3,4 @@ reedsolo==1.7.0
 ruff==0.0.288
 pytest-ordering==0.6
 pytest-dependency==0.5.1
+yapf==0.40.2

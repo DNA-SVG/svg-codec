@@ -7,7 +7,7 @@ def bin_to_seq(binSeq):
     if n % 2 == 1:
         binSeq = '0' + binSeq
         n += 1
-    
+
     ret = ''
     for i in range(0, n, 2):
         unit = binSeq[i:i+2]
@@ -15,25 +15,20 @@ def bin_to_seq(binSeq):
 
     return ret
 
+
 def float_to_seq(num):
     """传入float,对应c标准的float(8 bit)"""
     """以str形式返回编码dna序列"""
-    #获得字节信息
-    bs = struct.pack('>f', num)
 
-    #字节转01串
-    binary = ''
-    for i in bs:
-        tmp = bin(i).replace('0b', '')
-        binary += '0' * (8 - len(tmp)) + tmp
-
+    binary = format(struct.unpack('>I', struct.pack('>f',num))[0], '032b')
     return 'C' + bin_to_seq(binary)
+
 
 def __split_int_str(number_str):
     number = number_str
     if type(number_str) != str:
         number_str = str(number_str)
-    elif '.' in number_str:
+    elif '.' in number_str or 'e' in number_str or 'E' in number_str:
         number = float(number_str)
     else:
         number = int(number_str, 10)
@@ -54,7 +49,7 @@ def __get_shrink_offset(str):
         return str[:offset], -offset
     else:
         return str, 0
-    
+
 def __number_split(number_str, is_size):
     if is_size:
         return format(int(number_str), 'b'), '000'
@@ -78,6 +73,8 @@ def number_to_seq(number_str, is_size=False):
     number, number_str = __split_int_str(number_str)
     if is_size and number <= 126 and number >= -1:
         return __size_to_seq(number)
+    if 'e' in number_str or 'E' in number_str:
+        return float_to_seq(number)
     length = len(number_str)
     if '-' in number_str:
         length -= 1
@@ -86,7 +83,7 @@ def number_to_seq(number_str, is_size=False):
         length -= (offset + 1)
     if length > 8:
         return float_to_seq(number_str)
-    
+
     sign = '1'
     if number_str[0] == '-':
         sign = '0'
@@ -112,7 +109,7 @@ def number_to_seq(number_str, is_size=False):
     if is_size:
         ret = '0' + len_total + number_str
     else:
-        ret = '0' + sign + len_total + len_below1 + number_str    
+        ret = '0' + sign + len_total + len_below1 + number_str
     return bin_to_seq(ret)
 
 def str_to_seq(s):

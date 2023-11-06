@@ -31,10 +31,7 @@ class ParserPathD:
 
     def __encoder_single(self, data):
         code_tag = self.__encode_tag(data[0])
-        number_tuple = re.findall(r"(-?\d+\.\d+)|(-?\d+)|(-?\.\d+)", data[1])
-        number_list = []
-        for first, second, third in number_tuple:
-            number_list.append(first + second + third)
+        number_list = re.findall(r"-?\d+(?:\.\d+)?(?:[eE][-+]\d+)?", data[1])
         ret = ''
         params = self.param_table[data[0]]
         if params == 0:
@@ -64,8 +61,8 @@ class ParserPathD:
 
     def encoder(self, string):
         string = re.sub(' ',',',string)
-        tag_list = re.findall(r"[a-zA-Z]", string)
-        data_list = re.findall(r"[^a-zA-Z\s]+", string)
+        tag_list = re.findall(r"[a-df-zA-DF-Z]", string)
+        data_list = re.findall(r"[^a-df-zA-DF-Z\s]+", string)
         leng = len(tag_list)
         b = []
         offset = 0
