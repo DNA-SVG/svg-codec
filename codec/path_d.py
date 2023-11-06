@@ -31,6 +31,9 @@ class ParserPathD:
 
     def __encoder_single(self, data):
         code_tag = self.__encode_tag(data[0])
+        if data[1].startswith('.'):
+            data[1] = '0' + data[1]
+        data[1] = re.sub(r"([^\d])(\.\d+)", r"\g<1>0\g<2>", data[1])
         number_list = re.findall(r"-?\d+(?:\.\d+)?(?:[eE][-+]\d+)?", data[1])
         ret = ''
         params = self.param_table[data[0]]

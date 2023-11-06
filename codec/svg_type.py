@@ -44,7 +44,10 @@ class SVGNumber(SVGType):
         else:
             seq = 'T' + encoder.number_to_seq(len(numbers), True)
         for number in numbers:
-            if re.match(r'^[+-]?[0-9]*(\.)?[0-9]+(px)?$', number) != None:
+            if number.startswith('.'):
+                number = '0' + number
+            number = re.sub(r"([^\d])(\.\d+)", r"\g<1>0\g<2>", number)
+            if re.match(r'^[+-]?\d+(?:\.\d+)?(?:[eE][-+]\d+)?(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
                 seq += encoder.number_to_seq(number, is_size=self.is_size)

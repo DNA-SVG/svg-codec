@@ -62,6 +62,12 @@ class TestTag:
         root = ET.fromstring(
             '<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_503_3869" result="shape"/>'
         )
+        s = encode_tag(root, 0)
+        print(s)
+        _ = decode_tag(s)
+        root = ET.fromstring(
+            '<linearGradient id="paint0_linear_1310_7491" x1="14" y1="3.05176e-05" x2="14" y2="20" gradientUnits="userSpaceOnUse" />'
+        )
         op = encode_tag(root, 0)
         print(op)
         _ = decode_tag(op)
