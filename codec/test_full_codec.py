@@ -24,6 +24,8 @@ class TestAttr:
         assert(decoder(number_to_seq(-1))[0] == '-1')
         assert(decoder(number_to_seq(45.0))[0] == '45')
         assert(decoder(number_to_seq(10, True), is_size=True)[0] == 10)
+        dec = float(decoder(number_to_seq(3.05176e-05))[0])
+        assert(abs(dec - 3.05176e-05) < 1e-7)
         assert(decoder(str_to_seq('_x34_0-Id_Card'))[0] == '_x34_0-Id_Card')
 
 
@@ -60,18 +62,11 @@ class TestTag:
         print(s)
         _ = decode_tag(s)
         root = ET.fromstring(
-            '<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_503_3869" result="shape"/>'
+            '<feMorphology radius="8" operator="erode" in="SourceAlpha" result="effect1_innerShadow_397_2949"/>'
         )
         s = encode_tag(root, 0)
         print(s)
         _ = decode_tag(s)
-        root = ET.fromstring(
-            '<linearGradient id="paint0_linear_1310_7491" x1="14" y1="3.05176e-05" x2="14" y2="20" gradientUnits="userSpaceOnUse" />'
-        )
-        op = encode_tag(root, 0)
-        print(op)
-        _ = decode_tag(op)
-
 
 class TestSegment:
     def test_dfs(self):

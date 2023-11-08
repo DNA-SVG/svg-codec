@@ -82,7 +82,7 @@ def number_to_seq(number_str, is_size=False):
         number_str, offset = __get_shrink_offset(number_str)
         length -= (offset + 1)
     if length > 8:
-        return float_to_seq(number_str)
+        return float_to_seq(number)
 
     sign = '1'
     if number_str[0] == '-':

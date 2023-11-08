@@ -3,7 +3,7 @@ from codec.svg_type import SVGString
 class tag_nt:
     __TAG_lENGTH = 3
     __TAG_NT = {
-        'circle': 'AAA', 'clipPath': 'AAC', 'defs': 'AAG', 'desc': 'AAT', 'ellipse': 'ACA', 'feBlend': 'ACC', 'feColorMatrix': 'ACG', 'feComposite': 'ACT', 'feFlood': 'AGA', 'feGaussianBlur': 'AGC', 'feMorophology': 'AGG', 'feOffset': 'AGT', 'filter': 'ATA', 'g': 'ATC', 'linearGradient': 'ATG', 'mask': 'ATT', 'path': 'CAA', 'polygon': 'CAC', 'polyline': 'CAG', 'radialGradient': 'CAT', 'rect': 'CCA', 'stop': 'CCC', 'style': 'CCG', 'svg': 'CCT', 'title': 'CGA', 'use': 'CGC'
+        'circle': 'AAA', 'clipPath': 'AAC', 'defs': 'AAG', 'desc': 'AAT', 'ellipse': 'ACA', 'feBlend': 'ACC', 'feColorMatrix': 'ACG', 'feComposite': 'ACT', 'feFlood': 'AGA', 'feGaussianBlur': 'AGC', 'feMorphology': 'AGG', 'feOffset': 'AGT', 'filter': 'ATA', 'g': 'ATC', 'linearGradient': 'ATG', 'mask': 'ATT', 'path': 'CAA', 'polygon': 'CAC', 'polyline': 'CAG', 'radialGradient': 'CAT', 'rect': 'CCA', 'stop': 'CCC', 'style': 'CCG', 'svg': 'CCT', 'title': 'CGA', 'use': 'CGC'
     }
     __NT_TAG = {v: k for k, v in __TAG_NT.items()}
     def get_tag_len(self):
@@ -96,7 +96,7 @@ class feGaussianBlur(Tag):
     optional_class = {'in': ('A', 'enum'), 'result': ('C', 'str')}
     class_len = 1
 
-class feMorophology(Tag):
+class feMorphology(Tag):
     required_class = {'in': 'enum', 'operator': 'enum', 'radius': 'number', 'result': 'str'}
     optional_class = {}
     class_len = 0
@@ -122,8 +122,8 @@ class linearGradient(Tag):
     class_len = 1
 
 class mask(Tag):
-    required_class = {'maskUnits': 'enum', 'x': 'number', 'y': 'number', 'width': 'number', 'height': 'number'}
-    optional_class = {'maskContentUnits': ('A', 'str'), 'style': ('C', 'str')}
+    required_class = {}
+    optional_class = {'maskUnits': ('AA', 'enum'), 'x': ('AC', 'number'), 'y': ('AG', 'number'), 'width': ('AT', 'number'), 'height': ('CA', 'number'), 'maskContentUnits': ('CC', 'str'), 'style': ('CG', 'str')}
     class_len = 1
 
 class path(Tag):
@@ -172,6 +172,6 @@ class title(Tag):
     class_len = 0
 
 class use(Tag):
-    required_class = {'href': 'str', 'x': 'number', 'y': 'number'}
-    optional_class = {'width': ('AG', 'number'), 'height': ('AT', 'number'), 'fill-rule': ('CG', 'enum')}
+    required_class = {}
+    optional_class = {'x': ('AC', 'number'), 'width': ('AG', 'number'), 'height': ('AT', 'number'), 'y': ('CA', 'number'), 'fill-rule': ('CG', 'enum'), 'href': ('CT', 'str')}
     class_len = 2

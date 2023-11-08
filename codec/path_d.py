@@ -63,7 +63,7 @@ class ParserPathD:
         return ret, total_nts
 
     def encoder(self, string):
-        string = re.sub(' ',',',string)
+        string = re.sub(r'\s+', ' ', string)
         tag_list = re.findall(r"[a-df-zA-DF-Z]", string)
         data_list = re.findall(r"[^a-df-zA-DF-Z\s]+", string)
         leng = len(tag_list)

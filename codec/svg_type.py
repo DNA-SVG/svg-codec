@@ -37,7 +37,7 @@ class SVGNumber(SVGType):
         value = self.given_str
         if type(value) != str:
             value = str(value)
-        numbers = value.strip().split(' ')
+        numbers = re.sub(',', ' ', value).strip().split(' ')
         
         if len(numbers) == 1:
             seq = 'A'

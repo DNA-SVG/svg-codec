@@ -2,7 +2,7 @@ class EnumDict:
     MAX_LENGTH = 2
     dict = {}
     dict['mode'] = {'normal': 'AC', 'multiply': 'CG', 'screen': 'GT', 'darken': 'TA', 'lighten': 'AG'}
-    dict['operator'] = {'over': 'AC', 'in': 'AG', 'out': 'CA', 'atop': 'CT', 'xor': 'GA', 'lighter': 'GT', 'arithmetic': 'TC'}
+    dict['operator'] = {'over': 'AC', 'in': 'AG', 'erode': 'AT', 'out': 'CA', 'atop': 'CT', 'xor': 'GA', 'lighter': 'GT', 'arithmetic': 'TC', 'dilate': 'TG'}
     dict['filterUnits'] = {'userSpaceOnUse': 'A', 'objectBoundingBox': 'C'}
     dict['primitiveUnits'] = {'userSpaceOnUse': 'A', 'objectBoundingBox': 'C'}
     dict['color-interpolation-filters'] = {'linearRGB': 'A', 'sRGB': 'C'}
