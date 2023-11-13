@@ -161,6 +161,9 @@ cython_debug/
 
 # pytest
 test_*
+
+# others
 !test_*.py
 test.svg
 out.txt
+svgs
