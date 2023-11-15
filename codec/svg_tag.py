@@ -48,8 +48,8 @@ class Tag:
 
 class circle(Tag):
     required_class = {'cx': 'number', 'cy': 'number', 'r': 'number'}
-    optional_class = {}
-    class_len = 0
+    optional_class = {'stroke': ('AG', 'str'), 'stroke-width': ('AT', 'number'), 'stroke-linecap': ('CG', 'enum'), 'stroke-linejoin': ('CT', 'enum')}
+    class_len = 2
 
 class clipPath(Tag):
     required_class = {}
@@ -68,8 +68,8 @@ class desc(Tag):
 
 class ellipse(Tag):
     required_class = {'ry': 'number', 'rx': 'number', 'cy': 'number', 'cx': 'number'}
-    optional_class = {}
-    class_len = 0
+    optional_class = {'opacity': ('A', 'number')}
+    class_len = 1
 
 class feBlend(Tag):
     required_class = {'result': 'str', 'in2': 'str', 'mode': 'enum'}
@@ -113,7 +113,7 @@ class filter(Tag):
 
 class g(Tag):
     required_class = {}
-    optional_class = {'filter': ('AG', 'str'), 'clip-path': ('AT', 'str'), 'mask': ('CG', 'str'), 'fill-rule': ('CT', 'enum')}
+    optional_class = {'stroke': ('AC', 'str'), 'filter': ('AG', 'str'), 'clip-path': ('AT', 'str'), 'stroke-width': ('CA', 'number'), 'mask': ('CG', 'str'), 'fill-rule': ('CT', 'enum')}
     class_len = 2
 
 class linearGradient(Tag):

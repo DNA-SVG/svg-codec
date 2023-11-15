@@ -1,6 +1,9 @@
 import struct
 
 nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
+# XXX: 必须和decode_attr_type.py中的MAX_SIZE_BITS一致
+MAX_SIZE_BITS = 7
+MAX_SIZE = (1 << MAX_SIZE_BITS) - 2
 
 def bin_to_seq(binSeq):
     n = len(binSeq)
@@ -35,7 +38,7 @@ def __split_int_str(number_str):
     return number, number_str
 
 def __size_to_seq(number):
-    binary = '1' + format(126 - number, '07b')
+    binary = '1' + format(MAX_SIZE - number, '0' + str(MAX_SIZE_BITS) + 'b')
     return bin_to_seq(binary)
 
 def __get_shrink_offset(str):
@@ -71,7 +74,7 @@ def number_to_seq(number_str, is_size=False):
     ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
     '''
     number, number_str = __split_int_str(number_str)
-    if is_size and number <= 126 and number >= -1:
+    if is_size and number <= MAX_SIZE and number >= -1:
         return __size_to_seq(number)
     if 'e' in number_str or 'E' in number_str:
         return float_to_seq(number)

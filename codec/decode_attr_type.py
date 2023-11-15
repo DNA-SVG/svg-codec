@@ -1,7 +1,10 @@
 import struct
 
 dict_nt = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
-
+# XXX: 必须和encode_attr_type.py中的MAX_SIZE_BITS一致
+MAX_SIZE_BITS = 7
+MAX_SIZE = (1 << MAX_SIZE_BITS) - 2
+MAX_SIZE_NTS = (1 + MAX_SIZE_BITS) >> 1
 
 def seq_to_bin(str, x):
     ret = ''
@@ -34,8 +37,8 @@ def __seq_to_float(seq, start_idx=-1):
 
 
 def __seq_to_size(seq, start_idx=-1):
-    ret = 126 - int(seq_to_bin(seq, 4)[1:], 2)
-    return ret, start_idx + 4
+    ret = MAX_SIZE - int(seq_to_bin(seq, MAX_SIZE_NTS)[1:], 2)
+    return ret, start_idx + MAX_SIZE_NTS
 
 
 def __seq_to_number(seq, is_size=False, start_idx=-1):
