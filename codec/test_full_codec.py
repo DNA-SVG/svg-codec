@@ -12,6 +12,7 @@ from .decode_svg import Decoder
 from .codec import Codec
 
 filename = './test-images/amazon-pay.svg'
+# filename = './test.svg'
 
 class TestAttr:
     def test_encode_attr(self):

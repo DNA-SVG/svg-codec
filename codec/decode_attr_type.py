@@ -64,7 +64,7 @@ def __seq_to_number(seq, is_size=False, start_idx=-1):
     if is_size:
         return num, start_idx + 2 + 2 * len_total
     ret = str(num)
-    if len_total == len_below1:
+    if len_below1 == len(ret):
         ret = '0.' + ret
     elif len_below1 > 0:
         ret = ret[:-len_below1] + '.' + ret[-len_below1:]

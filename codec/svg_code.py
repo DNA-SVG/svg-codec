@@ -47,7 +47,8 @@ def decode_require(seq: str, cur_tag: Tag):
             attr_val, idx = SVGEnum(attr_name, seq, type='decoder', start_idx=idx).translate()
         else:
             attr_val, idx = ATTR_CODE[attr_type](seq, type='decoder', start_idx=idx).translate()
-        ret_list.append([attr_name, attr_val])
+        if attr_val != None:
+            ret_list.append([attr_name, attr_val])
     return ret_list, idx
 
 def encode_optional(node: ET.Element, cur_tag: Tag) -> str:

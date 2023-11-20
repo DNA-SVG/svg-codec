@@ -35,6 +35,8 @@ class SVGNumber(SVGType):
 
     def encode(self):
         value = self.given_str
+        if value == None:
+            return 'C'
         if type(value) != str:
             value = str(value)
         numbers = re.sub(',', ' ', value).strip().split(' ')
@@ -57,7 +59,9 @@ class SVGNumber(SVGType):
 
     def decode(self):
         sub_seq = self.given_str[self.start_idx:]
-        if sub_seq[0] == 'A':
+        if sub_seq[0] == 'C':
+            return None, self.start_idx + 1
+        elif sub_seq[0] == 'A':
             ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1, self.is_size)
             return ret, end_idx
         elif sub_seq[0] == 'T':

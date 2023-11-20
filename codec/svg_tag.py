@@ -3,7 +3,7 @@ from codec.svg_type import SVGString
 class tag_nt:
     __TAG_lENGTH = 3
     __TAG_NT = {
-        'circle': 'AAA', 'clipPath': 'AAC', 'defs': 'AAG', 'desc': 'AAT', 'ellipse': 'ACA', 'feBlend': 'ACC', 'feColorMatrix': 'ACG', 'feComposite': 'ACT', 'feFlood': 'AGA', 'feGaussianBlur': 'AGC', 'feMorphology': 'AGG', 'feOffset': 'AGT', 'filter': 'ATA', 'g': 'ATC', 'linearGradient': 'ATG', 'mask': 'ATT', 'path': 'CAA', 'polygon': 'CAC', 'polyline': 'CAG', 'radialGradient': 'CAT', 'rect': 'CCA', 'stop': 'CCC', 'style': 'CCG', 'svg': 'CCT', 'title': 'CGA', 'use': 'CGC'
+        'circle': 'AAA', 'clipPath': 'AAC', 'defs': 'AAG', 'desc': 'AAT', 'ellipse': 'ACA', 'feBlend': 'ACC', 'feColorMatrix': 'ACG', 'feComposite': 'ACT', 'feFlood': 'AGA', 'feGaussianBlur': 'AGC', 'feMorphology': 'AGG', 'feOffset': 'AGT', 'filter': 'ATA', 'g': 'ATC', 'linearGradient': 'ATG', 'mask': 'ATT', 'path': 'CAA', 'polygon': 'CAC', 'polyline': 'CAG', 'radialGradient': 'CAT', 'rect': 'CCA', 'stop': 'CCC', 'style': 'CCG', 'svg': 'CCT', 'title': 'CGA', 'use': 'CGC', 'line': 'CGT'
     }
     __NT_TAG = {v: k for k, v in __TAG_NT.items()}
     def get_tag_len(self):
@@ -114,6 +114,11 @@ class filter(Tag):
 class g(Tag):
     required_class = {}
     optional_class = {'stroke': ('AC', 'str'), 'filter': ('AG', 'str'), 'clip-path': ('AT', 'str'), 'stroke-width': ('CA', 'number'), 'mask': ('CG', 'str'), 'fill-rule': ('CT', 'enum')}
+    class_len = 2
+
+class line(Tag):
+    required_class = {'x1': 'number', 'x2': 'number', 'y1': 'number', 'y2': 'number'}
+    optional_class = {'stroke': ('AG', 'str'), 'stroke-width': ('AT', 'number'), 'stroke-linecap': ('CA', 'enum'), 'stroke-linejoin': ('CG', 'enum')}
     class_len = 2
 
 class linearGradient(Tag):
