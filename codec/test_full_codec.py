@@ -75,6 +75,7 @@ class TestSegment:
             enc = Encoder()
             tree = ET.parse(f)
             dfsroot = tree.getroot()
+            dfsroot = enc._Encoder__pre_process(dfsroot)
             a = enc._Encoder__dfs(dfsroot)
             print(a)
 

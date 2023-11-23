@@ -2,7 +2,8 @@ from concurrent.futures.process import BrokenProcessPool
 import xml.etree.ElementTree as ET
 from .svg_code import *
 
-class Encoder:    
+class Encoder:
+    IGNORE_TAGS = ['sodipodi:nameview', 'metadata']    
     # 深度遍历
     def __init__(self): 
         self.counter = 1
@@ -31,7 +32,16 @@ class Encoder:
 
         return DNA_seq
     
+    def __pre_process(self, root):
+        for tag in self.IGNORE_TAGS:
+            for node in root.iter():
+                if tag in node.tag:
+                    root.remove(node)
+                    break
+        return root
+
     def encode_file(self, filename, bro_counter=-1, child_counter=1, my_counter=0):
         with open(filename, 'r', encoding='utf-8') as f:
             root = ET.fromstring(f.read())
+            root = self.__pre_process(root)
             return self.__dfs(root, bro_counter, child_counter, my_counter)

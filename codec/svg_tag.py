@@ -122,13 +122,13 @@ class line(Tag):
     class_len = 2
 
 class linearGradient(Tag):
-    required_class = {'x1': 'number', 'y1': 'number', 'x2': 'number', 'y2': 'number', 'gradientUnits': 'enum'}
-    optional_class = {'gradientTransform': ('A', 'str'), 'href': ('C', 'str')}
+    required_class = {'x1': 'number', 'y1': 'number', 'x2': 'number', 'y2': 'number'}
+    optional_class = {'gradientTransform': ('AG', 'str'), 'href': ('AT', 'str'), 'gradientUnits': ('CG', 'enum')}
     class_len = 1
 
 class mask(Tag):
-    required_class = {}
-    optional_class = {'maskUnits': ('AA', 'enum'), 'x': ('AC', 'number'), 'y': ('AG', 'number'), 'width': ('AT', 'number'), 'height': ('CA', 'number'), 'maskContentUnits': ('CC', 'str'), 'style': ('CG', 'str')}
+    required_class = {'x': 'number', 'y': 'number', 'width': 'number', 'height': 'number'}
+    optional_class = {'maskUnits': ('AG', 'enum'), 'maskContentUnits': ('CG', 'str'), 'style': ('CT', 'str')}
     class_len = 1
 
 class path(Tag):
@@ -152,9 +152,9 @@ class radialGradient(Tag):
     class_len = 1
 
 class rect(Tag):
-    required_class = {'height': 'number', 'width': 'number'}
-    optional_class = {'rx': ('AG', 'number'), 'ry': ('AT', 'number'), 'x': ('CG', 'number'), 'y': ('CT', 'number')}
-    class_len = 2
+    required_class = {'height': 'number', 'width': 'number', 'x': 'number', 'y': 'number'}
+    optional_class = {'rx': ('A', 'number'), 'ry': ('C', 'number')}
+    class_len = 1
 
 class stop(Tag):
     required_class = {'stop-color': 'str'}
