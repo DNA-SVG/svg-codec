@@ -72,7 +72,7 @@ class ellipse(Tag):
     class_len = 1
 
 class feBlend(Tag):
-    required_class = {'result': 'str', 'in2': 'str', 'mode': 'enum'}
+    required_class = {'result': 'str', 'in2': 'enum', 'mode': 'enum'}
     optional_class = {'in': ('A', 'enum')}
     class_len = 1
 
@@ -82,7 +82,7 @@ class feColorMatrix(Tag):
     class_len = 1
 
 class feComposite(Tag):
-    required_class = {'in2': 'str', 'operator': 'enum'}
+    required_class = {'in2': 'enum', 'operator': 'enum'}
     optional_class = {'k1': ('AC', 'number'), 'k2': ('AG', 'number'), 'k3': ('AT', 'number'), 'k4': ('CA', 'number'), 'result': ('CG', 'str'), 'in': ('CT', 'enum')}
     class_len = 2
 
@@ -124,12 +124,12 @@ class line(Tag):
 class linearGradient(Tag):
     required_class = {'x1': 'number', 'y1': 'number', 'x2': 'number', 'y2': 'number'}
     optional_class = {'gradientTransform': ('AG', 'str'), 'href': ('AT', 'str'), 'gradientUnits': ('CG', 'enum')}
-    class_len = 1
+    class_len = 2
 
 class mask(Tag):
     required_class = {'x': 'number', 'y': 'number', 'width': 'number', 'height': 'number'}
-    optional_class = {'maskUnits': ('AG', 'enum'), 'maskContentUnits': ('CG', 'str'), 'style': ('CT', 'str')}
-    class_len = 1
+    optional_class = {'maskUnits': ('AG', 'enum'), 'maskContentUnits': ('CG', 'enum'), 'style': ('CT', 'str')}
+    class_len = 2
 
 class path(Tag):
     required_class = {'d': 'pathd'}
@@ -167,7 +167,7 @@ class style(Tag):
     class_len = 1
 
 class svg(Tag):
-    required_class = {'width': 'number', 'height': 'number', 'viewBox': 'str'}
+    required_class = {'width': 'number', 'height': 'number', 'viewBox': 'number'}
     optional_class = {'x': ('AG', 'number'), 'y': ('AT', 'number'), 'style': ('CA', 'str'), 'version': ('CG', 'str'), 'xml:space': ('CT', 'str')}
     class_len = 2
 

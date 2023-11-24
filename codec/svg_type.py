@@ -116,9 +116,15 @@ class SVGEnum(SVGType):
         super().__init__(given_str, type, start_idx)
 
     def encode(self):
-        return self.dict.get_encode_dict(self.attr_name, self.given_str)
+        result = self.dict.get_encode_dict(self.attr_name, self.given_str)
+        if result != None:
+            return result
+        return SVGString(self.given_str, type='encoder').translate()
     
-    def decode(self): 
+    def decode(self):
+        seq = self.given_str
+        if seq[self.start_idx] == 'G':
+            return SVGString(seq, type='decoder', start_idx=self.start_idx).translate()
         return self.dict.get_decode_dict(self.attr_name, self.given_str, self.start_idx)
     
 
