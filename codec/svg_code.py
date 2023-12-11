@@ -9,20 +9,22 @@ ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
              'enum': SVGEnum, 'coordinate': SVGCoordinate, 'pathd': SVGPathD}
 
 STD = '{http://www.w3.org/2000/svg}'
+CODE_3 = 'T' + SVGNumber(3, type='encoder', is_size=True).translate()[1:]
+LEN_CODE_3 = len(CODE_3)
 
 def encode_address(my_counter, first_child=-1, bro=-1):
     # 返回my_counter, first_child, bro的DNAseq
-    seq = ''
     # '0 1 2'
     address_str = str(my_counter) + ' '+str(first_child) + ' '+str(bro)
-    seq += SVGNumber(address_str, type='encoder', is_size = True).translate()
+    seq = SVGNumber(address_str, type='encoder', is_size = True).translate()[LEN_CODE_3:]
     return seq
 
 def decode_address(seq: str):
     '''传入以address开头的序列'''
     '''返回[my_counter, first_child, bro],end_idx'''
+    seq = CODE_3 + seq
     address_seq, end_idx = SVGNumber(seq, type='decoder', is_size = True).translate()
-    return address_seq.split(' '), end_idx
+    return address_seq.split(' '), end_idx - 5
 
 def encode_require(node: ET.Element, cur_tag: Tag) -> str:
     seq = ''

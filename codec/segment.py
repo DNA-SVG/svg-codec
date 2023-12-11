@@ -14,31 +14,31 @@ def split_long_strands(strands: List[str]) -> List[str]:
     ret_strands = []
     for strand in strands:
         tail = len(strand) % CONST_SEQ_MAX_LEN
-        addr = SVGNumber(str(svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[0][0]), type='encoder', is_size=True).translate()
+        addr = SVGNumber(svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[0][0], type='encoder', is_size=True).translate()
         # addr = strand[CONST_TAG_SEQ_LEN:svg_code.decode_address(strand[CONST_TAG_SEQ_LEN:])[1] + CONST_TAG_SEQ_LEN]
         l = len(strand)
         cnt = 0
         for i in range(0, l - tail - CONST_SEQ_MAX_LEN, CONST_SEQ_MAX_LEN):
             substrand = strand[i:i + CONST_SEQ_MAX_LEN]
-            substrand = CONST_LONG_IDN + addr + SVGNumber(str(cnt), type='encoder', is_size=True).translate() + substrand
+            substrand = CONST_LONG_IDN + addr + SVGNumber(cnt, type='encoder', is_size=True).translate() + substrand
             cnt += 1
             ret_strands.append(substrand)
 
         if (tail >= CONST_SEQ_MIN_LEN):
             for i in range (l - tail - CONST_SEQ_MAX_LEN, l, CONST_SEQ_MAX_LEN):
                 substrand = strand[i:i + CONST_SEQ_MAX_LEN]
-                substrand = CONST_LONG_IDN + addr + SVGNumber(str(cnt), type='encoder', is_size=True).translate() + substrand
+                substrand = CONST_LONG_IDN + addr + SVGNumber(cnt, type='encoder', is_size=True).translate() + substrand
                 cnt += 1
                 ret_strands.append(substrand)
         else:
             cur_pos = l - tail - CONST_SEQ_MAX_LEN
             len_left2 = (tail + CONST_SEQ_MAX_LEN) // 2
             left2_1 = strand[cur_pos:cur_pos+len_left2]
-            left2_1 = CONST_LONG_IDN + addr + SVGNumber(str(cnt), type='encoder', is_size=True).translate() + left2_1
+            left2_1 = CONST_LONG_IDN + addr + SVGNumber(cnt, type='encoder', is_size=True).translate() + left2_1
             ret_strands.append(left2_1)
 
             left2_2 = strand[cur_pos+len_left2:]
-            left2_2 = CONST_LONG_IDN + addr + SVGNumber(str(cnt+1), type='encoder', is_size=True).translate() + left2_2
+            left2_2 = CONST_LONG_IDN + addr + SVGNumber(cnt+1, type='encoder', is_size=True).translate() + left2_2
             ret_strands.append(left2_2)
 
     return ret_strands
@@ -55,7 +55,7 @@ def merge_short_strands(strands: List[str]) -> List[str]:
             ret_strands.append(cur_strand)
             cur_strand = CONST_SHORT_IDN
             cur_valid_len = 0
-        cur_strand += SVGNumber(str(l), type='encoder', is_size=True).translate() + strand
+        cur_strand += SVGNumber(l, type='encoder', is_size=True).translate() + strand
         cur_valid_len += l
 
     # 最后可能多出一条短链
