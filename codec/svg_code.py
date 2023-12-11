@@ -1,12 +1,12 @@
 import xml.etree.ElementTree as ET
 
-from .svg_type import SVGNumber, SVGString, SVGCoordinate, SVGEnum, SVGPathD
+from .svg_type import SVGNumber, SVGString, SVGEnum, SVGPathD
 
 from .svg_tag import *
 
 nt = tag_nt()
 ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
-             'enum': SVGEnum, 'coordinate': SVGCoordinate, 'pathd': SVGPathD}
+             'enum': SVGEnum, 'pathd': SVGPathD}
 
 STD = '{http://www.w3.org/2000/svg}'
 CODE_3 = 'T' + SVGNumber(3, type='encoder', is_size=True).translate()[1:]

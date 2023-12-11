@@ -3,7 +3,7 @@ import pytest, ruff
 
 from .encode_attr_type import str_to_seq, number_to_seq
 from .decode_attr_type import decode as decoder
-from .svg_type import SVGCoordinate, SVGNumber, SVGString
+from .svg_type import SVGNumber, SVGString
 from .path_d import ParserPathD
 from .svg_code import decode_tag, encode_tag
 from .segment import optimize_seq_len, restore_seq_len
@@ -32,9 +32,6 @@ class TestAttr:
 
 class TestType:
     def test_type(self):
-        n = SVGCoordinate('0,1', type='encoder').translate()
-        m, _ = SVGCoordinate(n, type='decoder').translate()
-        print(m)
         n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').translate()
         print(n)
         m, _ = SVGNumber(n, type='decoder', start_idx=0).translate()
