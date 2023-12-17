@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import pytest, ruff
 
 from .encode_attr_type import str_to_seq, number_to_seq
-from .decode_attr_type import decode as decoder
+from .decode_attr_type  import seq_to_number, seq_to_str
 from .svg_type import SVGNumber, SVGString
 from .path_d import ParserPathD
 from .svg_code import decode_tag, encode_tag
@@ -22,12 +22,12 @@ class TestAttr:
         print(str_to_seq('_x34_0-Id_Card'))
 
     def test_decode_attr(self):
-        assert(decoder(number_to_seq(-1))[0] == '-1')
-        assert(decoder(number_to_seq(45.0))[0] == '45')
-        assert(decoder(number_to_seq(10, True), is_size=True)[0] == 10)
-        dec = float(decoder(number_to_seq(3.05176e-05))[0])
+        assert(seq_to_number(number_to_seq(-1))[0] == -1)
+        assert(seq_to_number(number_to_seq(45.0))[0] == 45)
+        assert(seq_to_number(number_to_seq(10, True), is_size=True)[0] == 10)
+        dec = float(seq_to_number(number_to_seq(3.05176e-05))[0])
         assert(abs(dec - 3.05176e-05) < 1e-7)
-        assert(decoder(str_to_seq('_x34_0-Id_Card'))[0] == '_x34_0-Id_Card')
+        assert(seq_to_str(str_to_seq('_x34_0-Id_Card'))[0] == '_x34_0-Id_Card')
 
 
 class TestType:

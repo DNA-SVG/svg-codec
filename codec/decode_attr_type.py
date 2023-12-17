@@ -2,8 +2,7 @@ import struct
 
 dict_nt = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 # XXX: 必须和encode_attr_type.py中的MAX_SIZE_BITS一致
-MAX_SIZE_BITS = 7
-MAX_SIZE = (1 << MAX_SIZE_BITS) - 2
+MAX_SIZE_BITS = 6
 MAX_SIZE_NTS = (1 + MAX_SIZE_BITS) >> 1
 
 def seq_to_bin(str, x):
@@ -12,70 +11,78 @@ def seq_to_bin(str, x):
         ret += dict_nt[str[i]]
     return ret
 
+def __seq_to_size(seq, start_idx=-1):
+    ret = int(seq_to_bin(seq, MAX_SIZE_NTS), 2)
+    return ret - 1, start_idx + MAX_SIZE_NTS
 
-def decode(seq, start_idx=-1, is_size=False):
-    '''传入一段DNA片段返回对应的值'''
-    if is_size:
-        return __seq_to_number(seq, is_size, start_idx)
-    match seq[0]:
-        case 'A' | 'T':
-            return __seq_to_number(seq, is_size, start_idx)
-        case 'G':
-            return __seq_to_str(seq, start_idx)
-        case 'C':
-            return __seq_to_float(seq[1:17], start_idx)
-        case _:
-            return '', start_idx
+def __seq_to_int(seq, start_idx=-1):
+    length = int(seq_to_bin(seq, 2), 2) + 1
+    seq = seq[2:]
+    data = seq_to_bin(seq, length)
+    sign = 1
+    if data[0] == '1':
+        sign = -1
+    data = data[1:]
+    number = int(data, 2) * sign
+    return number, start_idx + length + 2
+    
+def __seq_to_short_float(seq, start_idx=-1):
+    params = seq_to_bin(seq, 4)
+    seq = seq[4:]
+    sign = ''
+    if params[0] == '1':
+        sign = '-'
+    binary_nts = int(params[1:4], 2) * 2
+    total_nts = binary_nts + 4
+    exponent = int(params[4:], 2) - 8
+    data = seq_to_bin(seq, binary_nts)
+    data = str(int(data, 2))
+    len_data = len(data)
 
+    if exponent < -3 or exponent >= len_data + 3:
+        if len_data > 1:
+            data = data[0] + '.' + data[1:]
+        data = data + 'e' + str(exponent)
+    elif exponent < 0:
+        data = '0.' + '0' * (-exponent - 1) + data
+        return sign + data, start_idx + total_nts
+    elif exponent == 0:
+        data = data[0] + '.' + data[1:]
+    elif exponent < len_data - 1:
+        data = data[:exponent + 1] + '.' + data[exponent + 1:]
+    elif exponent == len_data - 1:
+        pass
+    elif exponent < len_data + 3:
+        data += '0' * (exponent - len_data + 1)
+        
+    return sign + data, start_idx + total_nts
 
-def __seq_to_float(seq, start_idx=-1):
+def __seq_to_long_float(seq, start_idx=-1):
     binstr = seq_to_bin(seq, 16)
     binary = bytes(int(binstr[i:i + 8], 2) for i in range(0, 32, 8))
     ret = struct.unpack('>f', binary)[0]
     ret = str(ret)
-    return ret, start_idx + 17
+    return ret, start_idx + 16
 
+def seq_to_number(seq, start_idx=-1, is_size=False):
+    mark = seq[0]
+    seq = seq[1:]
+    start_idx += 1
+    match mark:
+        case 'A':
+            return __seq_to_int(seq, start_idx)
+        case 'T':
+            return __seq_to_short_float(seq, start_idx)
+        case 'C':
+            return __seq_to_long_float(seq, start_idx)
+        case 'G':
+            return __seq_to_size(seq, start_idx)
+        case _:
+            return 0, start_idx - 1
 
-def __seq_to_size(seq, start_idx=-1):
-    ret = MAX_SIZE - int(seq_to_bin(seq, MAX_SIZE_NTS)[1:], 2)
-    return ret, start_idx + MAX_SIZE_NTS
-
-
-def __seq_to_number(seq, is_size=False, start_idx=-1):
-    '''orders: 0 = use this codec(1 bit)
-    sign: 1 = +, 0 = -
-    ∵123.4567 = 1234567 * 0.1^4
-    ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
-    '''
-    if is_size and (seq[0] == 'G' or seq[0] == 'C'):
-        return __seq_to_size(seq, start_idx)
-    if is_size:
-        orders = seq_to_bin(seq, 2)
-        len_total = int(orders[1:4], 2) + 1
-        seq = seq[2:]
-    else:
-        orders = seq_to_bin(seq, 4)
-        seq = seq[4:]
-        sign = (orders[1] == '1')
-        len_total = int(orders[2:5], 2) + 1
-        len_below1 = int(orders[5:8], 2)
-    number_str = seq_to_bin(seq, len_total * 2)
-    num = int(number_str, 2)
-    if is_size:
-        return num, start_idx + 2 + 2 * len_total
-    ret = str(num)
-    if len_below1 == len(ret):
-        ret = '0.' + ret
-    elif len_below1 > 0:
-        ret = ret[:-len_below1] + '.' + ret[-len_below1:]
-    if not sign:
-        ret = '-' + ret
-    return ret, start_idx + 4 + 2 * len_total
-
-
-def __seq_to_str(seq, start_idx=-1):
+def seq_to_str(seq, start_idx=-1):
     ba = bytearray()
-    strlen, start_tag = __seq_to_number(seq[1:], True, 1)
+    strlen, start_tag = seq_to_number(seq, 0)
     strlen *= 4
     for i in range(start_tag, start_tag + strlen, 4):
         byte = ''

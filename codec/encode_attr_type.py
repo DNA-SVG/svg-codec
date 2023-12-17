@@ -1,9 +1,11 @@
-import struct
+import struct, re
 
 nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
 # XXX: 必须和decode_attr_type.py中的MAX_SIZE_BITS一致
-MAX_SIZE_BITS = 7
+MAX_SIZE_BITS = 6
 MAX_SIZE = (1 << MAX_SIZE_BITS) - 2
+MAX_SHORT_FLOAT_BITS = 24
+MAX_SHORT_FLOAT = (1 << MAX_SHORT_FLOAT_BITS) - 1
 
 def bin_to_seq(binSeq):
     n = len(binSeq)
@@ -18,109 +20,106 @@ def bin_to_seq(binSeq):
 
     return ret
 
-
-def float_to_seq(num):
-    """传入float,对应c标准的float(8 bit)"""
-    """以str形式返回编码dna序列"""
-
-    binary = format(struct.unpack('>I', struct.pack('>f',num))[0], '032b')
-    return 'C' + bin_to_seq(binary)
-
-
-def __split_int_str(number_str):
-    number = number_str
+def __erase_zero(number_str):
     if type(number_str) != str:
         number_str = str(number_str)
-    elif '.' in number_str or 'e' in number_str or 'E' in number_str:
-        number = float(number_str)
-    else:
-        number = int(number_str, 10)
-    return number, number_str
+    tmp_str = number_str
+    sign = ''
+    if number_str.startswith('-'):
+        tmp_str = number_str[1:]
+        sign = '-'
+    
+    exponent = 0
+    if 'e' in tmp_str or 'E' in tmp_str:
+        tmp_str, exponent = re.split(r'e|E', tmp_str)
+        exponent = int(exponent, 10)
+    
+    while tmp_str.startswith('0') and len(tmp_str) > 1 and tmp_str[1] != '.':
+        tmp_str = tmp_str[1:]
+    if '.' in tmp_str:
+        while tmp_str.endswith('0'):
+            tmp_str = tmp_str[:-1]
+        if tmp_str.endswith('.'):
+            tmp_str = tmp_str[:-1]
 
-def __size_to_seq(number):
-    binary = '1' + format(MAX_SIZE - number, '0' + str(MAX_SIZE_BITS) + 'b')
-    return bin_to_seq(binary)
+    return sign, tmp_str, exponent
 
-def __get_shrink_offset(str):
-    offset = -1
-    while str[offset] == '0':
-        offset -= 1
-    if str[offset] == '.':
-        offset -= 1
-    offset += 1
-    if offset < 0:
-        return str[:offset], -offset
+def __int_to_seq(number):
+    length = ''
+    if number <= MAX_SIZE and number >= -1:
+        mark = 'G'
+        data = format(number + 1, '0' + str(MAX_SIZE_BITS) + 'b')
     else:
-        return str, 0
+        mark = 'A'
+        data = format(number, 'b')
+        sign = '0'
+        if data.startswith('-'):
+            sign = '1'
+            data = data[1:]
+        if len(data) & 1 == 0:
+            data = '0' + data
+        data = sign + data
+        length = format(len(data) // 2 - 1, '04b')
 
-def __number_split(number_str, is_size):
-    if is_size:
-        return format(int(number_str), 'b'), '000'
-    len_below1 = ''
-    decs = str.split(number_str, '.')
-    if len(decs) > 1:
-        len_below1 = format(len(decs[1]),'03b')
+    return mark + bin_to_seq(length + data)
+
+def __float_to_seq_sys(number):
+    binary = format(struct.unpack('>I', struct.pack('>f', number))[0], '032b')
+    return 'C' + bin_to_seq(binary)
+
+def __float_to_seq(sign, coefficient, exponent):
+    mark = 'T'
+    if sign == '-':
+        sign = '1'
     else:
-        len_below1 = '000'
-    return format(int(''.join(decs), 10), 'b'), len_below1
+        sign = '0'
+    binary_number = format(int(coefficient, 10), 'b')
+    length_bin = len(binary_number)
+    if length_bin % 4 != 0:
+        binary_number = '0' * (4 - length_bin % 4) + binary_number
+        length_bin += 4 - length_bin % 4
+
+    ret = sign + format(length_bin // 4, '03b') + format(exponent + 8, '04b') + binary_number
+    return mark + bin_to_seq(ret)
 
 def number_to_seq(number_str, is_size=False):
-    ''' components:
-    Float(123456789): 'C'(10) + float_to_seq
-    Number(1234567.8): '0' + sign(1) + total(3) + below1(3) + binary(max 32)
-    Size_t(<8 bytes, positive int or 0): '0' + total(3) + binary(max 32)
-
-    ∵123.4567 = 1234567 * 0.1^4
-    ∴len_below1 = 4, 1234567 -> 0x12d687 -> len_total = 6
     '''
-    number, number_str = __split_int_str(number_str)
-    if is_size and number <= MAX_SIZE and number >= -1:
-        return __size_to_seq(number)
-    if 'e' in number_str or 'E' in number_str:
-        return float_to_seq(number)
-    length = len(number_str)
-    if '-' in number_str:
-        length -= 1
+    int -> A + length_nt(4 bit) + +/-(1 bit) + codec(max 31bit)
+    exsize \in [-1,31) -> G + codec(? nts)
+    float -> transfer to scientific notation, coefficient : 24 bit(IEEE float)
+    exponent \in [-8, 7] -> T + +/-(1 bit) + length_bytes(3 bit) + exponent(4 bit) + coefficient(max 5 * 4 bit)
+    else -> C + Float(32 bit)
+    '''
+    sign, number_str, exponent = __erase_zero(number_str)
+    if not '.' in number_str and exponent == 0:
+        return __int_to_seq(int(sign + number_str, 10))
+    orginal_float = float(sign + number_str) * (10 ** exponent)
+    integer = ''
+    decimal = ''
     if '.' in number_str:
-        number_str, offset = __get_shrink_offset(number_str)
-        length -= (offset + 1)
-    if length > 8:
-        return float_to_seq(number)
-
-    sign = '1'
-    if number_str[0] == '-':
-        sign = '0'
-        number_str = number_str[1:]
-    number_str, len_below1 = __number_split(number_str, is_size)
-    # clear 0s at the beginning
-    offset = 0
-    numberstrlen = len(number_str)
-    while number_str[offset] == '0' and offset < numberstrlen - 1:
-        offset += 1
-    number_str = number_str[offset:]
-    numberstrlen -= offset
-
-    # refill 0s for hexa digits
-    if numberstrlen % 4 == 0:
-        delta_zero = 0
+        integer, decimal = re.split(r'\.', number_str)
     else:
-        delta_zero = 4 - numberstrlen % 4
-    number_str = '0' * delta_zero + number_str
+        integer = number_str
+    
+    if exponent == len(decimal):
+        return __int_to_seq(int(sign + integer + decimal, 10))
+    coefficient = integer + decimal
+    coefficient_value = int(coefficient, 10)
+    coefficient = str(coefficient_value)
+    if coefficient_value > MAX_SHORT_FLOAT:
+        return __float_to_seq_sys(orginal_float)
+    exponent -= (len(decimal) - (len(coefficient) - 1))
+    if exponent > 7 or exponent < -8:
+        return __float_to_seq_sys(orginal_float)
 
-    # Hexa digits
-    len_total = format(len(number_str) // 4 - 1, '03b')
-    if is_size:
-        ret = '0' + len_total + number_str
-    else:
-        ret = '0' + sign + len_total + len_below1 + number_str
-    return bin_to_seq(ret)
+    return __float_to_seq(sign, coefficient, exponent)
 
 def str_to_seq(s):
     binary = ''
     if s == None:
-        return 'G' + number_to_seq(0, True)
+        return number_to_seq(0)
     byte = s.encode("utf-8")
     for ch in byte:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
-    return 'G' + number_to_seq(len(byte), True) + bin_to_seq(binary)
+    return number_to_seq(len(byte), True) + bin_to_seq(binary)

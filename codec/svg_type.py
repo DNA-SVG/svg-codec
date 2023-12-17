@@ -1,5 +1,5 @@
-from . import decode_attr_type as decoder
-from . import encode_attr_type as encoder
+from .decode_attr_type import seq_to_number, seq_to_str
+from .encode_attr_type import number_to_seq, str_to_seq
 import re
 from typing import Tuple
 from .path_d import ParserPathD as dparser
@@ -44,7 +44,7 @@ class SVGNumber(SVGType):
         if len(numbers) == 1:
             seq = 'A'
         else:
-            seq = 'T' + encoder.number_to_seq(len(numbers), True)
+            seq = 'T' + number_to_seq(len(numbers), True)
         for number in numbers:
             if number.startswith('.'):
                 number = '0' + number
@@ -52,7 +52,7 @@ class SVGNumber(SVGType):
             if re.match(r'^[+-]?\d+(?:\.\d+)?(?:[eE][-+]\d+)?(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
-                seq += encoder.number_to_seq(number, is_size=self.is_size)
+                seq += number_to_seq(number, is_size=self.is_size)
             else:
                 print('error: value type not supported')
         return seq
@@ -62,14 +62,14 @@ class SVGNumber(SVGType):
         if sub_seq[0] == 'C':
             return None, self.start_idx + 1
         elif sub_seq[0] == 'A':
-            ret, end_idx = decoder.decode(sub_seq[1:], self.start_idx + 1, self.is_size)
+            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx + 1, self.is_size)
             return ret, end_idx
         elif sub_seq[0] == 'T':
             ret = []
             index = self.start_idx
-            number_length, index = decoder.decode(sub_seq[1:], index + 1, True)
+            number_length, index = seq_to_number(sub_seq[1:], index + 1, True)
             for _ in range(0, number_length):
-                number, index = decoder.decode(self.given_str[index:], index, self.is_size)
+                number, index = seq_to_number(self.given_str[index:], index, self.is_size)
                 ret.append(number)
             return (' '.join(str(i) for i in ret), index)
         else:
@@ -81,10 +81,10 @@ class SVGString(SVGType):
         super().__init__(given_str, type, start_idx)
 
     def encode(self):
-        return encoder.str_to_seq(self.given_str)
+        return str_to_seq(self.given_str)
 
     def decode(self):
-        return decoder.decode(self.given_str[self.start_idx:], self.start_idx)
+        return seq_to_str(self.given_str[self.start_idx:], self.start_idx)
 
 
 class SVGEnum(SVGType):
