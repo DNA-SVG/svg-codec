@@ -64,7 +64,7 @@ def __seq_to_long_float(seq, start_idx=-1):
     ret = str(ret)
     return ret, start_idx + 16
 
-def seq_to_number(seq, start_idx=-1, is_size=False):
+def seq_to_number(seq, start_idx=-1):
     mark = seq[0]
     seq = seq[1:]
     start_idx += 1

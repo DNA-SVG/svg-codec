@@ -82,11 +82,11 @@ class ParserPathD:
             codec, offset_tag = self.__encoder_single(data)
             ret += codec
             leng += offset_tag
-        return number_to_seq(leng, True) + ret
+        return number_to_seq(leng) + ret
 
     def decoder(self, string, start_idx = 0):
         # get number of commands
-        leng, idx = seq_to_number(string, start_idx, is_size=True)
+        leng, idx = seq_to_number(string, start_idx)
         string = string[idx:]
         ret = ''
         for _ in range(0, leng):

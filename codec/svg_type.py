@@ -29,8 +29,7 @@ class SVGType:
 # 单个数字：'A'+数字对应编码
 # 多个数字：'T'+数字个数(size_t)+数字1+数字2+...
 class SVGNumber(SVGType):
-    def __init__(self, given_str: str, type='encoder', start_idx=0, is_size=False) -> None:
-        self.is_size = is_size
+    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
         super().__init__(given_str, type, start_idx)
 
     def encode(self):
@@ -44,7 +43,7 @@ class SVGNumber(SVGType):
         if len(numbers) == 1:
             seq = 'A'
         else:
-            seq = 'T' + number_to_seq(len(numbers), True)
+            seq = 'T' + number_to_seq(len(numbers))
         for number in numbers:
             if number.startswith('.'):
                 number = '0' + number
@@ -52,7 +51,7 @@ class SVGNumber(SVGType):
             if re.match(r'^[+-]?\d+(?:\.\d+)?(?:[eE][-+]\d+)?(px)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
-                seq += number_to_seq(number, is_size=self.is_size)
+                seq += number_to_seq(number)
             else:
                 print('error: value type not supported')
         return seq
@@ -62,14 +61,14 @@ class SVGNumber(SVGType):
         if sub_seq[0] == 'C':
             return None, self.start_idx + 1
         elif sub_seq[0] == 'A':
-            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx + 1, self.is_size)
+            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx + 1)
             return ret, end_idx
         elif sub_seq[0] == 'T':
             ret = []
             index = self.start_idx
-            number_length, index = seq_to_number(sub_seq[1:], index + 1, True)
+            number_length, index = seq_to_number(sub_seq[1:], index + 1)
             for _ in range(0, number_length):
-                number, index = seq_to_number(self.given_str[index:], index, self.is_size)
+                number, index = seq_to_number(self.given_str[index:], index)
                 ret.append(number)
             return (' '.join(str(i) for i in ret), index)
         else:

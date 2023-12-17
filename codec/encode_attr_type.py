@@ -82,7 +82,7 @@ def __float_to_seq(sign, coefficient, exponent):
     ret = sign + format(length_bin // 4, '03b') + format(exponent + 8, '04b') + binary_number
     return mark + bin_to_seq(ret)
 
-def number_to_seq(number_str, is_size=False):
+def number_to_seq(number_str):
     '''
     int -> A + length_nt(4 bit) + +/-(1 bit) + codec(max 31bit)
     exsize \in [-1,31) -> G + codec(? nts)
@@ -122,4 +122,4 @@ def str_to_seq(s):
     for ch in byte:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
-    return number_to_seq(len(byte), True) + bin_to_seq(binary)
+    return number_to_seq(len(byte)) + bin_to_seq(binary)

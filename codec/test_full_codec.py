@@ -18,13 +18,13 @@ class TestAttr:
     def test_encode_attr(self):
         print(number_to_seq(-1))
         print(number_to_seq(45.0))
-        print(number_to_seq(10, True))
+        print(number_to_seq(10))
         print(str_to_seq('_x34_0-Id_Card'))
 
     def test_decode_attr(self):
         assert(seq_to_number(number_to_seq(-1))[0] == -1)
         assert(seq_to_number(number_to_seq(45.0))[0] == 45)
-        assert(seq_to_number(number_to_seq(10, True), is_size=True)[0] == 10)
+        assert(seq_to_number(number_to_seq(10))[0] == 10)
         dec = float(seq_to_number(number_to_seq(3.05176e-05))[0])
         assert(abs(dec - 3.05176e-05) < 1e-7)
         assert(seq_to_str(str_to_seq('_x34_0-Id_Card'))[0] == '_x34_0-Id_Card')
