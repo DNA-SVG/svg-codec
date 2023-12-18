@@ -31,7 +31,7 @@ class Tag:
             if classes.get(attr_name) != None:
                 ret[attr_name] = classes.get(attr_name)
             else:
-                ret[attr_name] = (SVGString(attr_name, type='encoder').translate(), 'str')
+                ret[attr_name] = ('G' + SVGString(attr_name, type='encoder').translate(), 'str')
         return ret
     
     @classmethod
@@ -77,7 +77,7 @@ class feBlend(Tag):
     class_len = 1
 
 class feColorMatrix(Tag):
-    required_class = {'type': 'str', 'values': 'number'}
+    required_class = {'type': 'enum', 'values': 'number'}
     optional_class = {'in': ('A', 'enum'), 'result': ('C', 'str')}
     class_len = 1
 

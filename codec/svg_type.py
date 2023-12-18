@@ -61,7 +61,8 @@ class SVGNumber(SVGType):
         if sub_seq[0] == 'C':
             return None, self.start_idx + 1
         elif sub_seq[0] == 'A':
-            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx + 1)
+            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx)
+            end_idx += 1
             return ret, end_idx
         elif sub_seq[0] == 'T':
             ret = []
@@ -96,11 +97,12 @@ class SVGEnum(SVGType):
         result = self.dict.get_encode_dict(self.attr_name, self.given_str)
         if result != None:
             return result
-        return SVGString(self.given_str, type='encoder').translate()
+        return 'G' + SVGString(self.given_str, type='encoder').translate()
     
     def decode(self):
         seq = self.given_str
         if seq[self.start_idx] == 'G':
+            self.start_idx += 1
             return SVGString(seq, type='decoder', start_idx=self.start_idx).translate()
         return self.dict.get_decode_dict(self.attr_name, self.given_str, self.start_idx)
     

@@ -81,7 +81,8 @@ def decode_optional(seq: str, tag: Tag):
     ret = []
     for _ in range(total):
         if seq[0] == 'G':
-            attr_name, idx = SVGString(seq, type='decoder', start_idx=idx).translate()
+            attr_name, idx = SVGString(seq[1:], type='decoder', start_idx=idx).translate()
+            idx = idx + 1
             type = 'str'
         elif seq[:public_len] in public_list.keys():
             attr_name, type = public_list.get(seq[:public_len])

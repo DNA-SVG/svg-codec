@@ -1,9 +1,10 @@
 import struct
+from decimal import Decimal
 
 dict_nt = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 # XXX: 必须和encode_attr_type.py中的MAX_SIZE_BITS一致
 MAX_SIZE_BITS = 6
-MAX_SIZE_NTS = (1 + MAX_SIZE_BITS) >> 1
+MAX_SIZE_NTS = MAX_SIZE_BITS >> 1
 
 def seq_to_bin(str, x):
     ret = ''
@@ -29,33 +30,18 @@ def __seq_to_int(seq, start_idx=-1):
 def __seq_to_short_float(seq, start_idx=-1):
     params = seq_to_bin(seq, 4)
     seq = seq[4:]
-    sign = ''
+    sign = 0
     if params[0] == '1':
-        sign = '-'
+        sign = 1
     binary_nts = int(params[1:4], 2) * 2
     total_nts = binary_nts + 4
-    exponent = int(params[4:], 2) - 8
+    exponent = -int(params[4:], 2)
     data = seq_to_bin(seq, binary_nts)
     data = str(int(data, 2))
-    len_data = len(data)
+    value = tuple(int(char) for char in data)
 
-    if exponent < -3 or exponent >= len_data + 3:
-        if len_data > 1:
-            data = data[0] + '.' + data[1:]
-        data = data + 'e' + str(exponent)
-    elif exponent < 0:
-        data = '0.' + '0' * (-exponent - 1) + data
-        return sign + data, start_idx + total_nts
-    elif exponent == 0:
-        data = data[0] + '.' + data[1:]
-    elif exponent < len_data - 1:
-        data = data[:exponent + 1] + '.' + data[exponent + 1:]
-    elif exponent == len_data - 1:
-        pass
-    elif exponent < len_data + 3:
-        data += '0' * (exponent - len_data + 1)
-        
-    return sign + data, start_idx + total_nts
+    decimal = Decimal((sign, value, exponent)).normalize()
+    return str(decimal), start_idx + total_nts
 
 def __seq_to_long_float(seq, start_idx=-1):
     binstr = seq_to_bin(seq, 16)

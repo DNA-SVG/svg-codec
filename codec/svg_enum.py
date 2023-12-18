@@ -14,6 +14,7 @@ class EnumDict:
     dict['stroke-linejoin'] = {'miter': 'A', 'round': 'C', 'bevel': 'T'}
     dict['in'] = {'SourceGraphic': 'AC', 'SourceAlpha': 'AG', 'BackgroundImage': 'CA', 'BackgroundAlpha': 'CG', 'FillPaint': 'TA', 'StrokePaint': 'TC'}
     dict['in2'] = {'shape': 'AC', 'SourceGraphic': 'AG', 'SourceAlpha': 'AT', 'hardAlpha': 'CA', 'BackgroundImage': 'CG', 'BackgroundAlpha': 'CT', 'BackgroundImageFix': 'TA', 'FillPaint': 'TC', 'StrokePaint': 'TG'}
+    dict['type'] = {'matrix': 'AC', 'saturate': 'AG', 'hueRotate': 'AT', 'luminanceToAlpha': 'CA'}
 
     def get_encode_dict(self, attr_name, attr_value):
         return self.dict[attr_name].get(attr_value)
