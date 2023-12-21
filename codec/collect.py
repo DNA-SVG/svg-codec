@@ -16,5 +16,6 @@ class CollectMethod:
     @classmethod
     def return_collect(self):
         if len(self.collect_dict) > 0:
-            print(self.collect_dict)
+            sorted_dict = sorted(self.collect_dict.items(), key=lambda x: x[1], reverse=True)
+            print(sorted_dict)
         print(self.collect_number)

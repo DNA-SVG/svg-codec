@@ -1,6 +1,6 @@
 import struct, re, math
 from decimal import Decimal
-# from .collect import CollectMethod
+from .collect import CollectMethod
 
 nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
 color_words = ['black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua']
@@ -135,6 +135,7 @@ def color_to_seq(s):
         case 2:
             seq = 'TAT'
             seq += bin_to_seq(format(ret[1], '04b'))
+            return seq
         case _:
             return None
 
@@ -146,6 +147,7 @@ def str_to_seq(s):
     color_str = color_to_seq(s)
     if color_str != None:
         return color_str
+    # CollectMethod.dict_collect(s)
     binary = ''
     if s == None:
         return number_to_seq(0)
@@ -153,5 +155,5 @@ def str_to_seq(s):
     for ch in byte:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
-    # CollectMethod.collect(len(number_to_seq(len(byte)) + bin_to_seq(binary)))
+    # CollectMethod.number_collect(len(number_to_seq(len(byte)) + bin_to_seq(binary)))
     return number_to_seq(len(byte)) + bin_to_seq(binary)

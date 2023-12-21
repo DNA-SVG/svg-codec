@@ -60,6 +60,8 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
     for attr_name, _ in node.items():
         if attr_name in cur_tag.get_required():
             continue
+        if attr_name.startswith('{http://sodipodi.'):
+            continue
         attr_optional.append(attr_name)
         total += 1
     attr_types = cur_tag.get_encode_optional(attr_optional)
