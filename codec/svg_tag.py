@@ -31,7 +31,7 @@ class Tag:
             if classes.get(attr_name) != None:
                 ret[attr_name] = classes.get(attr_name)
             else:
-                ret[attr_name] = ('G' + SVGString(attr_name, type='encoder').encode(), 'str')
+                ret[attr_name] = ('G' + SVGString(attr_name).encode(), 'str')
         return ret
     
     @classmethod

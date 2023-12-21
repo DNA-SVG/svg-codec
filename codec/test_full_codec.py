@@ -33,13 +33,13 @@ class TestAttr:
 
 class TestType:
     def test_type(self):
-        n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').encode()
+        n = SVGNumber('38.7px .5px 40.83284px 0px').encode()
         print(n)
-        m, _ = SVGNumber(n, type='decoder', start_idx=0).decode()
+        m, _ = SVGNumber(n, start_idx=0).decode()
         print(m)
-        s = SVGString('hello', type='encoder').encode()
+        s = SVGString('hello').encode()
         print(s)
-        ss, _ = SVGString(s, type='decoder', start_idx=0).decode()
+        ss, _ = SVGString(s, start_idx=0).decode()
         print(ss)
 
     def test_path_d(self):

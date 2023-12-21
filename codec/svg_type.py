@@ -7,31 +7,15 @@ from .transform import ParserTransform as trparser
 from .svg_enum import EnumDict
 
 class SVGType:
-    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
+    def __init__(self, given_str: str, start_idx=0) -> None:
         self.given_str = given_str
         self.start_idx = start_idx
-        self.type = type
-
-    def encode(self) -> str:
-        pass
-
-    def decode(self) -> Tuple[str, int]:
-        pass
-
-    def translate(self):
-        if self.type == 'encoder':
-            return self.encode()
-        elif self.type == 'decoder':
-            return self.decode()
-        else:
-            print('error: wrong codec type')
-
-
+        
 # 单个数字：'A'+数字对应编码
 # 多个数字：'T'+数字个数(size_t)+数字1+数字2+...
 class SVGNumber(SVGType):
-    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
-        super().__init__(given_str, type, start_idx)
+    def __init__(self, given_str: str, start_idx=0) -> None:
+        super().__init__(given_str, start_idx)
 
     def encode(self):
         value = self.given_str
@@ -78,8 +62,8 @@ class SVGNumber(SVGType):
 
 
 class SVGString(SVGType):
-    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
-        super().__init__(given_str, type, start_idx)
+    def __init__(self, given_str: str, start_idx=0) -> None:
+        super().__init__(given_str, start_idx)
 
     def encode(self):
         return str_to_seq(self.given_str)
@@ -90,28 +74,28 @@ class SVGString(SVGType):
 
 class SVGEnum(SVGType):
     dict = EnumDict()
-    def __init__(self, attr_name, given_str, type='encoder', start_idx=0) -> None:
+    def __init__(self, attr_name, given_str, start_idx=0) -> None:
         self.attr_name = attr_name
-        super().__init__(given_str, type, start_idx)
+        super().__init__(given_str, start_idx)
 
     def encode(self):
         result = self.dict.get_encode_dict(self.attr_name, self.given_str)
         if result != None:
             return result
-        return 'G' + SVGString(self.given_str, type='encoder').encode()
+        return 'G' + SVGString(self.given_str).encode()
     
     def decode(self):
         seq = self.given_str
         if seq[self.start_idx] == 'G':
             self.start_idx += 1
-            return SVGString(seq, type='decoder', start_idx=self.start_idx).decode()
+            return SVGString(seq, start_idx=self.start_idx).decode()
         return self.dict.get_decode_dict(self.attr_name, self.given_str, self.start_idx)
     
 
 class SVGPathD(SVGType):
     parser = dparser()
-    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
-        super().__init__(given_str, type, start_idx)
+    def __init__(self, given_str: str, start_idx=0) -> None:
+        super().__init__(given_str, start_idx)
 
     def encode(self):
         return self.parser.encoder(self.given_str)
@@ -122,8 +106,8 @@ class SVGPathD(SVGType):
 
 class SVGTransform(SVGType):
     parser = trparser()
-    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
-        super().__init__(given_str, type, start_idx)
+    def __init__(self, given_str: str, start_idx=0) -> None:
+        super().__init__(given_str, start_idx)
 
     def encode(self):
         return self.parser.encoder(self.given_str)

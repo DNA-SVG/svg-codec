@@ -9,21 +9,21 @@ ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
              'enum': SVGEnum, 'pathd': SVGPathD, 'trans': SVGTransform}
 
 STD = '{http://www.w3.org/2000/svg}'
-CODE_3 = 'T' + SVGNumber(3, type='encoder').encode()[1:]
+CODE_3 = 'T' + SVGNumber(3).encode()[1:]
 LEN_CODE_3 = len(CODE_3)
 
 def encode_address(my_counter, first_child=-1, bro=-1):
     # 返回my_counter, first_child, bro的DNAseq
     # '0 1 2'
     address_str = str(my_counter) + ' '+str(first_child) + ' '+str(bro)
-    seq = SVGNumber(address_str, type='encoder').encode()[LEN_CODE_3:]
+    seq = SVGNumber(address_str).encode()[LEN_CODE_3:]
     return seq
 
 def decode_address(seq: str):
     '''传入以address开头的序列'''
     '''返回[my_counter, first_child, bro],end_idx'''
     seq = CODE_3 + seq
-    address_seq, end_idx = SVGNumber(seq, type='decoder').decode()
+    address_seq, end_idx = SVGNumber(seq).decode()
     return address_seq.split(' '), end_idx - 5
 
 def encode_require(node: ET.Element, cur_tag: Tag) -> str:
@@ -34,9 +34,9 @@ def encode_require(node: ET.Element, cur_tag: Tag) -> str:
         else:
             attr_value = node.get(attr_name)
         if attr_type == 'enum':
-            seq += SVGEnum(attr_name, attr_value, type='encoder').encode()
+            seq += SVGEnum(attr_name, attr_value).encode()
         else:
-            seq += ATTR_CODE[attr_type](attr_value, type='encoder').encode()
+            seq += ATTR_CODE[attr_type](attr_value).encode()
     return seq
 
 def decode_require(seq: str, cur_tag: Tag):
@@ -46,9 +46,9 @@ def decode_require(seq: str, cur_tag: Tag):
     idx = 0
     for attr_name, attr_type in cur_tag.get_required().items():
         if attr_type == 'enum':
-            attr_val, idx = SVGEnum(attr_name, seq, type='decoder', start_idx=idx).decode()
+            attr_val, idx = SVGEnum(attr_name, seq, start_idx=idx).decode()
         else:
-            attr_val, idx = ATTR_CODE[attr_type](seq, type='decoder', start_idx=idx).decode()
+            attr_val, idx = ATTR_CODE[attr_type](seq, start_idx=idx).decode()
         if attr_val != None:
             ret_list.append([attr_name, attr_val])
     return ret_list, idx
@@ -67,13 +67,13 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
     for name, (codec, type, value) in codec_type_value.items():
         seq += codec
         if type == 'enum':
-            seq += SVGEnum(name, value, type='encoder').encode()
+            seq += SVGEnum(name, value).encode()
         else:
-            seq += ATTR_CODE[type](value, type='encoder').encode()
-    return SVGNumber(total, type='encoder').encode() + seq
+            seq += ATTR_CODE[type](value).encode()
+    return SVGNumber(total).encode() + seq
 
 def decode_optional(seq: str, tag: Tag):
-    total, idx = SVGNumber(seq, type='decoder').decode()
+    total, idx = SVGNumber(seq).decode()
     seq = seq[idx:]
     idx = 0
     public_list, public_len = tag.get_decode_public()
@@ -81,7 +81,7 @@ def decode_optional(seq: str, tag: Tag):
     ret = []
     for _ in range(total):
         if seq[0] == 'G':
-            attr_name, idx = SVGString(seq[1:], type='decoder', start_idx=idx).decode()
+            attr_name, idx = SVGString(seq[1:], start_idx=idx).decode()
             idx = idx + 1
             type = 'str'
         elif seq[:public_len] in public_list.keys():
@@ -94,9 +94,9 @@ def decode_optional(seq: str, tag: Tag):
             attr_name = ''
             type = 'str'
         if type == 'enum':
-            attr_value, idx = SVGEnum(attr_name, seq, type='decoder', start_idx=idx).decode()
+            attr_value, idx = SVGEnum(attr_name, seq, start_idx=idx).decode()
         else:
-            attr_value, idx = ATTR_CODE[type](seq, type='decoder', start_idx=idx).decode()
+            attr_value, idx = ATTR_CODE[type](seq, start_idx=idx).decode()
         seq = seq[idx:]
         idx = 0
         ret.append([attr_name, attr_value])
