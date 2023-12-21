@@ -2,9 +2,7 @@ import re
 from .encode_attr_type import number_to_seq, bin_to_seq
 from .decode_attr_type import seq_to_number, seq_to_bin
 class ParserPathD:
-    nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
     param_table = {'z': 0, 'Z': 0, 'h': 1, 'H': 1, 'v': 1, 'V': 1, 'm': 2, 'M': 2, 'l': 2, 'L': 2, 't': 2, 'T': 2, 's': 4, 'S': 4, 'q': 4, 'Q': 4, 'c': 6, 'C': 6, 'a': 7, 'A': 7}
-    dict_nt = {v:k for k, v in nt_dict.items()}
 
     def __encode_tag(self, tag):
         # 1 bit is a or A

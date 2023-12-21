@@ -15,7 +15,7 @@ class tag_nt:
 
 class Tag:
     required_class = {}
-    optional_class = {'id': ('TA', 'str'), 'class': ('TC', 'str'), 'fill': ('TG' ,'str'), 'transform': ('TT', 'str')}
+    optional_class = {'id': ('TA', 'str'), 'class': ('TC', 'str'), 'fill': ('TG' ,'str'), 'transform': ('TT', 'trans')}
     class_len = 2
 
     @classmethod
@@ -31,7 +31,7 @@ class Tag:
             if classes.get(attr_name) != None:
                 ret[attr_name] = classes.get(attr_name)
             else:
-                ret[attr_name] = ('G' + SVGString(attr_name, type='encoder').translate(), 'str')
+                ret[attr_name] = ('G' + SVGString(attr_name, type='encoder').encode(), 'str')
         return ret
     
     @classmethod
@@ -72,32 +72,32 @@ class ellipse(Tag):
     class_len = 1
 
 class feBlend(Tag):
-    required_class = {'result': 'str', 'in2': 'enum', 'mode': 'enum'}
+    required_class = {'result': 'enum', 'in2': 'enum', 'mode': 'enum'}
     optional_class = {'in': ('A', 'enum')}
     class_len = 1
 
 class feColorMatrix(Tag):
     required_class = {'type': 'enum', 'values': 'number'}
-    optional_class = {'in': ('A', 'enum'), 'result': ('C', 'str')}
+    optional_class = {'in': ('A', 'enum'), 'result': ('C', 'enum')}
     class_len = 1
 
 class feComposite(Tag):
     required_class = {'in2': 'enum', 'operator': 'enum'}
-    optional_class = {'k1': ('AC', 'number'), 'k2': ('AG', 'number'), 'k3': ('AT', 'number'), 'k4': ('CA', 'number'), 'result': ('CG', 'str'), 'in': ('CT', 'enum')}
+    optional_class = {'k1': ('AC', 'number'), 'k2': ('AG', 'number'), 'k3': ('AT', 'number'), 'k4': ('CA', 'number'), 'result': ('CG', 'enum'), 'in': ('CT', 'enum')}
     class_len = 2
 
 class feFlood(Tag):
-    required_class = {'flood-opacity': 'number', 'result': 'str'}
+    required_class = {'flood-opacity': 'number', 'result': 'enum'}
     optional_class = {}
     class_len = 0
 
 class feGaussianBlur(Tag):
     required_class = {'stdDeviation': 'number'}
-    optional_class = {'in': ('A', 'enum'), 'result': ('C', 'str')}
+    optional_class = {'in': ('A', 'enum'), 'result': ('C', 'enum')}
     class_len = 1
 
 class feMorphology(Tag):
-    required_class = {'in': 'enum', 'operator': 'enum', 'radius': 'number', 'result': 'str'}
+    required_class = {'in': 'enum', 'operator': 'enum', 'radius': 'number', 'result': 'enum'}
     optional_class = {}
     class_len = 0
 
@@ -123,7 +123,7 @@ class line(Tag):
 
 class linearGradient(Tag):
     required_class = {'x1': 'number', 'y1': 'number', 'x2': 'number', 'y2': 'number'}
-    optional_class = {'gradientTransform': ('AG', 'str'), 'href': ('AT', 'str'), 'gradientUnits': ('CG', 'enum')}
+    optional_class = {'gradientTransform': ('AG', 'trans'), 'href': ('AT', 'str'), 'gradientUnits': ('CG', 'enum')}
     class_len = 2
 
 class mask(Tag):
@@ -148,7 +148,7 @@ class polyline(Tag):
 
 class radialGradient(Tag):
     required_class = {'cx': 'number', 'cy': 'number', 'r': 'number', 'gradientUnits': 'enum'}  
-    optional_class = {'gradientTransform': ('A', 'str')}
+    optional_class = {'gradientTransform': ('A', 'trans')}
     class_len = 1
 
 class rect(Tag):
@@ -158,7 +158,7 @@ class rect(Tag):
 
 class stop(Tag):
     required_class = {'stop-color': 'str'}
-    optional_class = {'offset': ('A', 'str')}
+    optional_class = {'offset': ('A', 'number'), 'stop-opacity': ('C', 'number')}
     class_len = 1
 
 class style(Tag):

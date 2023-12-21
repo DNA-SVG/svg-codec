@@ -1,7 +1,9 @@
-import struct, re
+import struct, re, math
 from decimal import Decimal
+# from .collect import CollectMethod
 
 nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
+color_words = ['black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua']
 # XXX: 必须和decode_attr_type.py中的MAX_SIZE_BITS一致
 MAX_SIZE_BITS = 6
 MAX_SIZE = (1 << MAX_SIZE_BITS) - 2
@@ -28,9 +30,11 @@ def __normalize(number_str):
         return True, value < 0, int(value), 0
     else:
         decimal = decimal.normalize()
-        sign, digits, exponent = decimal.as_tuple()
-        digits = ''.join(map(str, digits))
-        return False, sign == 1, int(digits), exponent
+        sign, digit_tuple, exponent = decimal.as_tuple()
+        digits = 0
+        for digit in digit_tuple:
+            digits = digits * 10 + digit
+        return False, sign == 1, digits, exponent
 
 def __int_to_seq(sign, number):
     length = ''
@@ -45,10 +49,12 @@ def __int_to_seq(sign, number):
         else:
             sign = '0'
         data = format(number, 'b')
-        if len(data) & 1 == 0:
+        length = math.floor(math.log2(number)) + 1
+        if length & 1 == 0:
             data = '0' + data
+            length += 1
         data = sign + data
-        length = format((len(data) >> 1) - 1, '04b')
+        length = format(((length + 1) >> 1) - 1, '04b')
 
     return mark + bin_to_seq(length + data)
 
@@ -63,7 +69,7 @@ def __float_to_seq(sign, coefficient, exponent):
     else:
         sign = '0'
     binary_number = format(coefficient, 'b')
-    length_bin = len(binary_number)
+    length_bin = math.floor(math.log2(coefficient)) + 1
     if length_bin % 4 != 0:
         binary_number = '0' * (4 - length_bin % 4) + binary_number
         length_bin += 4 - length_bin % 4
@@ -87,7 +93,59 @@ def number_to_seq(number_str):
     else:
         return __float_to_seq(sign, number, exponent)
 
+def __check_color(s):
+    '''
+    white, #FFFFFF, #FFF, rgb(255, 255, 255), rgb(100%, 100%, 100%)
+    '''
+    if s == None:
+        return -1, 0, 0, 0
+    if s in color_words:
+        return 2, color_words.index(s)
+    obj = re.match(r'#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$', s)
+    if obj != None:
+        return 0, int(obj.group(1), 16), int(obj.group(2), 16), int(obj.group(3), 16)
+    obj = re.match(r'#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$', s)
+    if obj != None:
+        return 0, int(obj.group(1), 16) * 17, int(obj.group(2), 16) * 17, int(obj.group(3), 16) * 17
+    obj = re.match(r'rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$', s)
+    if obj != None:
+        return 0, int(obj.group(1), 10), int(obj.group(2), 10), int(obj.group(3), 10)
+    obj = re.match(r'rgb\(\s*(\d+)\%\s*,\s*(\d+)\%\s*,\s*(\d+)\%\s*\)$', s)
+    if obj != None:
+        return 1, int(obj.group(1), 10), int(obj.group(2), 10), int(obj.group(3), 10)
+    return -1, 0, 0, 0
+
+def color_to_seq(s):
+    ret = __check_color(s)
+    match ret[0]:
+        case 0:
+            seq = 'TAA'
+            for i in range(1, 4):
+                if ret[i] > 255:
+                    ret[i] = 255
+                seq += bin_to_seq(format(ret[i], '08b'))
+            return seq
+        case 1:
+            seq = 'TAC'
+            for i in range(1, 4):
+                if ret[i] > 100:
+                    ret[i] = 100
+                seq += bin_to_seq(format(ret[i], '06b'))
+            return seq
+        case 2:
+            seq = 'TAT'
+            seq += bin_to_seq(format(ret[1], '04b'))
+        case _:
+            return None
+
 def str_to_seq(s):
+    '''
+    default: length + code(utf-8)
+    color: T + A + (A + rgb) or (T + word) or (C + %)
+    '''
+    color_str = color_to_seq(s)
+    if color_str != None:
+        return color_str
     binary = ''
     if s == None:
         return number_to_seq(0)
@@ -95,4 +153,5 @@ def str_to_seq(s):
     for ch in byte:
         tmp = bin(ch).replace('0b', '')
         binary += '0' * (8 - len(tmp)) + tmp
+    # CollectMethod.collect(len(number_to_seq(len(byte)) + bin_to_seq(binary)))
     return number_to_seq(len(byte)) + bin_to_seq(binary)

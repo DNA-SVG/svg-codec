@@ -3,6 +3,7 @@ import pytest, ruff
 
 from .encode_attr_type import str_to_seq, number_to_seq
 from .decode_attr_type  import seq_to_number, seq_to_str
+from .transform import ParserTransform
 from .svg_type import SVGNumber, SVGString
 from .path_d import ParserPathD
 from .svg_code import decode_tag, encode_tag
@@ -32,13 +33,13 @@ class TestAttr:
 
 class TestType:
     def test_type(self):
-        n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').translate()
+        n = SVGNumber('38.7px .5px 40.83284px 0px', type='encoder').encode()
         print(n)
-        m, _ = SVGNumber(n, type='decoder', start_idx=0).translate()
+        m, _ = SVGNumber(n, type='decoder', start_idx=0).decode()
         print(m)
-        s = SVGString('hello', type='encoder').translate()
+        s = SVGString('hello', type='encoder').encode()
         print(s)
-        ss, _ = SVGString(s, type='decoder', start_idx=0).translate()
+        ss, _ = SVGString(s, type='decoder', start_idx=0).decode()
         print(ss)
 
     def test_path_d(self):
@@ -47,6 +48,14 @@ class TestType:
         codec = parser.encoder(string)
         print(len(codec), 'nts,',
               '{:.2f}'.format(len(string) * 8 / len(codec)), 'bits/nt')
+        ret, _ = parser.decoder(codec)
+        print(ret)
+    
+    def test_transform(self):
+        parser = ParserTransform()
+        string = 'matrix(-1 8.74228e-08 8.74228e-08 1 6 8) matrix(-1,8.74228e-08,8.74228e-08,1,6,8)'
+        codec = parser.encoder(string)
+        print(codec)
         ret, _ = parser.decoder(codec)
         print(ret)
 

@@ -28,7 +28,7 @@ def ba_to_seq(ba: bytearray) -> str:
 def add_ecc(strands: List[str]) -> List[str]:
     ret_strands = []
     for strand in strands:
-        strand = SVGNumber(str(len(strand)), type='encoder').translate() + strand
+        strand = SVGNumber(str(len(strand)), type='encoder').encode() + strand
         if len(strand) % 4:
             strand += 'A' * (4 - len(strand) % 4)
         ba = seq_to_ba(strand)
@@ -49,7 +49,7 @@ def check_restore(strands: List[str]) -> List[str]:
             print('!')
             return []
         init_decode = ba_to_seq(ba)
-        rlen, end_idx = SVGNumber(init_decode, type='decoder').translate()
+        rlen, end_idx = SVGNumber(init_decode, type='decoder').decode()
         ret = init_decode[end_idx:end_idx+int(rlen)]
         ret_strands.append(ret)
 

@@ -3,6 +3,7 @@ from .encode_attr_type import number_to_seq, str_to_seq
 import re
 from typing import Tuple
 from .path_d import ParserPathD as dparser
+from .transform import ParserTransform as trparser
 from .svg_enum import EnumDict
 
 class SVGType:
@@ -97,18 +98,30 @@ class SVGEnum(SVGType):
         result = self.dict.get_encode_dict(self.attr_name, self.given_str)
         if result != None:
             return result
-        return 'G' + SVGString(self.given_str, type='encoder').translate()
+        return 'G' + SVGString(self.given_str, type='encoder').encode()
     
     def decode(self):
         seq = self.given_str
         if seq[self.start_idx] == 'G':
             self.start_idx += 1
-            return SVGString(seq, type='decoder', start_idx=self.start_idx).translate()
+            return SVGString(seq, type='decoder', start_idx=self.start_idx).decode()
         return self.dict.get_decode_dict(self.attr_name, self.given_str, self.start_idx)
     
 
 class SVGPathD(SVGType):
     parser = dparser()
+    def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
+        super().__init__(given_str, type, start_idx)
+
+    def encode(self):
+        return self.parser.encoder(self.given_str)
+    
+    def decode(self):
+        return self.parser.decoder(self.given_str, self.start_idx)
+    
+
+class SVGTransform(SVGType):
+    parser = trparser()
     def __init__(self, given_str: str, type='encoder', start_idx=0) -> None:
         super().__init__(given_str, type, start_idx)
 

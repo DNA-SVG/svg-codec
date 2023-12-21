@@ -2,6 +2,7 @@ import struct
 from decimal import Decimal
 
 dict_nt = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
+color_words = ['black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua']
 # XXX: 必须和encode_attr_type.py中的MAX_SIZE_BITS一致
 MAX_SIZE_BITS = 6
 MAX_SIZE_NTS = MAX_SIZE_BITS >> 1
@@ -66,7 +67,36 @@ def seq_to_number(seq, start_idx=-1):
         case _:
             return 0, start_idx - 1
 
+def seq_to_color(seq, start_idx=-1):
+    ret = ''
+    if seq[0] == 'A':
+        ret = '#'
+        seq = seq[1:]
+        for i in range(1, 4):
+            ret += format(int(seq_to_bin(seq, 4), 2), '02x')
+            seq = seq[4:]
+        return ret, start_idx + 13
+    elif seq[0] == 'C':
+        ret = 'rgb('
+        seq = seq[1:]
+        for i in range(0, 3):
+            ret += str(int(seq_to_bin(seq, 3), 2))
+            ret += '%'
+            seq = seq[3:]
+            if i != 2:
+                ret += ','
+        return ret + ')', start_idx + 10
+    elif seq[0] == 'T':
+        seq = seq[1:]
+        return color_words[int(seq_to_bin(seq, 2), 2)], start_idx + 3
+
+def seq_to_new_str(seq, start_idx=-1):
+    return seq_to_color(seq[2:], start_idx + 2)
+    pass
+
 def seq_to_str(seq, start_idx=-1):
+    if seq[0] == 'T' or seq[0] == 'C':
+        return seq_to_new_str(seq, start_idx)
     ba = bytearray()
     strlen, start_tag = seq_to_number(seq, 0)
     strlen *= 4
