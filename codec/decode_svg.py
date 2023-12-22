@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 from .svg_code import *
+from .str_list import *
 
 class Decoder:
     def get_allDNA(self, Tag_DNAseqlist):
@@ -60,6 +61,8 @@ class Decoder:
 
     def generate_svg(self, DNAseq):
         # 传入各个标签及参数的DNA序列list
+        # str_list_unpack(DNAseq[0])
+        # DNAseq = DNAseq[1:]
         allDNA = self.get_allDNA(DNAseq)  # 将DNAseq转化成各个标签及参数
         allDNA = sorted(allDNA, key=lambda x: int(x[1]))
         file = '<?xml version="1.0" ?>'

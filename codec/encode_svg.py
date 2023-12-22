@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 from .svg_code import *
+from .str_list import *
 
 class Encoder:
     IGNORE_TAGS = ['sodipodi:nameview', 'metadata']    
@@ -40,7 +41,11 @@ class Encoder:
         return root
 
     def encode_file(self, filename, bro_counter=-1, child_counter=1, my_counter=0):
+        # str_list_clear()
         with open(filename, 'r', encoding='utf-8') as f:
             root = ET.fromstring(f.read())
             root = self.__pre_process(root)
-            return self.__dfs(root, bro_counter, child_counter, my_counter)
+            seqs = self.__dfs(root, bro_counter, child_counter, my_counter)
+            # seq_str_list = str_list_pack()
+            # seqs.insert(0, seq_str_list)
+            return seqs

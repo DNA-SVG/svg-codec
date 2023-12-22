@@ -1,5 +1,6 @@
 import struct, re, math
 from decimal import Decimal
+from .str_list import *
 from .collect import CollectMethod
 
 nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
@@ -151,6 +152,7 @@ def str_to_seq(s):
     binary = ''
     if s == None:
         return number_to_seq(0)
+    return number_to_seq(str_list_put(s))
     byte = s.encode("utf-8")
     for ch in byte:
         tmp = bin(ch).replace('0b', '')

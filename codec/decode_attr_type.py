@@ -1,5 +1,6 @@
 import struct
 from decimal import Decimal
+from .str_list import *
 
 dict_nt = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
 color_words = ['black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua']
@@ -96,6 +97,8 @@ def seq_to_new_str(seq, start_idx=-1):
 def seq_to_str(seq, start_idx=-1):
     if seq[0] == 'T' or seq[0] == 'C':
         return seq_to_new_str(seq, start_idx)
+    index, idx = seq_to_number(seq, start_idx)
+    return str_list_get(index), idx
     ba = bytearray()
     strlen, start_tag = seq_to_number(seq, 0)
     strlen *= 4
