@@ -119,21 +119,21 @@ def color_to_seq(s):
     ret = __check_color(s)
     match ret[0]:
         case 0:
-            seq = 'TAA'
+            seq = 'TA'
             for i in range(1, 4):
                 if ret[i] > 255:
                     ret[i] = 255
                 seq += bin_to_seq(format(ret[i], '08b'))
             return seq
         case 1:
-            seq = 'TAC'
+            seq = 'TC'
             for i in range(1, 4):
                 if ret[i] > 100:
                     ret[i] = 100
                 seq += bin_to_seq(format(ret[i], '06b'))
             return seq
         case 2:
-            seq = 'TAT'
+            seq = 'TT'
             seq += bin_to_seq(format(ret[1], '04b'))
             return seq
         case _:
@@ -142,7 +142,7 @@ def color_to_seq(s):
 def str_to_seq(s):
     '''
     default: length + code(utf-8)
-    color: T + A + (A + rgb) or (T + word) or (C + %)
+    color: T + (A + rgb) or (T + word) or (C + %)
     '''
     color_str = color_to_seq(s)
     if color_str != None:

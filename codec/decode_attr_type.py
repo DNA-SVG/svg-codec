@@ -91,8 +91,7 @@ def seq_to_color(seq, start_idx=-1):
         return color_words[int(seq_to_bin(seq, 2), 2)], start_idx + 3
 
 def seq_to_new_str(seq, start_idx=-1):
-    return seq_to_color(seq[2:], start_idx + 2)
-    pass
+    return seq_to_color(seq[1:], start_idx + 1)
 
 def seq_to_str(seq, start_idx=-1):
     if seq[0] == 'T' or seq[0] == 'C':
