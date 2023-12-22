@@ -162,7 +162,7 @@ class stop(Tag):
     class_len = 1
 
 class style(Tag):
-    required_class = {}
+    required_class = {'text': 'str'}
     optional_class = {'type': ('A', 'str'), 'title': ('C', 'str')}
     class_len = 1
 

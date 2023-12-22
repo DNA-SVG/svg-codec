@@ -1,7 +1,6 @@
 from .decode_attr_type import seq_to_number, seq_to_str
 from .encode_attr_type import number_to_seq, str_to_seq
 import re
-from typing import Tuple
 from .path_d import ParserPathD as dparser
 from .transform import ParserTransform as trparser
 from .svg_enum import EnumDict

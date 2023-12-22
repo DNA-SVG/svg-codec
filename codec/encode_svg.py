@@ -1,4 +1,3 @@
-from concurrent.futures.process import BrokenProcessPool
 import xml.etree.ElementTree as ET
 from .svg_code import *
 

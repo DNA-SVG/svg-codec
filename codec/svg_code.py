@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-from .svg_type import SVGNumber, SVGString, SVGEnum, SVGPathD, SVGTransform
+from .svg_type import *
 from .collect import CollectMethod
 from .svg_tag import *
 
@@ -60,7 +60,7 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
     for attr_name, _ in node.items():
         if attr_name in cur_tag.get_required():
             continue
-        if attr_name.startswith('{http://sodipodi.'):
+        if attr_name.startswith('{http://sodi'):
             continue
         attr_optional.append(attr_name)
         total += 1
@@ -95,10 +95,11 @@ def decode_optional(seq: str, tag: Tag):
         else:
             attr_name = ''
             type = 'str'
+        seq = seq[idx:]
         if type == 'enum':
-            attr_value, idx = SVGEnum(attr_name, seq, start_idx=idx).decode()
+            attr_value, idx = SVGEnum(attr_name, seq).decode()
         else:
-            attr_value, idx = ATTR_CODE[type](seq, start_idx=idx).decode()
+            attr_value, idx = ATTR_CODE[type](seq).decode()
         seq = seq[idx:]
         idx = 0
         ret.append([attr_name, attr_value])

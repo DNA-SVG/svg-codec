@@ -29,7 +29,7 @@ class ParserTransform:
     def decoder(self, string, start_idx = 0):
         if start_idx > 0:
             string = string[start_idx:]
-        leng, idx = seq_to_number(string, start_idx)
+        leng, idx = seq_to_number(string, 0)
         string = string[idx:]
         ret = ''
         for _ in range(0, leng):

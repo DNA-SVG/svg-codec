@@ -61,15 +61,25 @@ class TestType:
 
 
 class TestTag:
-    def test_tag(self):
+    def test_tag_1(self):
         root = ET.fromstring(
             '<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;" stroke="red"/>'
         )
         s = encode_tag(root, 0)
         print(s)
         _ = decode_tag(s)
+    
+    def test_tag_2(self):
         root = ET.fromstring(
             '<feMorphology radius="8" operator="erode" in="SourceAlpha" result="effect1_innerShadow_397_2949"/>'
+        )
+        s = encode_tag(root, 0)
+        print(s)
+        _ = decode_tag(s)
+
+    def test_tag_3(self):
+        root = ET.fromstring(
+            '<radialGradient cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(8.11514 29.2951) rotate(46.5746) scale(306.642 308.519)"/>'
         )
         s = encode_tag(root, 0)
         print(s)
