@@ -6,10 +6,10 @@ class Encoder:
     IGNORE_TAGS = ['sodipodi:nameview', 'metadata']    
     # 深度遍历
     def __init__(self): 
-        self.counter = 1
+        self.counter = 2
         
 
-    def __dfs(self, root, bro_counter=-1, child_counter=1, my_counter=0):
+    def __dfs(self, root, bro_counter=-1, child_counter=1, my_counter=1):
         DNA_seq = []
 
         if len(root) == 0:
@@ -40,12 +40,12 @@ class Encoder:
                     break
         return root
 
-    def encode_file(self, filename, bro_counter=-1, child_counter=1, my_counter=0):
-        # str_list_clear()
+    def encode_file(self, filename, bro_counter=-1, child_counter=1, my_counter=1):
+        str_list_clear()
         with open(filename, 'r', encoding='utf-8') as f:
             root = ET.fromstring(f.read())
             root = self.__pre_process(root)
             seqs = self.__dfs(root, bro_counter, child_counter, my_counter)
-            # seq_str_list = str_list_pack()
-            # seqs.insert(0, seq_str_list)
+            seq_str_list = 'TTT' + encode_address(0) + str_list_pack()
+            seqs.insert(0, seq_str_list)
             return seqs

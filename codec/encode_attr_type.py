@@ -83,7 +83,7 @@ def number_to_seq(number_str):
     int -> A + length_nt(4 bit) + +/-(1 bit) + codec(max 31bit)
     exsize \in [-1,31) -> G + codec(? nts)
     float -> transfer to scientific notation, coefficient : 24 bit(IEEE float)
-    exponent \in [-8, 7] -> T + +/-(1 bit) + length_bytes(3 bit) + exponent(4 bit) + coefficient(max 5 * 4 bit)
+    exponent >= -15 -> T + +/-(1 bit) + length_bytes(3 bit) + exponent(4 bit) + coefficient(max 6 * 4 bit)
     else -> C + Float(32 bit)
     '''
     is_int, sign, number, exponent = __normalize(number_str)
@@ -148,14 +148,6 @@ def str_to_seq(s):
     color_str = color_to_seq(s)
     if color_str != None:
         return color_str
-    # CollectMethod.dict_collect(s)
-    binary = ''
     if s == None:
         return number_to_seq(0)
     return number_to_seq(str_list_put(s))
-    byte = s.encode("utf-8")
-    for ch in byte:
-        tmp = bin(ch).replace('0b', '')
-        binary += '0' * (8 - len(tmp)) + tmp
-    # CollectMethod.number_collect(len(number_to_seq(len(byte)) + bin_to_seq(binary)))
-    return number_to_seq(len(byte)) + bin_to_seq(binary)

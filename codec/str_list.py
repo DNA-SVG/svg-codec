@@ -24,7 +24,6 @@ def __seq_to_bytes(seq):
 
 def str_list_clear():
     str_list.clear()
-    str_list.append('')
 
 def str_list_put(s):
     if s not in str_list:
@@ -40,6 +39,5 @@ def str_list_pack():
 
 def str_list_unpack(packed_data):
     str_list.clear()
-    str_list.append('')
     data = __seq_to_bytes(packed_data)
     str_list.extend(gzip.decompress(data).decode().split('\0'))

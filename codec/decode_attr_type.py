@@ -99,13 +99,3 @@ def seq_to_str(seq, start_idx=-1):
         return seq_to_new_str(seq, start_idx)
     index, idx = seq_to_number(seq, start_idx)
     return str_list_get(index), idx
-    ba = bytearray()
-    strlen, start_tag = seq_to_number(seq, 0)
-    strlen *= 4
-    for i in range(start_tag, start_tag + strlen, 4):
-        byte = ''
-        for j in range(i, i + 4):
-            byte += dict_nt[seq[j]]
-        ba.append(int(byte, 2))
-    ret = ba.decode(encoding='utf-8')
-    return ret, start_idx + start_tag + strlen

@@ -114,8 +114,8 @@ def encode_tag(node: ET.Element, my_counter, first_child=-1, bro=-1) -> str:
     seq += encode_address(my_counter, first_child, bro)
     seq += encode_require(node, tag_class)
     seq += encode_optional(node, tag_class)
-    CollectMethod.number_collect(len(seq))
-    CollectMethod.number_collect(-len(encode_address(my_counter, first_child, bro)))
+    # CollectMethod.number_collect(len(seq))
+    # CollectMethod.number_collect(-len(encode_address(my_counter, first_child, bro)))
     return seq
 
 

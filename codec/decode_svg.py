@@ -39,7 +39,7 @@ class Decoder:
         return line
 
 
-    def dfs_add(self, allDNA, cur=0):
+    def dfs_add(self, allDNA, cur=1):
         # 将各个标签拼接
         first_child = int(allDNA[cur][2])
         bro = int(allDNA[cur][3])
@@ -61,10 +61,14 @@ class Decoder:
 
     def generate_svg(self, DNAseq):
         # 传入各个标签及参数的DNA序列list
-        # str_list_unpack(DNAseq[0])
-        # DNAseq = DNAseq[1:]
+        for seq in DNAseq:
+            if seq[:3] == 'TTT':
+                str_list_unpack(seq[15:])
+                DNAseq.remove(seq)
+                break
         allDNA = self.get_allDNA(DNAseq)  # 将DNAseq转化成各个标签及参数
         allDNA = sorted(allDNA, key=lambda x: int(x[1]))
         file = '<?xml version="1.0" ?>'
+        allDNA.insert(0, ['svg', '0', '-1', '-1'])
         file += self.dfs_add(allDNA)
         return file
