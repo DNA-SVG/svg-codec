@@ -35,9 +35,9 @@ def __seq_to_short_float(seq, start_idx=-1):
     sign = 0
     if params[0] == '1':
         sign = 1
-    binary_nts = int(params[1:4], 2) * 2
+    binary_nts = int(params[1:5], 2)
     total_nts = binary_nts + 4
-    exponent = -int(params[4:], 2)
+    exponent = -int(params[5:], 2) - 1
     data = seq_to_bin(seq, binary_nts)
     data = str(int(data, 2))
     value = tuple(int(char) for char in data)

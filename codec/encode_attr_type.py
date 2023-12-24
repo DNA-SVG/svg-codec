@@ -71,11 +71,11 @@ def __float_to_seq(sign, coefficient, exponent):
         sign = '0'
     binary_number = format(coefficient, 'b')
     length_bin = math.floor(math.log2(coefficient)) + 1
-    if length_bin % 4 != 0:
-        binary_number = '0' * (4 - length_bin % 4) + binary_number
-        length_bin += 4 - length_bin % 4
+    if length_bin & 1 != 0:
+        binary_number = '0' + binary_number
+        length_bin += 1
 
-    ret = sign + format(length_bin // 4, '03b') + format(-exponent, '04b') + binary_number
+    ret = sign + format(length_bin >> 1, '04b') + format(-exponent-1, '03b') + binary_number
     return mark + bin_to_seq(ret)
 
 def number_to_seq(number_str):
@@ -83,13 +83,13 @@ def number_to_seq(number_str):
     int -> A + length_nt(4 bit) + +/-(1 bit) + codec(max 31bit)
     exsize \in [-1,31) -> G + codec(? nts)
     float -> transfer to scientific notation, coefficient : 24 bit(IEEE float)
-    exponent >= -15 -> T + +/-(1 bit) + length_bytes(3 bit) + exponent(4 bit) + coefficient(max 6 * 4 bit)
+    exponent >= -8 -> T + +/-(1 bit) + length_nt(4 bit) + exponent(3 bit) + coefficient(max 6 * 4 bit)
     else -> C + Float(32 bit)
     '''
     is_int, sign, number, exponent = __normalize(number_str)
     if is_int:
         return __int_to_seq(sign, number)
-    elif number > MAX_SHORT_FLOAT or exponent < -15:
+    elif number > MAX_SHORT_FLOAT or exponent < -8:
         return __float_to_seq_sys(float(number_str))
     else:
         return __float_to_seq(sign, number, exponent)
