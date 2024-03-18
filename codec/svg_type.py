@@ -40,22 +40,22 @@ class SVGNumber(SVGType):
                 print('error: value type not supported')
         return seq
 
-    def decode(self):
+    def decode(self, call_number=False):
         sub_seq = self.given_str[self.start_idx:]
         if sub_seq[0] == 'C':
             return None, self.start_idx + 1
         elif sub_seq[0] == 'A':
-            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx)
+            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx, call_number)
             end_idx += 1
             return ret, end_idx
         elif sub_seq[0] == 'T':
             ret = []
             index = self.start_idx
-            number_length, index = seq_to_number(sub_seq[1:], index + 1)
+            number_length, index = seq_to_number(sub_seq[1:], index + 1, True)
             for _ in range(0, number_length):
-                number, index = seq_to_number(self.given_str[index:], index)
+                number, index = seq_to_number(self.given_str[index:], index, call_number)
                 ret.append(number)
-            return (' '.join(str(i) for i in ret), index)
+            return (' '.join(ret), index)
         else:
             print('error: invalid sequence')
 

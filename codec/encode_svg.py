@@ -6,30 +6,35 @@ class Encoder:
     IGNORE_TAGS = ['sodipodi:nameview', 'metadata']    
     # 深度遍历
     def __init__(self): 
-        self.counter = 2
-        
-
-    def __dfs(self, root, bro_counter=-1, child_counter=1, my_counter=1):
+        self.element_num = 0
+    
+    def __dfs(self, root, is_last = False):
+        '''
+        tags:
+        0 -- <  />
+        1 -- <  /></>
+        2 -- <   ><  >
+        3 -- <   ><  ></>
+        '''
         DNA_seq = []
-
-        if len(root) == 0:
-            a = encode_tag(root, my_counter, -1, bro_counter)
+        status = int(is_last)
+        length = len(root)
+        if length == 0:
+            a = encode_tag(root, self.element_num, status)
             if a != None:
                 DNA_seq += [a]
             return DNA_seq
         else:
-            length = len(root)
-            counters = range(self.counter, self.counter+length)
-            child_counter = self.counter
-            self.counter += length
-
-            a = encode_tag(root, my_counter, child_counter, bro_counter)
+            status += 2
+            a = encode_tag(root, self.element_num, status)
             if a != None:
                 DNA_seq += [a]
-            for i in range(length-1):
-                DNA_seq += self.__dfs(root[i], counters[i+1], child_counter, counters[i])
-            DNA_seq += self.__dfs(root[length-1], -1, child_counter, counters[length-1])
 
+            for i in range(length-1):
+                self.element_num += 1
+                DNA_seq += self.__dfs(root[i])
+            self.element_num += 1
+            DNA_seq += self.__dfs(root[length-1], True)
         return DNA_seq
     
     def __pre_process(self, root):
@@ -40,12 +45,12 @@ class Encoder:
                     break
         return root
 
-    def encode_file(self, filename, bro_counter=-1, child_counter=1, my_counter=1):
+    def encode_file(self, filename):
         str_list_clear()
         with open(filename, 'r', encoding='utf-8') as f:
             root = ET.fromstring(f.read())
             root = self.__pre_process(root)
-            seqs = self.__dfs(root, bro_counter, child_counter, my_counter)
-            seq_str_list = 'TTT' + encode_address(0) + str_list_pack()
+            seqs = self.__dfs(root, True)
+            seq_str_list = 'TTT' + str_list_pack()
             seqs.insert(0, seq_str_list)
             return seqs

@@ -23,9 +23,12 @@ class TestAttr:
         print(str_to_seq('_x34_0-Id_Card'))
 
     def test_decode_attr(self):
-        assert(seq_to_number(number_to_seq(-1))[0] == -1)
-        assert(seq_to_number(number_to_seq(45.0))[0] == 45)
-        assert(seq_to_number(number_to_seq(10))[0] == 10)
+        seq = number_to_seq(-1)
+        assert(seq_to_number(seq, call_number=True)[0] == -1)
+        seq = number_to_seq(45.0)
+        assert(seq_to_number(seq, call_number=True)[0] == 45)
+        seq = number_to_seq(10)
+        assert(seq_to_number(seq, call_number=False)[0] == '10')
         dec = float(seq_to_number(number_to_seq(3.05176e-05))[0])
         assert(abs(dec - 3.05176e-05) < 1e-7)
         assert(seq_to_str(str_to_seq('_x34_0-Id_Card'))[0] == '_x34_0-Id_Card')
@@ -65,7 +68,7 @@ class TestTag:
         root = ET.fromstring(
             '<svg width="64px" height="64px" viewBox="0 0 64px 64px" style="enable-background:new 0 0 64 64;" stroke="red"/>'
         )
-        s = encode_tag(root, 0)
+        s = encode_tag(root, 0, 0)
         print(s)
         _ = decode_tag(s)
     
@@ -73,7 +76,7 @@ class TestTag:
         root = ET.fromstring(
             '<feMorphology radius="8" operator="erode" in="SourceAlpha" result="effect1_innerShadow_397_2949"/>'
         )
-        s = encode_tag(root, 0)
+        s = encode_tag(root, 0, 0)
         print(s)
         _ = decode_tag(s)
 
@@ -81,7 +84,7 @@ class TestTag:
         root = ET.fromstring(
             '<radialGradient cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(8.11514 29.2951) rotate(46.5746) scale(306.642 308.519)"/>'
         )
-        s = encode_tag(root, 0)
+        s = encode_tag(root, 0, 0)
         print(s)
         _ = decode_tag(s)
 

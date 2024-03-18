@@ -14,11 +14,14 @@ def seq_to_bin(str, x):
         ret += dict_nt[str[i]]
     return ret
 
-def __seq_to_size(seq, start_idx=-1):
+def __seq_to_size(seq, start_idx=-1, call_number = False):
     ret = int(seq_to_bin(seq, MAX_SIZE_NTS), 2)
-    return ret - 1, start_idx + MAX_SIZE_NTS
+    if call_number:
+        return ret - 1, start_idx + MAX_SIZE_NTS
+    else:
+        return str(ret - 1), start_idx + MAX_SIZE_NTS
 
-def __seq_to_int(seq, start_idx=-1):
+def __seq_to_int(seq, start_idx=-1, call_number = False):
     length = int(seq_to_bin(seq, 2), 2) + 1
     seq = seq[2:]
     data = seq_to_bin(seq, length)
@@ -27,7 +30,10 @@ def __seq_to_int(seq, start_idx=-1):
         sign = -1
     data = data[1:]
     number = int(data, 2) * sign
-    return number, start_idx + length + 2
+    if call_number:
+        return number, start_idx + length + 2
+    else:
+        return str(number), start_idx + length + 2
     
 def __seq_to_short_float(seq, start_idx=-1):
     params = seq_to_bin(seq, 4)
@@ -49,22 +55,21 @@ def __seq_to_long_float(seq, start_idx=-1):
     binstr = seq_to_bin(seq, 16)
     binary = bytes(int(binstr[i:i + 8], 2) for i in range(0, 32, 8))
     ret = struct.unpack('>f', binary)[0]
-    ret = str(ret)
-    return ret, start_idx + 16
+    return str(ret), start_idx + 16
 
-def seq_to_number(seq, start_idx=-1):
+def seq_to_number(seq, start_idx=-1, call_number = False):
     mark = seq[0]
     seq = seq[1:]
     start_idx += 1
     match mark:
         case 'A':
-            return __seq_to_int(seq, start_idx)
+            return __seq_to_int(seq, start_idx, call_number)
         case 'T':
             return __seq_to_short_float(seq, start_idx)
         case 'C':
             return __seq_to_long_float(seq, start_idx)
         case 'G':
-            return __seq_to_size(seq, start_idx)
+            return __seq_to_size(seq, start_idx, call_number)
         case _:
             return 0, start_idx - 1
 
@@ -97,5 +102,5 @@ def seq_to_new_str(seq, start_idx=-1):
 def seq_to_str(seq, start_idx=-1):
     if seq[0] == 'T' or seq[0] == 'C':
         return seq_to_new_str(seq, start_idx)
-    index, idx = seq_to_number(seq, start_idx)
+    index, idx = seq_to_number(seq, start_idx, True)
     return str_list_get(index), idx

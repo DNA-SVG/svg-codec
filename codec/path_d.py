@@ -53,9 +53,9 @@ class ParserPathD:
         total_nts = 3
         datas = []
         for _ in range(0, times):
-            data_str, data_nts = seq_to_number(ntstr, 0)
+            data_str, data_nts = seq_to_number(ntstr, 0, False)
             ntstr = ntstr[data_nts:]
-            datas.append(str(data_str))
+            datas.append(data_str)
             total_nts += data_nts
         ret += ','.join(datas)
         return ret, total_nts
@@ -84,7 +84,7 @@ class ParserPathD:
 
     def decoder(self, string, start_idx = 0):
         # get number of commands
-        leng, idx = seq_to_number(string, start_idx)
+        leng, idx = seq_to_number(string, start_idx, True)
         string = string[idx:]
         ret = ''
         for _ in range(0, leng):

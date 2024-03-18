@@ -20,7 +20,7 @@ class ParserTransform:
         total_nts = 2
         params = []
         for _ in range(0, ret[1]):
-            data, idx = seq_to_number(seq, 0)
+            data, idx = seq_to_number(seq, 0, False)
             seq = seq[idx:]
             total_nts += idx
             params.append(str(data))
@@ -29,7 +29,7 @@ class ParserTransform:
     def decoder(self, string, start_idx = 0):
         if start_idx > 0:
             string = string[start_idx:]
-        leng, idx = seq_to_number(string, 0)
+        leng, idx = seq_to_number(string, 0, True)
         string = string[idx:]
         ret = ''
         for _ in range(0, leng):

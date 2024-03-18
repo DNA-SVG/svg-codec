@@ -9,22 +9,13 @@ ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
              'enum': SVGEnum, 'pathd': SVGPathD, 'trans': SVGTransform}
 
 STD = '{http://www.w3.org/2000/svg}'
-CODE_3 = 'T' + SVGNumber(3).encode()[1:]
-LEN_CODE_3 = len(CODE_3)
 
-def encode_address(my_counter, first_child=-1, bro=-1):
-    # 返回my_counter, first_child, bro的DNAseq
-    # '0 1 2'
-    address_str = str(my_counter) + ' '+str(first_child) + ' '+str(bro)
-    seq = SVGNumber(address_str).encode()[LEN_CODE_3:]
-    return seq
+def encode_address(element_num, status):
+    return SVGNumber(element_num).encode() + 'AGCT'[status]
 
 def decode_address(seq: str):
-    '''传入以address开头的序列'''
-    '''返回[my_counter, first_child, bro],end_idx'''
-    seq = CODE_3 + seq
-    address_seq, end_idx = SVGNumber(seq).decode()
-    return address_seq.split(' '), end_idx - 5
+    address_seq, end_idx = SVGNumber(seq).decode(call_number=True)
+    return [address_seq, 'AGCT'.find(seq[end_idx])], end_idx + 1
 
 def encode_require(node: ET.Element, cur_tag: Tag) -> str:
     seq = ''
@@ -75,7 +66,7 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
     return SVGNumber(total).encode() + seq
 
 def decode_optional(seq: str, tag: Tag):
-    total, idx = SVGNumber(seq).decode()
+    total, idx = SVGNumber(seq).decode(call_number=True )
     seq = seq[idx:]
     idx = 0
     public_list, public_len = tag.get_decode_public()
@@ -105,13 +96,13 @@ def decode_optional(seq: str, tag: Tag):
         ret.append([attr_name, attr_value])
     return ret
 
-def encode_tag(node: ET.Element, my_counter, first_child=-1, bro=-1) -> str:
+def encode_tag(node: ET.Element, element_num, status) -> str:
     tag_name = node.tag
     if tag_name.startswith(STD):
         tag_name = tag_name[len(STD):]
     tag_class = globals()[tag_name]
     seq = nt.get_tag_nt(tag_name)
-    seq += encode_address(my_counter, first_child, bro)
+    seq += encode_address(element_num, status)
     seq += encode_require(node, tag_class)
     seq += encode_optional(node, tag_class)
     # CollectMethod.number_collect(len(seq))
