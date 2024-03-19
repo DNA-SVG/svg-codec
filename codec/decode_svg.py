@@ -45,5 +45,5 @@ class Decoder:
         allDNA = self.get_allDNA(DNAseq)  # 将DNAseq转化成各个标签及参数
         allDNA = sorted(allDNA, key=lambda x: int(x[1]))
         self.dfs_add(self.tree.getroot(), allDNA)
-        file = '<?xml version="1.0" ?>' + ET.tostring(self.tree.getroot()[0], encoding='unicode')        
+        file = '<?xml version="1.0" ?>' + ET.tostring(self.tree.getroot()[0], encoding='unicode').replace('><', '>\n<')
         return file
