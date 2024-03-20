@@ -11,10 +11,10 @@ class Encoder:
     def __dfs(self, root, is_last = False):
         '''
         tags:
-        0 -- <  />
-        1 -- <  /></>
-        2 -- <   ><  >
-        3 -- <   ><  ></>
+        0 -- no child,  not last
+        1 -- no child,  last
+        2 -- has child, not last
+        3 -- has child, last
         '''
         DNA_seq = []
         status = int(is_last)
