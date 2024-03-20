@@ -2,8 +2,8 @@ import re
 from .encode_attr_type import number_to_seq
 from .decode_attr_type import seq_to_number
 class ParserTransform:
-    encode_table = {'matrix': { 6: 'AA'}, 'translate': { 1: 'AT', 2: 'AC'}, 'scale': { 1: 'AG', 2: 'TA'}, 'rotate':{ 1: 'TT', 3: 'TC'}, 'skewX': { 1: 'TG'}, 'skewY': { 1: 'CA'}}
-    decode_table = {'AA': ('matrix', 6), 'AT': ('translate', 1), 'AC': ('translate', 2), 'AG': ('scale', 1), 'TA': ('scale', 2), 'TT': ('rotate', 1), 'TC': ('rotate', 3), 'TG': ('skewX', 1), 'CA': ('skewY', 1)}
+    encode_table = {'matrix': { 6: 'AT'}, 'translate': { 1: 'AC', 2: 'AG'}, 'scale': { 1: 'TA', 2: 'TC'}, 'rotate':{ 1: 'TG', 3: 'CA'}, 'skewX': { 1: 'CT'}, 'skewY': { 1: 'CG'}}
+    decode_table = {'AT': ('matrix', 6), 'AC': ('translate', 1), 'AG': ('translate', 2), 'TA': ('scale', 1), 'TC': ('scale', 2), 'TG': ('rotate', 1), 'CA': ('rotate', 3), 'CT': ('skewX', 1), 'CG': ('skewY', 1)}
     
     def __encoder_single(self, string):
         ret = re.split(r'\(|\)', string)
