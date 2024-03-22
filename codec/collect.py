@@ -24,14 +24,8 @@ class CollectMethod:
     def return_collect(self):
         if len(self.__collect_dict) > 0:
             sorted_dict = sorted(self.__collect_dict.items(), key=lambda x: x[1], reverse=True)
-            for key, value in sorted_dict:
-                print(key, value)
-        print(self.__collect_number)
-    
-    @classmethod
-    def return_double_collect(self):
-        for k1, k2 in self.__collect_dict:
-            print(k1, k2, self.__collect_dict[k1, k2])
+            return sorted_dict
+        return self.__collect_number
     
     @classmethod
     def clear_collect(cls):

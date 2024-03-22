@@ -25,7 +25,7 @@ def bin_to_seq(binSeq):
     return ret
 
 def __normalize(number_str):
-    decimal = Decimal(number_str)
+    decimal = Decimal(str(number_str))
     if decimal == decimal.to_integral():
         value = decimal.quantize(Decimal(1))
         return True, value < 0, int(value), 0
@@ -87,6 +87,8 @@ def number_to_seq(number_str):
     else -> C + Float(32 bit)
     '''
     is_int, sign, number, exponent = __normalize(number_str)
+    if not is_int:
+        CollectMethod.double_dict_collect(math.floor(math.log2(number)) + 1, exponent)
     if is_int:
         return __int_to_seq(sign, number)
     elif number > MAX_SHORT_FLOAT or exponent < -8:
