@@ -17,7 +17,7 @@ def decode_address(seq: str):
     address_seq, end_idx = SVGNumber(seq).decode(call_number=True)
     return [address_seq, 'AGCT'.find(seq[end_idx])], end_idx + 1
 
-def encode_require(node: ET.Element, cur_tag: Tag) -> str:
+def encode_require(node: ET.Element, cur_tag: Tag):
     seq = ''
     for attr_name, attr_type in cur_tag.get_required().items():
         if attr_name == 'text':
@@ -44,7 +44,7 @@ def decode_require(seq: str, cur_tag: Tag):
             ret_list.append([attr_name, attr_val])
     return ret_list, idx
 
-def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
+def encode_optional(node: ET.Element, cur_tag: Tag):
     seq = ''
     total = 0
     attr_optional = []
@@ -66,7 +66,7 @@ def encode_optional(node: ET.Element, cur_tag: Tag) -> str:
     return SVGNumber(total).encode() + seq
 
 def decode_optional(seq: str, tag: Tag):
-    total, idx = SVGNumber(seq).decode(call_number=True )
+    total, idx = SVGNumber(seq).decode(call_number=True)
     seq = seq[idx:]
     idx = 0
     public_list, public_len = tag.get_decode_public()
@@ -96,7 +96,7 @@ def decode_optional(seq: str, tag: Tag):
         ret.append([attr_name, attr_value])
     return ret
 
-def encode_tag(node: ET.Element, element_num, status) -> str:
+def encode_tag(node: ET.Element, element_num, status):
     tag_name = node.tag
     if tag_name.startswith(STD):
         tag_name = tag_name[len(STD):]

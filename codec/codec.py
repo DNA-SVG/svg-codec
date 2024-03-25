@@ -5,7 +5,7 @@ from .error_correction import add_ecc, check_restore
 import xml.etree.ElementTree as ET
 
 class Codec:
-    def __svg_to_dna(self, filename: str, optimize: bool=True) -> str:
+    def __svg_to_dna(self, filename, optimize=True):
         # 传入str形式的xml文件 输出decode的DNAseq
         enc = Encoder()
         DNAseq = enc.encode_file(filename)
@@ -14,7 +14,7 @@ class Codec:
             DNAseq = add_ecc(DNAseq)
         return '\n'.join(DNAseq)
 
-    def __dna_to_svg(self, filename: str, optimize: bool=True) -> str:
+    def __dna_to_svg(self, filename, optimize=True):
         # 传入DNAseq的str 返回svg文件字符串
         dec = Decoder()
         

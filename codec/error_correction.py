@@ -7,7 +7,7 @@ BITS_NT = {v:k for k, v in NT_BITS.items()}
 CONST_ECC_LEN = 6
 rsc = RSCodec(CONST_ECC_LEN)
 
-def seq_to_ba(strand: str) -> bytearray:
+def seq_to_ba(strand: str):
     ba = bytearray()
     cur_byte = ''
     for nt in strand:
@@ -17,7 +17,7 @@ def seq_to_ba(strand: str) -> bytearray:
             cur_byte = ''
     return ba
 
-def ba_to_seq(ba: bytearray) -> str:
+def ba_to_seq(ba: bytearray):
     ret = ''
     for byte in ba:
         s = '{:08b}'.format(byte)
@@ -25,7 +25,7 @@ def ba_to_seq(ba: bytearray) -> str:
             ret += BITS_NT[s[i:i+2]]
     return ret
 
-def add_ecc(strands: List[str]) -> List[str]:
+def add_ecc(strands: List[str]):
     ret_strands = []
     for strand in strands:
         strand = SVGNumber(str(len(strand))).encode() + strand
@@ -38,7 +38,7 @@ def add_ecc(strands: List[str]) -> List[str]:
         ret_strands.append(strand)
     return ret_strands
 
-def check_restore(strands: List[str]) -> List[str]:
+def check_restore(strands: List[str]):
     ret_strands = []
     for strand in strands:
         ba = seq_to_ba(strand)

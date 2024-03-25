@@ -47,7 +47,7 @@ class TestType:
 
     def test_path_d(self):
         parser = ParserPathD()
-        string = "M28 3.05176e-05Z"
+        string = "M246 131C246 194.513 194.513 246 131 246L119 246C53.2781 246 -1.06011e-05 192.722 -4.85548e-06 127L-4.1561e-06 119C1.58949e-06 53.2781 53.2781 -1.68483e-05 119 -1.11027e-05L123 -1.0753e-05C190.931 -4.81428e-06 246 55.069 246 123L246 131Z"
         codec = parser.encoder(string)
         print(len(codec), 'nts,',
               '{:.2f}'.format(len(string) * 8 / len(codec)), 'bits/nt')

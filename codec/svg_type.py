@@ -6,14 +6,14 @@ from .transform import ParserTransform as trparser
 from .svg_enum import EnumDict
 
 class SVGType:
-    def __init__(self, given_str: str, start_idx=0) -> None:
+    def __init__(self, given_str: str, start_idx=0):
         self.given_str = given_str
         self.start_idx = start_idx
         
 # 单个数字：'A'+数字对应编码
 # 多个数字：'T'+数字个数(size_t)+数字1+数字2+...
 class SVGNumber(SVGType):
-    def __init__(self, given_str: str, start_idx=0) -> None:
+    def __init__(self, given_str: str, start_idx=0):
         super().__init__(given_str, start_idx)
 
     def encode(self):
@@ -61,7 +61,7 @@ class SVGNumber(SVGType):
 
 
 class SVGString(SVGType):
-    def __init__(self, given_str: str, start_idx=0) -> None:
+    def __init__(self, given_str: str, start_idx=0):
         super().__init__(given_str, start_idx)
 
     def encode(self):
@@ -73,7 +73,7 @@ class SVGString(SVGType):
 
 class SVGEnum(SVGType):
     dict = EnumDict()
-    def __init__(self, attr_name, given_str, start_idx=0) -> None:
+    def __init__(self, attr_name, given_str, start_idx=0):
         self.attr_name = attr_name
         super().__init__(given_str, start_idx)
 
@@ -93,7 +93,7 @@ class SVGEnum(SVGType):
 
 class SVGPathD(SVGType):
     parser = dparser()
-    def __init__(self, given_str: str, start_idx=0) -> None:
+    def __init__(self, given_str: str, start_idx=0):
         super().__init__(given_str, start_idx)
 
     def encode(self):
@@ -105,7 +105,7 @@ class SVGPathD(SVGType):
 
 class SVGTransform(SVGType):
     parser = trparser()
-    def __init__(self, given_str: str, start_idx=0) -> None:
+    def __init__(self, given_str: str, start_idx=0):
         super().__init__(given_str, start_idx)
 
     def encode(self):

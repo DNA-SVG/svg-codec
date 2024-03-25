@@ -9,7 +9,7 @@ CONST_SEQ_MIN_LEN = 100
 CONST_SEQ_MAX_LEN = 2 * CONST_SEQ_MIN_LEN
 CONST_TAG_SEQ_LEN = 3
 
-def split_long_strands(strands: List[str]) -> List[str]:
+def split_long_strands(strands: List[str]):
     '''传入长链列表, 将每条长链拆分并打标记'''
     ret_strands = []
     for strand in strands:
@@ -43,7 +43,7 @@ def split_long_strands(strands: List[str]) -> List[str]:
 
     return ret_strands
 
-def merge_short_strands(strands: List[str]) -> List[str]:
+def merge_short_strands(strands: List[str]):
     '''传入短链列表, 将合并短链并打标记'''
     ret_strands = []
     cur_strand = CONST_SHORT_IDN
@@ -65,7 +65,7 @@ def merge_short_strands(strands: List[str]) -> List[str]:
     return ret_strands
         
 
-def restore_long_strands(strands: List[str]) -> List[str]:
+def restore_long_strands(strands: List[str]):
     '''传入带'T'标记的长链列表'''
     '''返回长链合并后的链列表'''
     ret_strands = []
@@ -83,7 +83,7 @@ def restore_long_strands(strands: List[str]) -> List[str]:
 
     return ret_strands
 
-def restore_short_strands(strands: List[str]) -> List[str]:
+def restore_short_strands(strands: List[str]):
     '''传入带'C'标记的短链列表'''
     '''返回短链拆分后的链列表'''
     ret_strands = []
@@ -97,13 +97,13 @@ def restore_short_strands(strands: List[str]) -> List[str]:
 
     return ret_strands
 
-def regulate_normal_strands(strands: List[str]) -> List[str]:
+def regulate_normal_strands(strands: List[str]):
     return [CONST_NORMAL_IDN + strand for strand in strands]
 
-def restore_normal_strands(strands: List[str]) -> List[str]:
+def restore_normal_strands(strands: List[str]):
     return [strand[1:] for strand in strands]
 
-def optimize_seq_len(strands: List[str]) -> List[str]:
+def optimize_seq_len(strands: List[str]):
     long_strands = [strand for strand in strands if len(strand) > CONST_SEQ_MAX_LEN]
     short_strands = [strand for strand in strands if len(strand) < CONST_SEQ_MIN_LEN]
     normal_strands = [strand for strand in strands if CONST_SEQ_MIN_LEN <= len(strand) <= CONST_SEQ_MAX_LEN]
@@ -112,7 +112,7 @@ def optimize_seq_len(strands: List[str]) -> List[str]:
             split_long_strands(long_strands) + \
             merge_short_strands(short_strands)
 
-def restore_seq_len(strands: List[str]) -> List[str]:
+def restore_seq_len(strands: List[str]):
     long_strands = [strand for strand in strands if strand[0] == CONST_LONG_IDN]
     short_strands = [strand for strand in strands if strand[0] == CONST_SHORT_IDN]
     normal_strands = [strand for strand in strands if strand[0] == CONST_NORMAL_IDN]
