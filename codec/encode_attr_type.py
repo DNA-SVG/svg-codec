@@ -14,7 +14,7 @@ MAX_INT = (1 << 31) - 1
 def bin_to_seq(binSeq):
     n = len(binSeq)
     if n % 2 == 1:
-        binSeq = '0' + binSeq
+        binSeq += '0'
         n += 1
 
     ret = ''
@@ -26,7 +26,7 @@ def bin_to_seq(binSeq):
 
 def __normalize(number_str):
     decimal = Decimal(str(number_str))
-    if decimal == decimal.to_integral():
+    if decimal == decimal.to_integral_value():
         value = decimal.quantize(Decimal(1))
         return True, value < 0, int(value), 0
     else:
@@ -37,7 +37,7 @@ def __normalize(number_str):
             digits = digits * 10 + digit
         return False, sign == 1, digits, exponent
 
-def __int_to_seq(sign, number):
+def int_to_seq(sign, number):
     length = ''
     if number <= MAX_SIZE and number >= -1:
         mark = 'G'
@@ -59,11 +59,11 @@ def __int_to_seq(sign, number):
 
     return mark + bin_to_seq(length + data)
 
-def __float_to_seq_sys(number):
+def float_to_seq_sys(number):
     binary = format(struct.unpack('>I', struct.pack('>f', number))[0], '032b')
     return 'C' + bin_to_seq(binary)
 
-def __float_to_seq(sign, coefficient, exponent):
+def float_to_seq(sign, coefficient, exponent):
     mark = 'T'
     if sign:
         sign = '1'
@@ -87,14 +87,12 @@ def number_to_seq(number_str):
     else -> C + Float(32 bit)
     '''
     is_int, sign, number, exponent = __normalize(number_str)
-    if not is_int:
-        CollectMethod.double_dict_collect(math.floor(math.log2(number)) + 1, exponent)
     if is_int:
-        return __int_to_seq(sign, number)
+        return int_to_seq(sign, number)
     elif number > MAX_SHORT_FLOAT or exponent < -8:
-        return __float_to_seq_sys(float(number_str))
+        return float_to_seq_sys(float(number_str))
     else:
-        return __float_to_seq(sign, number, exponent)
+        return float_to_seq(sign, number, exponent)
 
 def __check_color(s):
     '''

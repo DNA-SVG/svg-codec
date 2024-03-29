@@ -14,8 +14,7 @@ def __bytes_to_seq(bytes):
 
 def __seq_to_bytes(seq):
     bytearr = bytearray()
-    length = len(seq)
-    for i in range(0, length, 4):
+    for i in range(0, len(seq), 4):
         byte = ''
         for j in range(i, i+4):
             byte += dict_nt[seq[j]]
