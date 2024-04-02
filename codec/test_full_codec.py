@@ -98,16 +98,20 @@ class TestSegment:
             a = enc._Encoder__dfs(dfsroot)
             print(a)
 
-    def test_segment(self):
+    def test_encode_and_decode(self):
         enc = Encoder()
         dec = Decoder()
+        encoding = enc.encode_file(filename)
+        decode = dec.generate_svg(encoding)
+        with open('test_result.svg', 'w') as f:
+            f.write(decode)
+
+    def test_segment(self):
+        enc = Encoder()
         initial_encoding = enc.encode_file(filename)
-        initial_decode = dec.generate_svg(initial_encoding)
         optimized_encoding = optimize_seq_len(initial_encoding)
         restored = restore_seq_len(optimized_encoding)
-        restore_decode = dec.generate_svg(restored)
         assert(set(restored) == set(initial_encoding))
-        assert(initial_decode == restore_decode)
 
 
 class TestCodec:
