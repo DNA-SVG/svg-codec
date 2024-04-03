@@ -1,5 +1,5 @@
-from .decode_attr_type import seq_to_number, seq_to_str
-from .encode_attr_type import number_to_seq, str_to_seq
+from .decode_attr_type import seq_to_number, seq_to_str, seq_to_bin
+from .encode_attr_type import number_to_seq, str_to_seq, bin_to_seq
 import re
 from .path_d import ParserPathD as dparser
 from .transform import ParserTransform as trparser
@@ -113,3 +113,32 @@ class SVGTransform(SVGType):
     
     def decode(self):
         return self.parser.decoder(self.given_str, self.start_idx)
+
+class SVGColorMatrix(SVGType):
+    def __init__(self, given_str: str, start_idx=0):
+        super().__init__(given_str, start_idx)
+
+    def encode(self):
+        numbers = re.split(r'\s+', self.given_str)
+        ret_bin = ''
+        ret_num = ''
+        for number in numbers:
+            if number == '0':
+                ret_bin += '0'
+            else:
+                ret_bin += '1'
+                ret_num += number_to_seq(number)
+        return bin_to_seq(ret_bin) + ret_num
+    
+    def decode(self):
+        sub_seq = self.given_str[self.start_idx:]
+        ret_bin = seq_to_bin(sub_seq, 10)
+        ret_num = []
+        index = 10
+        for i in ret_bin:
+            if i == '0':
+                ret_num.append('0')
+            else:
+                number, index = seq_to_number(sub_seq[index:], index, call_number=False)
+                ret_num.append(number)
+        return  ''.join(ret_num), index + self.start_idx

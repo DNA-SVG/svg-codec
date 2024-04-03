@@ -77,7 +77,7 @@ class feBlend(Tag):
     class_len = 1
 
 class feColorMatrix(Tag):
-    required_class = {'type': 'enum', 'values': 'number'}
+    required_class = {'type': 'enum', 'values': 'colormatrix'}
     optional_class = {'in': ('A', 'enum'), 'result': ('C', 'enum')}
     class_len = 1
 

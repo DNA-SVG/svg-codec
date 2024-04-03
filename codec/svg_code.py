@@ -6,7 +6,8 @@ from .svg_tag import *
 
 nt = tag_nt()
 ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
-             'enum': SVGEnum, 'pathd': SVGPathD, 'trans': SVGTransform}
+             'enum': SVGEnum, 'pathd': SVGPathD, 'trans': SVGTransform ,
+             'colormatrix': SVGColorMatrix}
 
 STD = '{http://www.w3.org/2000/svg}'
 

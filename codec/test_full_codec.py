@@ -4,7 +4,7 @@ import pytest, ruff
 from .encode_attr_type import str_to_seq, number_to_seq
 from .decode_attr_type  import seq_to_number, seq_to_str
 from .transform import ParserTransform
-from .svg_type import SVGNumber, SVGString
+from .svg_type import SVGNumber, SVGString, SVGColorMatrix
 from .path_d import ParserPathD
 from .svg_code import decode_tag, encode_tag
 from .segment import optimize_seq_len, restore_seq_len
@@ -60,6 +60,13 @@ class TestType:
         codec = parser.encoder(string)
         print(codec)
         ret, _ = parser.decoder(codec)
+        print(ret)
+
+    def test_color_matrix(self):
+        string = '0 0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 1 0'
+        codec = SVGColorMatrix(string).encode()
+        print(codec)
+        ret, _ = SVGColorMatrix(codec).decode()
         print(ret)
 
 
