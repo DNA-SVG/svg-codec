@@ -12,11 +12,11 @@ ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
 STD = '{http://www.w3.org/2000/svg}'
 
 def encode_address(element_num, status):
-    return SVGNumber(element_num).encode() + 'AGCT'[status]
+    return SVGNumber(element_num).encode() + format(status, '02b')
 
 def decode_address(seq: str):
     address_seq, end_idx = SVGNumber(seq).decode(call_number=True)
-    return [address_seq, 'AGCT'.find(seq[end_idx])], end_idx + 1
+    return [address_seq, int(seq[end_idx:end_idx + 2], 2)], end_idx + 2
 
 def encode_require(node: ET.Element, cur_tag: Tag):
     seq = ''
@@ -74,9 +74,9 @@ def decode_optional(seq: str, tag: Tag):
     private_list, private_len = tag.get_decode_private()
     ret = []
     for _ in range(total):
-        if seq[0] == 'G':
-            attr_name, idx = SVGString(seq[1:], start_idx=idx).decode()
-            idx = idx + 1
+        if seq[0:2] == '10':
+            attr_name, idx = SVGString(seq[2:], start_idx=idx).decode()
+            idx = idx + 2
             type = 'str'
         elif seq[:public_len] in public_list.keys():
             attr_name, type = public_list.get(seq[:public_len])

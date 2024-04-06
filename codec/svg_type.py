@@ -1,5 +1,5 @@
-from .decode_attr_type import seq_to_number, seq_to_str, seq_to_bin
-from .encode_attr_type import number_to_seq, str_to_seq, bin_to_seq
+from .decode_attr_type import seq_to_number, seq_to_str
+from .encode_attr_type import number_to_seq, str_to_seq
 import re
 from .path_d import ParserPathD as dparser
 from .transform import ParserTransform as trparser
@@ -19,15 +19,15 @@ class SVGNumber(SVGType):
     def encode(self):
         value = self.given_str
         if value == None:
-            return 'C'
+            return '00'
         if type(value) != str:
             value = str(value)
         numbers = re.sub(',', ' ', value).strip().split(' ')
         
         if len(numbers) == 1:
-            seq = 'A'
+            seq = '01'
         else:
-            seq = 'T' + number_to_seq(len(numbers))
+            seq = '1' + number_to_seq(len(numbers))
         for number in numbers:
             if number.startswith('.'):
                 number = '0' + number
@@ -42,22 +42,18 @@ class SVGNumber(SVGType):
 
     def decode(self, call_number=False):
         sub_seq = self.given_str[self.start_idx:]
-        if sub_seq[0] == 'C':
-            return None, self.start_idx + 1
-        elif sub_seq[0] == 'A':
-            ret, end_idx = seq_to_number(sub_seq[1:], self.start_idx, call_number)
-            end_idx += 1
-            return ret, end_idx
-        elif sub_seq[0] == 'T':
+        if sub_seq[0] == '1':
             ret = []
-            index = self.start_idx
-            number_length, index = seq_to_number(sub_seq[1:], index + 1, True)
+            number_length, index = seq_to_number(sub_seq[1:], 1, True)
             for _ in range(0, number_length):
-                number, index = seq_to_number(self.given_str[index:], index, call_number)
+                number, index = seq_to_number(sub_seq[index:], index, call_number)
                 ret.append(number)
-            return (' '.join(ret), index)
+            return (' '.join(ret), index + self.start_idx)
+        elif sub_seq[1] == '1':
+            ret, end_idx = seq_to_number(sub_seq[2:], self.start_idx, call_number)
+            return ret, end_idx + 2
         else:
-            print('error: invalid sequence')
+            return None, self.start_idx + 2
 
 
 class SVGString(SVGType):
@@ -128,13 +124,13 @@ class SVGColorMatrix(SVGType):
             else:
                 ret_bin += '1'
                 ret_num += number_to_seq(number)
-        return bin_to_seq(ret_bin) + ret_num
+        return ret_bin + ret_num
     
     def decode(self):
         sub_seq = self.given_str[self.start_idx:]
-        ret_bin = seq_to_bin(sub_seq, 10)
+        ret_bin = sub_seq[:20]
         ret_num = []
-        index = 10
+        index = 20
         for i in ret_bin:
             if i == '0':
                 ret_num.append('0')

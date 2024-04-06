@@ -3,26 +3,12 @@ from decimal import Decimal
 from .str_list import *
 from .collect import CollectMethod
 
-nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
 color_words = ['black', 'silver', 'gray', 'white', 'maroon', 'red', 'purple', 'fuchsia', 'green', 'lime', 'olive', 'yellow', 'navy', 'blue', 'teal', 'aqua']
 # XXX: 必须和decode_attr_type.py中的MAX_SIZE_BITS一致
 MAX_SIZE_BITS = 6
 MAX_SIZE = (1 << MAX_SIZE_BITS) - 2
 MAX_SHORT_FLOAT = (1 << 24) - 1
 MAX_INT = (1 << 31) - 1
-
-def bin_to_seq(binSeq):
-    n = len(binSeq)
-    if n % 2 == 1:
-        binSeq += '0'
-        n += 1
-
-    ret = ''
-    for i in range(0, n, 2):
-        unit = binSeq[i:i+2]
-        ret += nt_dict[unit]
-
-    return ret
 
 def __normalize(number_str):
     decimal = Decimal(str(number_str))
@@ -40,10 +26,10 @@ def __normalize(number_str):
 def int_to_seq(sign, number):
     length = ''
     if number <= MAX_SIZE and number >= -1:
-        mark = 'G'
+        mark = '11'
         data = format(number + 1, '0' + str(MAX_SIZE_BITS) + 'b')
     else:
-        mark = 'A'
+        mark = '00'
         if sign:
             number = -number
             sign = '1'
@@ -57,14 +43,14 @@ def int_to_seq(sign, number):
         data = sign + data
         length = format(((length + 1) >> 1) - 1, '04b')
 
-    return mark + bin_to_seq(length + data)
+    return mark + length + data
 
 def float_to_seq_sys(number):
     binary = format(struct.unpack('>I', struct.pack('>f', number))[0], '032b')
-    return 'C' + bin_to_seq(binary)
+    return '10' + binary
 
 def float_to_seq(sign, coefficient, exponent):
-    mark = 'T'
+    mark = '01'
     if sign:
         sign = '1'
     else:
@@ -76,7 +62,7 @@ def float_to_seq(sign, coefficient, exponent):
         length_bin += 1
 
     ret = sign + format(length_bin >> 1, '04b') + format(-exponent-1, '03b') + binary_number
-    return mark + bin_to_seq(ret)
+    return mark + ret
 
 def number_to_seq(number_str):
     '''
@@ -120,22 +106,22 @@ def color_to_seq(s):
     ret = __check_color(s)
     match ret[0]:
         case 0:
-            seq = 'TA'
+            seq = '010' # TA
             for i in range(1, 4):
                 if ret[i] > 255:
                     ret[i] = 255
-                seq += bin_to_seq(format(ret[i], '08b'))
+                seq += format(ret[i], '08b')
             return seq
         case 1:
-            seq = 'TC'
+            seq = '011' # TC
             for i in range(1, 4):
                 if ret[i] > 100:
                     ret[i] = 100
-                seq += bin_to_seq(format(ret[i], '06b'))
+                seq += format(ret[i], '06b')
             return seq
         case 2:
-            seq = 'TT'
-            seq += bin_to_seq(format(ret[1], '04b'))
+            seq = '100' # TT
+            seq += format(ret[1], '04b')
             return seq
         case _:
             return None

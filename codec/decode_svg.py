@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 from .svg_code import *
 from .str_list import *
+from .segment import split
 
 class Decoder:
     def __init__(self):
@@ -39,9 +40,10 @@ class Decoder:
 
     def generate_svg(self, DNAseq):
         # 传入各个标签及参数的DNA序列list
+        DNAseq = split(DNAseq)
         for seq in DNAseq:
-            if seq[:3] == 'TTT':
-                str_list_unpack(seq[3:])
+            if seq[:6] == '111111':
+                str_list_unpack(seq[6:])
                 DNAseq.remove(seq)
                 break
         self.get_allDNA(DNAseq)  # 将DNAseq转化成各个标签及参数

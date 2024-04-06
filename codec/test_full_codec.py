@@ -7,7 +7,7 @@ from .transform import ParserTransform
 from .svg_type import SVGNumber, SVGString, SVGColorMatrix
 from .path_d import ParserPathD
 from .svg_code import decode_tag, encode_tag
-from .segment import optimize_seq_len, restore_seq_len
+from .segment import split, merge
 from .encode_svg import Encoder
 from .decode_svg import Decoder
 from .codec import Codec
@@ -77,7 +77,8 @@ class TestTag:
         )
         s = encode_tag(root, 0, 0)
         print(s)
-        _ = decode_tag(s)
+        ss = decode_tag(s)
+        print(ss)
     
     def test_tag_2(self):
         root = ET.fromstring(
@@ -85,7 +86,8 @@ class TestTag:
         )
         s = encode_tag(root, 0, 0)
         print(s)
-        _ = decode_tag(s)
+        ss = decode_tag(s)
+        print(ss)
 
     def test_tag_3(self):
         root = ET.fromstring(
@@ -93,7 +95,8 @@ class TestTag:
         )
         s = encode_tag(root, 0, 0)
         print(s)
-        _ = decode_tag(s)
+        ss = decode_tag(s)
+        print(ss)
 
 class TestSegment:
     def test_dfs(self):
@@ -116,9 +119,10 @@ class TestSegment:
     def test_segment(self):
         enc = Encoder()
         initial_encoding = enc.encode_file(filename)
-        optimized_encoding = optimize_seq_len(initial_encoding)
-        restored = restore_seq_len(optimized_encoding)
-        assert(set(restored) == set(initial_encoding))
+        init = initial_encoding.copy()
+        optimized_encoding = merge(initial_encoding)
+        restored = split(optimized_encoding)
+        assert(set(restored) == set(init))
 
 
 class TestCodec:

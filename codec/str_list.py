@@ -1,23 +1,18 @@
 import gzip
 str_list = []
 
-nt_dict = {'00': 'A', '01': 'T', '10': 'C', '11': 'G'}
-dict_nt = {'A': '00', 'T': '01', 'C': '10', 'G': '11'}
-
 def __bytes_to_seq(bytes):
     seq = ''
     for byte in bytes:
-        binary = format(byte, '08b')
-        for i in range(0, 8, 2):
-            seq += nt_dict[binary[i:i+2]]
+        seq += format(byte, '08b')
     return seq
 
 def __seq_to_bytes(seq):
     bytearr = bytearray()
-    for i in range(0, len(seq), 4):
+    for i in range(0, len(seq), 8):
         byte = ''
-        for j in range(i, i+4):
-            byte += dict_nt[seq[j]]
+        for j in range(i, i+8):
+            byte += seq[j]
         bytearr.append(int(byte, 2))
     return bytes(bytearr)
 
@@ -34,7 +29,7 @@ def str_list_get(index):
 
 def str_list_pack():
     packed_data = gzip.compress('\0'.join(str_list).encode())
-    return __bytes_to_seq(packed_data)
+    return '111111' + __bytes_to_seq(packed_data)
 
 def str_list_unpack(packed_data):
     str_list.clear()

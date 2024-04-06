@@ -2,7 +2,6 @@
 
 import re
 from codec.error_correction import add_ecc, check_restore
-from codec.segment import optimize_seq_len, restore_seq_len
 
 CONST_PRIMER_LEN = 6
 CONST_SEQ_MAX_LEN = 200
@@ -13,10 +12,10 @@ NT_BITS = {
     "T": "11",
     "C": "01",
     "G": "10"
-};
+}
 BITS_NT = {}
 for (k, v) in NT_BITS.items():
-    BITS_NT[v] = k;
+    BITS_NT[v] = k
 
 
 def split(long_seq, max_len):
