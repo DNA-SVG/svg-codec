@@ -1,5 +1,6 @@
 from .decode_attr_type import seq_to_number, seq_to_str
 from .encode_attr_type import number_to_seq, str_to_seq
+from decimal import Decimal
 import re
 from .path_d import ParserPathD as dparser
 from .transform import ParserTransform as trparser
@@ -32,9 +33,12 @@ class SVGNumber(SVGType):
             if number.startswith('.'):
                 number = '0' + number
             number = re.sub(r"([^\d])(\.\d+)", r"\g<1>0\g<2>", number)
-            if re.match(r'^[+-]?\d+(?:\.\d+)?(?:[eE][-+]\d+)?(px)?$', number) != None:
+            if re.match(r'^[+-]?\d+(?:\.\d+)?(?:[eE][-+]\d+)?(px|%)?$', number) != None:
                 if number.endswith('px'):
                     number = number[:-2]
+                elif number.endswith('%'):
+                    number = number[:-1]
+                    number = str(Decimal(number) / Decimal(100))
                 seq += number_to_seq(number)
             else:
                 print('error: value type not supported')
