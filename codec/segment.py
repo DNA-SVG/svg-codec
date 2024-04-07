@@ -1,4 +1,5 @@
 from .svg_type import SVGNumber
+from .svg_tag import tag_nt
 
 def get_merge(ret_list):
     ret_list[0] = format(ret_list[0], '06b') + SVGNumber(len(ret_list) - 1).encode()
@@ -40,8 +41,23 @@ def split_str(strand):
     
     return ret
 
-def split(strands):
+def split(strands, reserve=None):
     ret = []
+    have_style = True
+    if reserve != None:
+        reserve = reserve.split(',')
+        if 'svg' not in reserve:
+            reserve.append('svg')
+        for i in range(len(reserve)):
+            if reserve[i] == 'style':
+                have_style = False
+            reserve[i] = tag_nt().get_tag_nt(reserve[i])
+        reserve.append('111111')
+        for strand in strands:
+            if strand[:6] in reserve:
+                ret.append(strand)
+        strands = ret.copy()
+        ret = []
     for strand in strands:
         ret.extend(split_str(strand))
-    return ret
+    return ret, have_style

@@ -14,6 +14,7 @@ for dir in dirs:
                 # print(os.path.join(svg_dir, dir, filename))
                 codec.outputDNAseq(os.path.join(svg_dir, dir, filename), "test_out.txt")
                 # codec.outputSVG('./test_out.txt', './text_result.svg')
+                # codec.outputSVG('./test_out.txt', './text_result.svg', reserve='path,rect,ellipse,line,circle,polygon,polyline')
                 file.write(str(os.path.getsize("test_out.txt")) + '\n')
 # os.remove('./text_result.svg')
 end = time.perf_counter()

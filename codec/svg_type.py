@@ -137,4 +137,4 @@ class SVGColorMatrix(SVGType):
             else:
                 number, index = seq_to_number(sub_seq[index:], index, call_number=False)
                 ret_num.append(number)
-        return  ''.join(ret_num), index + self.start_idx
+        return  ' '.join(ret_num), index + self.start_idx

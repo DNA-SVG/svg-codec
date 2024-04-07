@@ -122,7 +122,7 @@ class TestSegment:
         init = initial_encoding.copy()
         optimized_encoding = merge(initial_encoding)
         restored = split(optimized_encoding)
-        assert(set(restored) == set(init))
+        assert(set(restored[0]) == set(init))
 
 
 class TestCodec:
@@ -130,3 +130,4 @@ class TestCodec:
         codec = Codec()
         codec.outputDNAseq(filename, 'test_codec.txt')
         codec.outputSVG("test_codec.txt", 'test_result.svg')
+        codec.outputSVG("test_codec.txt", 'test_partial.svg', reserve='path,rect,circle')
