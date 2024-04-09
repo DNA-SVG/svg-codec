@@ -48,6 +48,9 @@ def split(strands, reserve=None):
         reserve = reserve.split(',')
         if 'svg' not in reserve:
             reserve.append('svg')
+        if 'g' in reserve:
+            reserve.remove('g')
+            reserve.append('g1')
         for i in range(len(reserve)):
             if reserve[i] == 'style':
                 have_style = False

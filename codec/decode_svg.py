@@ -31,6 +31,8 @@ class Decoder:
         return: True if current tag is last child of its parent, False otherwise
         '''
         array = self.allDNA[self.cur]
+        if array[0] == 'g':
+            array = array[:2] + array[3:]
         element = self.generate_element(root, array)
         status = array[2]
         if status == 0:
@@ -44,13 +46,15 @@ class Decoder:
                     break
             return status == 3
 
-    def dfs_add_partial(self, root, have_style=False):
-        root = self.generate_element(root, self.allDNA[0])
-        if have_style:
-            element = ET.SubElement(root, 'style')
-            element.text = r'.partial{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}'
-        for array in self.allDNA[1:]:
-            self.generate_element(root, array, have_style)
+    def dfs_add_partial(self, root, have_style=False, max_delta=-1):
+        while self.cur < len(self.allDNA) and self.allDNA[self.cur][1] <= max_delta:
+            array = self.allDNA[self.cur]
+            self.cur += 1
+            if array[0] != 'g':
+                self.generate_element(root, array, have_style)
+            else:
+                element = self.generate_element(root, array[:2] + array[3:])
+                self.dfs_add_partial(element, have_style, array[1] + array[2])
 
     def generate_svg(self, DNAseq, reserve=None):
         # 传入各个标签及参数的DNA序列list
@@ -65,6 +69,11 @@ class Decoder:
         if reserve == None:
             self.dfs_add(self.tree.getroot())
         else:
-            self.dfs_add_partial(self.tree.getroot(), have_style)
+            root = self.generate_element(self.tree.getroot(), self.allDNA[0])
+            if have_style:
+                element = ET.SubElement(root, 'style')
+                element.text = r'.partial{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}'
+            self.cur = 1
+            self.dfs_add_partial(root, have_style, self.allDNA[-1][1])
         file = '<?xml version="1.0" ?>' + ET.tostring(self.tree.getroot()[0], encoding='unicode').replace('><', '>\n<')
         return file

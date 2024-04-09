@@ -11,12 +11,19 @@ ATTR_CODE = {'number': SVGNumber, 'str': SVGString,
 
 STD = '{http://www.w3.org/2000/svg}'
 
-def encode_address(element_num, status):
-    return SVGNumber(element_num).encode() + format(status, '02b')
+def encode_address(element_num, status, delta_num=-1):
+    if delta_num == -1:
+        return SVGNumber(element_num).encode() + format(status, '02b')
+    return SVGNumber(element_num).encode() + SVGNumber(delta_num).encode() + format(status, '02b')
 
-def decode_address(seq: str):
+def decode_address(seq: str, use_delta=False):
     address_seq, end_idx = SVGNumber(seq).decode(call_number=True)
-    return [address_seq, int(seq[end_idx:end_idx + 2], 2)], end_idx + 2
+    address_seq = [address_seq]
+    if use_delta:
+        delta_num, end_idx = SVGNumber(seq, start_idx=end_idx).decode(call_number=True)
+        address_seq.append(delta_num)
+    address_seq.append(int(seq[end_idx:end_idx + 2], 2))
+    return address_seq, end_idx + 2
 
 def encode_require(node: ET.Element, cur_tag: Tag):
     seq = ''
@@ -97,13 +104,20 @@ def decode_optional(seq: str, tag: Tag):
         ret.append([attr_name, attr_value])
     return ret
 
-def encode_tag(node: ET.Element, element_num, status):
+def encode_tag(node: ET.Element, element_num, status, delta_num=-1):
     tag_name = node.tag
     if tag_name.startswith(STD):
         tag_name = tag_name[len(STD):]
     tag_class = globals()[tag_name]
+    if tag_name == 'g':
+        if delta_num == -1:
+            delta_num = 0
+        if node.attrib.get('transform') != None:
+            tag_name = 'g1'
+    else:
+        delta_num = -1
     seq = nt.get_tag_nt(tag_name)
-    seq += encode_address(element_num, status)
+    seq += encode_address(element_num, status, delta_num)
     seq += encode_require(node, tag_class)
     seq += encode_optional(node, tag_class)
     return seq
@@ -112,12 +126,17 @@ def encode_tag(node: ET.Element, element_num, status):
 def decode_tag(seq: str):
     # 传入tag的DNAseq
     tag_name = nt.get_nt_tag(seq[:nt.get_tag_len()])
+    if tag_name == 'g1':
+        tag_name = 'g'
     tag_class = globals()[tag_name]
 
     ret_list = [tag_name]
     start = nt.get_tag_len()
     seq = seq[start:]
-    address_list, end_idx = decode_address(seq)
+    if tag_name == 'g':
+        address_list, end_idx = decode_address(seq, use_delta=True)
+    else:
+        address_list, end_idx = decode_address(seq)
     seq = seq[end_idx:]
     require_list, end_idx = decode_require(seq, tag_class)
     seq = seq[end_idx:]

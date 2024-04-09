@@ -81,12 +81,12 @@ class SVGEnum(SVGType):
         result = self.dict.get_encode_dict(self.attr_name, self.given_str)
         if result != None:
             return result
-        return 'G' + SVGString(self.given_str).encode()
+        return '11' + SVGString(self.given_str).encode()
     
     def decode(self):
         seq = self.given_str
-        if seq[self.start_idx] == 'G':
-            self.start_idx += 1
+        if seq[self.start_idx:self.start_idx+2] == '11':
+            self.start_idx += 2
             return SVGString(seq, start_idx=self.start_idx).decode()
         return self.dict.get_decode_dict(self.attr_name, self.given_str, self.start_idx)
     

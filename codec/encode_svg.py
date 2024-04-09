@@ -23,19 +23,20 @@ class Encoder:
         if length == 0:
             a = encode_tag(root, self.element_num, status)
             if a != None:
-                DNA_seq += [a]
+                DNA_seq = [a]
             return DNA_seq
         else:
             status += 2
-            a = encode_tag(root, self.element_num, status)
-            if a != None:
-                DNA_seq += [a]
+            prev_element_num = self.element_num
 
             for i in range(length-1):
                 self.element_num += 1
                 DNA_seq += self.__dfs(root[i])
             self.element_num += 1
             DNA_seq += self.__dfs(root[length-1], True)
+            a = encode_tag(root, prev_element_num, status, self.element_num - prev_element_num)
+            if a != None:
+                DNA_seq += [a]
         return DNA_seq
     
     def __pre_process(self, root):

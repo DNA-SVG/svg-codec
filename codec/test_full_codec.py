@@ -130,4 +130,4 @@ class TestCodec:
         codec = Codec()
         codec.outputDNAseq(filename, 'test_codec.txt')
         codec.outputSVG("test_codec.txt", 'test_result.svg')
-        codec.outputSVG("test_codec.txt", 'test_partial.svg', reserve='path,rect,circle')
+        codec.outputSVG("test_codec.txt", 'test_partial.svg', reserve='g,path,rect,circle,polygon')

@@ -3,7 +3,7 @@ from codec.svg_type import SVGString
 class tag_nt:
     __TAG_lENGTH = 6
     __TAG_NT = [
-        'circle', 'clipPath', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix', 'feComposite', 'feFlood', 'feGaussianBlur', 'feMorphology', 'feOffset', 'filter', 'g', 'linearGradient', 'mask', 'path', 'polygon', 'polyline', 'radialGradient', 'rect', 'stop', 'style', 'svg', 'title', 'use', 'line'
+        'circle', 'clipPath', 'defs', 'desc', 'ellipse', 'feBlend', 'feColorMatrix', 'feComposite', 'feFlood', 'feGaussianBlur', 'feMorphology', 'feOffset', 'filter', 'g', 'g1', 'linearGradient', 'mask', 'path', 'polygon', 'polyline', 'radialGradient', 'rect', 'stop', 'style', 'svg', 'title', 'use', 'line'
     ]
     def get_tag_len(self):
         return self.__TAG_lENGTH
