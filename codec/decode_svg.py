@@ -17,7 +17,8 @@ class Decoder:
 
     def generate_element(self, root, array, have_style=False):
         element = ET.SubElement(root, array[0])
-        for attr, val in array[3:]:
+        array = array[3:]
+        for attr, val in array:
             if attr == 'text':
                 element.text = val
             else:
@@ -32,7 +33,7 @@ class Decoder:
         '''
         array = self.allDNA[self.cur]
         if array[0] == 'g':
-            array = array[:2] + array[3:]
+            array.pop(2)
         element = self.generate_element(root, array)
         status = array[2]
         if status == 0:
@@ -47,13 +48,15 @@ class Decoder:
             return status == 3
 
     def dfs_add_partial(self, root, have_style=False, max_delta=-1):
-        while self.cur < len(self.allDNA) and self.allDNA[self.cur][1] <= max_delta:
+        while self.cur < len(self.allDNA):
             array = self.allDNA[self.cur]
+            if array[1] > max_delta:
+                break
             self.cur += 1
             if array[0] != 'g':
                 self.generate_element(root, array, have_style)
             else:
-                element = self.generate_element(root, array[:2] + array[3:])
+                element = self.generate_element(root, array[:2] + array[3:], have_style)
                 self.dfs_add_partial(element, have_style, array[1] + array[2])
 
     def generate_svg(self, DNAseq, reserve=None):
@@ -72,7 +75,7 @@ class Decoder:
             root = self.generate_element(self.tree.getroot(), self.allDNA[0])
             if have_style:
                 element = ET.SubElement(root, 'style')
-                element.text = r'.partial{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}'
+                element.text = r'.partial{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5%}'
             self.cur = 1
             self.dfs_add_partial(root, have_style, self.allDNA[-1][1])
         file = '<?xml version="1.0" ?>' + ET.tostring(self.tree.getroot()[0], encoding='unicode').replace('><', '>\n<')
