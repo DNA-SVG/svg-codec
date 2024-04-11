@@ -19,7 +19,7 @@ for dir in dirs:
             result_new[b].append(int(c))
     tmp = []
     for a, b in result_new.items():
-        tmp.append(1 - b[1] * 1.5 / b[0] / 8)
+        tmp.append(1 - b[1] / b[0])
     total_stat[dir] = []
     total_stat[dir].append(sum(tmp) / len(tmp))
 
@@ -31,3 +31,8 @@ with open('stat.csv', 'w') as file:
     )
     for key in total_stat:
         file.write(key + ',' + ','.join([str(x) for x in total_stat[key]]) + '\n')
+
+ret = 0
+for key in total_stat:
+    ret += total_stat[key][0]
+print(ret / len(total_stat))
