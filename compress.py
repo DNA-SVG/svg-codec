@@ -7,7 +7,8 @@ def compress_file(file_path):
         with gzip.open(compressed_file_path, 'wb') as compressed_file:
             compressed_file.writelines(file)
     compressed_size = os.path.getsize(compressed_file_path)
-    return round(compressed_size * 8)
+    return round(compressed_size * 16 / 1.5)
+    # return round(compressed_size * 8)
 
 # svg_dir = "../svgs/"
 # dirs = [f for f in os.listdir(svg_dir) if not f.startswith('.')]
