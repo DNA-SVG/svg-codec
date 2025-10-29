@@ -142,4 +142,6 @@ def decode_tag(seq: str):
     seq = seq[end_idx:]
     optional_list = decode_optional(seq, tag_class)
     ret_list += address_list + require_list + optional_list
+    if tag_name == 'svg':
+        ret_list.append(['xmlns', 'http://www.w3.org/2000/svg'])
     return ret_list
