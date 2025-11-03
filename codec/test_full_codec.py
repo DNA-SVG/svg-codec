@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-import pytest, ruff
+import pytest
 
 from .encode_attr_type import str_to_seq, number_to_seq
 from .decode_attr_type  import seq_to_number, seq_to_str
